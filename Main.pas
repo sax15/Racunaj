@@ -7,7 +7,8 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.DateTimeCtrls, FMX.ListBox, FMX.Layouts, System.ImageList, FMX.ImgList,
   FMX.Objects, FMX.Edit, FMX.Controls.Presentation, FMX.TabControl,
-  SharedUnit, FMX.GifUtils, System.DateUtils, FMX.ScrollBox, FMX.Memo;
+  SharedUnit, FMX.GifUtils, System.DateUtils, FMX.ScrollBox, FMX.Memo,
+  System.IOUtils;
 
 type
   TfrmMain = class(TForm)
@@ -29,7 +30,7 @@ type
     layCas: TLayout;
     labCas: TLabel;
     layAnimacija: TLayout;
-    iAnimacija: TImage;
+    imgAnimacija: TImage;
     ImageList: TImageList;
     lbNastavitve: TListBox;
     lbiRacunajDo: TListBoxItem;
@@ -41,11 +42,13 @@ type
     swcPoljubniNeznanClen: TSwitch;
     labPoljubniNeznanClen: TLabel;
     labNapis: TLabel;
-    Timer: TTimer;
+    tmrCasRacunanja: TTimer;
     edtCasRacunanja: TEdit;
     labS: TLabel;
     tbiRezultati: TTabItem;
     memRezultati: TMemo;
+    tmrPavza: TTimer;
+    TabItem1: TTabItem;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -53,7 +56,8 @@ type
     procedure edtDrugoStKeyDown(Sender: TObject; var Key: Word;
       var KeyChar: Char; Shift: TShiftState);
     procedure btnPreveriClick(Sender: TObject);
-    procedure TimerTimer(Sender: TObject);
+    procedure tmrCasRacunanjaTimer(Sender: TObject);
+    procedure tmrPavzaTimer(Sender: TObject);
   private
     { Private declarations }
     cas: Integer;
@@ -66,6 +70,7 @@ type
     procedure IzberiNalogo();
     procedure NastaviVnosnaPolja(polje: TEdit; zaklenjeno: Boolean);
     procedure PocistiPolja();
+    procedure PredvajajAnimacijo(animacija: String);
   public
     { Public declarations }
   end;
@@ -82,23 +87,27 @@ implementation
 
 procedure TfrmMain.btnIzhodClick(Sender: TObject);
 begin
+  // Zapri aplikacijo
   Application.Terminate;
 end;
 
 procedure TfrmMain.btnPreveriClick(Sender: TObject);
 begin
   // preveri rezultate
+  layRacunaj.Enabled:=False;
   if PreveriRezultat() then   // če je odgovor je pravilen
   begin
      labCas.Text:='BRAVO !!!';
      Inc(pravilno);
-  end else
+     PredvajajAnimacijo('odlicno');
+  end else                    // odgovor je napačen
   begin
     labCas.Text:=':( !!!';
     Inc(napacno);
+    PredvajajAnimacijo('napaka');
   end;
   IzpisiRezultate();
-  IzberiNalogo();
+  tmrPavza.Enabled:=True;
 end;
 
 procedure TfrmMain.btnStartClick(Sender: TObject);
@@ -109,13 +118,20 @@ begin
   begin
     btnStart.ImageIndex:=2;
     cas_zacetka:=Now;
+    layRacunaj.Enabled:=True;
+    PocistiPolja();
     PonastaviRezultate();
+    IzpisiRezultate();
     IzberiNalogo();
   end else    // končaj igro
   begin
     btnStart.ImageIndex:=1;
-    Timer.Enabled:=False;
+    tmrCasRacunanja.Enabled:=False;
+    tmrPavza.Enabled:=False;
     skupen_cas:=SecondsBetween(Now, cas_zacetka);
+    PocistiPolja();
+    labCas.Text:='';
+    layRacunaj.Enabled:=False;
     memRezultati.Lines.Add(DateTimeToStr(Now) + ' ; čas reševanje=' + IntToStr(skupen_cas) + ' sec ; pravilnih=' + IntToSTr(pravilno) +
                             '; napačnih=' + IntToStr(napacno) + '; neodgovorjenih=' +
                             IntToSTr(neodgovorjeno));
@@ -137,6 +153,8 @@ begin
   edtCasRacunanja.Text:=IntToStr(cas_racunanja_enega_st);
   swcPoljubniNeznanClen.IsChecked:=nakljucni_nn_clen;
   cas:=cas_racunanja_enega_st;
+  FGifPlayer := TGifPlayer.Create(Self);
+  FGifPlayer.Image := imgAnimacija;
   PonastaviRezultate();
   IzpisiRezultate();
 
@@ -156,12 +174,28 @@ begin
   neodgovorjeno:=0;
 end;
 
+procedure TfrmMain.PredvajajAnimacijo(animacija: String);
+var
+  ff, i: Integer;
+  path: String;
+begin
+  path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'animation' + PathDelim  + animacija + PathDelim;
+  ff:=CountFilesInFolder(path );
+  i:=Random(ff)+1;
+  FGifPlayer.LoadFromFile(path + IntToStr(i) + '.gif');
+  imgAnimacija.Visible:=True;
+
+  //FGifPlayer.LoadFromStream();
+
+  FGifPlayer.Play;
+end;
+
 function TfrmMain.PreveriRezultat(): Boolean;
 var
   st1,st2, rez: Integer;
 begin
   // preveri rezultat
-  Timer.Enabled:=False;
+  tmrCasRacunanja.Enabled:=False;
   Try
     st1:=StrToInt(edtPrvoSt.Text);
     st2:=StrToInt(edtDrugoSt.Text);
@@ -198,7 +232,7 @@ begin
 end;
 
 
-procedure TfrmMain.TimerTimer(Sender: TObject);
+procedure TfrmMain.tmrCasRacunanjaTimer(Sender: TObject);
 begin
   // prikaži čas na formi
   Dec(cas);
@@ -207,13 +241,14 @@ begin
   // preveri ali se je čas že iztekel
   if cas=0 then  // čas je potekel
   begin
-    Timer.Enabled:=False;
+    tmrCasRacunanja.Enabled:=False;
     Inc(neodgovorjeno);
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL!';
     IzpisiRezultate();
     IzberiNalogo();
   end;
 end;
+
 
 procedure TfrmMain.IzberiNalogo();
 var
@@ -285,15 +320,20 @@ begin
     NastaviVnosnaPolja(edtDrugoSt, True);
     NastaviVnosnaPolja(edtRezultat, False);
   end;
-  Timer.Enabled:=True;
+  PredvajajAnimacijo('razmisljam');
+  tmrCasRacunanja.Enabled:=True;
 end;
 
 procedure TfrmMain.IzpisiRezultate();
 begin
   labRezultat.Text:='PRAVILNO: ' + IntToStr(pravilno) + ', NAPAČNO: ' + IntToStr(napacno) + ', ' + 'NEODGOVORJENO: ' + IntToStr(neodgovorjeno);
-{ TODO : SPREMENI, da ne bo prišlo do neodzivnosti UI }
-Application.ProcessMessages;
-Sleep(5000);
+end;
+
+procedure TfrmMain.tmrPavzaTimer(Sender: TObject);
+begin
+  tmrPavza.Enabled:=False;
+  layRacunaj.Enabled:=True;
+  IzberiNalogo();
 end;
 
 
@@ -304,5 +344,8 @@ begin
   if NOT zaklenjeno then
     polje.SetFocus;
 end;
+
+
+
 
 end.

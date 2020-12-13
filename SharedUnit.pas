@@ -21,6 +21,7 @@ implementation
 function GetExePath(): String;
 begin
 {$IFDEF MSWINDOWS}
+  //Result:=TPath.GetDocumentsPath + PathDelim;
   Result:=ExtractFilePath(ParamStr(0));
 {$ENDIF}
 {$IFDEF LINUX}
