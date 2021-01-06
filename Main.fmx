@@ -1,41 +1,41 @@
 object frmMain: TfrmMain
-  Left = 750
-  Top = 300
+  Left = 440
+  Top = 160
   Caption = 'Ra'#269'unanje je igra'
   ClientHeight = 525
-  ClientWidth = 395
+  ClientWidth = 421
   Position = Designed
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
-  Left = 750
-  Top = 300
+  Left = 440
+  Top = 160
   DesignerMasterStyle = 0
   object TabControl: TTabControl
     Align = Client
-    Size.Width = 395.000000000000000000
+    Size.Width = 421.000000000000000000
     Size.Height = 525.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     TabPosition = PlatformDefault
     OnChange = TabControlChange
     Sizes = (
-      395s
+      421s
       476s
-      395s
+      421s
       476s
-      395s
+      421s
       476s
-      395s
+      421s
       476s)
     object tbiRacunaj: TTabItem
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 62.000000000000000000
       Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
@@ -46,7 +46,7 @@ object frmMain: TfrmMain
       ExplicitSize.cy = 49.000000000000000000
       object layGumbi: TLayout
         Align = Top
-        Size.Width = 395.000000000000000000
+        Size.Width = 421.000000000000000000
         Size.Height = 55.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
@@ -74,7 +74,7 @@ object frmMain: TfrmMain
           Margins.Top = 5.000000000000000000
           Margins.Right = 5.000000000000000000
           Margins.Bottom = 5.000000000000000000
-          Position.X = 342.000000000000000000
+          Position.X = 368.000000000000000000
           Position.Y = 5.000000000000000000
           Size.Width = 48.000000000000000000
           Size.Height = 45.000000000000000000
@@ -85,7 +85,7 @@ object frmMain: TfrmMain
         object labNapis: TLabel
           Align = Client
           StyledSettings = []
-          Size.Width = 279.000000000000000000
+          Size.Width = 305.000000000000000000
           Size.Height = 55.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Segoe Script'
@@ -100,14 +100,14 @@ object frmMain: TfrmMain
       object layRezultat1: TLayout
         Align = Top
         Position.Y = 55.000000000000000000
-        Size.Width = 395.000000000000000000
+        Size.Width = 421.000000000000000000
         Size.Height = 50.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
         object labRezultat: TLabel
           Align = Client
           StyledSettings = [Family, Style, FontColor]
-          Size.Width = 395.000000000000000000
+          Size.Width = 421.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 14.000000000000000000
@@ -118,7 +118,7 @@ object frmMain: TfrmMain
       object layRacunaj: TLayout
         Align = Top
         Position.Y = 105.000000000000000000
-        Size.Width = 395.000000000000000000
+        Size.Width = 421.000000000000000000
         Size.Height = 70.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
@@ -202,7 +202,7 @@ object frmMain: TfrmMain
           Margins.Top = 5.000000000000000000
           Margins.Right = 5.000000000000000000
           Margins.Bottom = 5.000000000000000000
-          Size.Width = 117.000000000000000000
+          Size.Width = 143.000000000000000000
           Size.Height = 60.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -230,14 +230,14 @@ object frmMain: TfrmMain
       object layCas: TLayout
         Align = Top
         Position.Y = 175.000000000000000000
-        Size.Width = 395.000000000000000000
+        Size.Width = 421.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 3
         object labCas: TLabel
           Align = Top
           StyledSettings = [Family, Style, FontColor]
-          Size.Width = 395.000000000000000000
+          Size.Width = 421.000000000000000000
           Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 24.000000000000000000
@@ -247,7 +247,7 @@ object frmMain: TfrmMain
       end
       object layAnimacija: TLayout
         Align = Client
-        Size.Width = 395.000000000000000000
+        Size.Width = 421.000000000000000000
         Size.Height = 272.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 4
@@ -262,7 +262,7 @@ object frmMain: TfrmMain
           Margins.Top = 5.000000000000000000
           Margins.Right = 5.000000000000000000
           Margins.Bottom = 5.000000000000000000
-          Size.Width = 385.000000000000000000
+          Size.Width = 411.000000000000000000
           Size.Height = 262.000000000000000000
           Size.PlatformDefault = False
         end
@@ -283,18 +283,22 @@ object frmMain: TfrmMain
       ExplicitSize.cy = 49.000000000000000000
       object lbNastavitve: TListBox
         Align = Client
-        Size.Width = 395.000000000000000000
-        Size.Height = 476.000000000000000000
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 411.000000000000000000
+        Size.Height = 466.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         DisableFocusEffect = True
         DefaultItemStyles.ItemStyle = ''
         DefaultItemStyles.GroupHeaderStyle = ''
         DefaultItemStyles.GroupFooterStyle = ''
-        Viewport.Width = 391.000000000000000000
-        Viewport.Height = 472.000000000000000000
+        Viewport.Width = 407.000000000000000000
+        Viewport.Height = 462.000000000000000000
         object lbiRacunajDo: TListBoxItem
-          Size.Width = 391.000000000000000000
+          Size.Width = 407.000000000000000000
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -304,7 +308,7 @@ object frmMain: TfrmMain
             Margins.Top = 5.000000000000000000
             Margins.Right = 5.000000000000000000
             Margins.Bottom = 5.000000000000000000
-            Size.Width = 273.000000000000000000
+            Size.Width = 289.000000000000000000
             Size.Height = 30.000000000000000000
             Size.PlatformDefault = False
             Text = 'Ra'#269'unaj do'
@@ -315,7 +319,7 @@ object frmMain: TfrmMain
             Align = MostRight
             TabOrder = 1
             Text = '100'
-            Position.X = 288.000000000000000000
+            Position.X = 304.000000000000000000
             Position.Y = 5.000000000000000000
             Margins.Left = 5.000000000000000000
             Margins.Top = 5.000000000000000000
@@ -324,21 +328,59 @@ object frmMain: TfrmMain
             Size.Width = 98.000000000000000000
             Size.Height = 30.000000000000000000
             Size.PlatformDefault = False
+            OnExit = edtRacunajDoExit
+          end
+        end
+        object lbiVklopiCas: TListBoxItem
+          Position.Y = 40.000000000000000000
+          Size.Width = 407.000000000000000000
+          Size.Height = 40.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 3
+          object labVklopiCasRacunanja: TLabel
+            Align = Left
+            Margins.Left = 5.000000000000000000
+            Margins.Top = 5.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.X = 5.000000000000000000
+            Position.Y = 5.000000000000000000
+            Size.Width = 257.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            Text = 'Vklopi / Izklopi '#269'as ra'#269'unanja'
+            TabOrder = 1
+          end
+          object swcVklopiCasRacunanja: TSwitch
+            Align = MostRight
+            IsChecked = False
+            Margins.Left = 5.000000000000000000
+            Margins.Top = 5.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.X = 358.000000000000000000
+            Position.Y = 5.000000000000000000
+            Size.Width = 44.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            OnClick = swcVklopiCasRacunanjaClick
+            OnExit = edtRacunajDoExit
           end
         end
         object lbiCasRacunanja: TListBoxItem
-          Position.Y = 40.000000000000000000
-          Size.Width = 391.000000000000000000
+          Position.Y = 80.000000000000000000
+          Size.Width = 407.000000000000000000
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 1
-          object iabCasRacunanja: TLabel
+          object labCasRacunanja: TLabel
             Align = Client
             Margins.Left = 5.000000000000000000
             Margins.Top = 5.000000000000000000
             Margins.Right = 5.000000000000000000
             Margins.Bottom = 5.000000000000000000
-            Size.Width = 255.000000000000000000
+            Size.Width = 271.000000000000000000
             Size.Height = 30.000000000000000000
             Size.PlatformDefault = False
             Text = #268'as ra'#269'unanja enega ra'#269'una'
@@ -349,7 +391,8 @@ object frmMain: TfrmMain
             Align = Right
             TabOrder = 1
             KeyboardType = NumberPad
-            Position.X = 270.000000000000000000
+            Text = '30'
+            Position.X = 286.000000000000000000
             Position.Y = 5.000000000000000000
             Margins.Left = 5.000000000000000000
             Margins.Top = 5.000000000000000000
@@ -358,6 +401,7 @@ object frmMain: TfrmMain
             Size.Width = 89.000000000000000000
             Size.Height = 30.000000000000000000
             Size.PlatformDefault = False
+            OnExit = edtRacunajDoExit
           end
           object labS: TLabel
             Align = MostRight
@@ -365,7 +409,7 @@ object frmMain: TfrmMain
             Margins.Top = 5.000000000000000000
             Margins.Right = 5.000000000000000000
             Margins.Bottom = 5.000000000000000000
-            Position.X = 369.000000000000000000
+            Position.X = 385.000000000000000000
             Position.Y = 5.000000000000000000
             Size.Width = 17.000000000000000000
             Size.Height = 30.000000000000000000
@@ -375,8 +419,8 @@ object frmMain: TfrmMain
           end
         end
         object lbiPoljubniNeznanClen: TListBoxItem
-          Position.Y = 80.000000000000000000
-          Size.Width = 391.000000000000000000
+          Position.Y = 120.000000000000000000
+          Size.Width = 407.000000000000000000
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
@@ -387,12 +431,13 @@ object frmMain: TfrmMain
             Margins.Top = 5.000000000000000000
             Margins.Right = 5.000000000000000000
             Margins.Bottom = 5.000000000000000000
-            Position.X = 342.000000000000000000
+            Position.X = 358.000000000000000000
             Position.Y = 5.000000000000000000
             Size.Width = 44.000000000000000000
             Size.Height = 30.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
+            OnExit = edtRacunajDoExit
           end
           object labPoljubniNeznanClen: TLabel
             Align = Client
@@ -400,10 +445,10 @@ object frmMain: TfrmMain
             Margins.Top = 5.000000000000000000
             Margins.Right = 5.000000000000000000
             Margins.Bottom = 5.000000000000000000
-            Size.Width = 327.000000000000000000
+            Size.Width = 343.000000000000000000
             Size.Height = 30.000000000000000000
             Size.PlatformDefault = False
-            Text = 'Poljubni neznani '#269'len'
+            Text = 'Poljuben nezn '#269'len'
             TabOrder = 0
           end
         end
@@ -413,7 +458,7 @@ object frmMain: TfrmMain
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 66.000000000000000000
       Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
@@ -426,45 +471,179 @@ object frmMain: TfrmMain
         Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
         DataDetectorTypes = []
         ReadOnly = True
+        Align = MostTop
+        Margins.Left = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 5.000000000000000000
+        Size.Width = 411.000000000000000000
+        Size.Height = 143.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Viewport.Width = 407.000000000000000000
+        Viewport.Height = 139.000000000000000000
+      end
+      object stgRezultati: TStringGrid
+        Align = MostBottom
+        CanFocus = True
+        ClipChildren = True
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Position.X = 5.000000000000000000
+        Position.Y = 163.000000000000000000
+        Size.Width = 411.000000000000000000
+        Size.Height = 313.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Viewport.Width = 391.000000000000000000
+        Viewport.Height = 272.000000000000000000
+        object stcLabela: TStringColumn
+          Size.Width = 80.000000000000000000
+        end
+        object stcPrviNNClen: TStringColumn
+          Header = 'Prvi neznani '#269'len'
+          Size.Width = 80.000000000000000000
+        end
+        object stcDrugiNNClen: TStringColumn
+          Header = 'Drugi neznani '#269'len'
+          Size.Width = 80.000000000000000000
+        end
+        object stcTretjiNNClen: TStringColumn
+          Header = 'Tretji neznani '#269'len'
+          Size.Width = 80.000000000000000000
+        end
+        object stcPovpCas: TStringColumn
+          Header = 'Povpre'#269'ni '#269'as'
+        end
+      end
+      object Splitter: TSplitter
+        Align = Bottom
+        Cursor = crVSplit
+        MinSize = 20.000000000000000000
+        Position.Y = 148.000000000000000000
+        Size.Width = 421.000000000000000000
+        Size.Height = 10.000000000000000000
+        Size.PlatformDefault = False
+      end
+    end
+    object tbiUrejevalnikAnimacij: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 72.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Animacije'
+      ExplicitSize.cx = 99.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object Layout1: TLayout
+        Align = Top
+        Size.Width = 421.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object libMape: TListBox
+          Align = Client
+          Size.Width = 421.000000000000000000
+          Size.Height = 50.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          DisableFocusEffect = True
+          DefaultItemStyles.ItemStyle = ''
+          DefaultItemStyles.GroupHeaderStyle = ''
+          DefaultItemStyles.GroupFooterStyle = ''
+          Viewport.Width = 417.000000000000000000
+          Viewport.Height = 46.000000000000000000
+          object cobMape: TComboBox
+            Align = Client
+            Items.Strings = (
+              'Napaka'
+              'Odli'#269'no'
+              'Razmi'#353'ljam')
+            ItemIndex = 0
+            Margins.Left = 5.000000000000000000
+            Margins.Top = 5.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Size.Width = 354.000000000000000000
+            Size.Height = 36.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            OnChange = cobMapeChange
+          end
+          object btnDodajAnimacijo: TButton
+            Align = MostRight
+            Margins.Left = 5.000000000000000000
+            Margins.Top = 5.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.X = 369.000000000000000000
+            Position.Y = 5.000000000000000000
+            Size.Width = 43.000000000000000000
+            Size.Height = 36.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'addtoolbutton'
+            TabOrder = 1
+            Text = 'Button1'
+          end
+        end
+      end
+      object layDatoteke: TLayout
+        Align = Top
+        Position.Y = 50.000000000000000000
+        Size.Width = 421.000000000000000000
+        Size.Height = 217.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        object livDatoteke: TListView
+          ItemAppearanceClassName = 'TListItemAppearance'
+          ItemEditAppearanceClassName = 'TListItemDeleteAppearance'
+          HeaderAppearanceClassName = 'TListHeaderObjects'
+          FooterAppearanceClassName = 'TListHeaderObjects'
+          Align = Client
+          Margins.Left = 5.000000000000000000
+          Margins.Top = 5.000000000000000000
+          Margins.Right = 5.000000000000000000
+          Margins.Bottom = 5.000000000000000000
+          Size.Width = 411.000000000000000000
+          Size.Height = 207.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          StyleLookup = 'listviewstyle'
+          OnChange = livDatotekeChange
+          OnItemClick = livDatotekeItemClick
+        end
+      end
+      object imgUrejevalnikAnimacij: TImage
+        MultiResBitmap = <
+          item
+          end>
         Align = Client
         Margins.Left = 5.000000000000000000
         Margins.Top = 5.000000000000000000
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Size.Width = 385.000000000000000000
-        Size.Height = 466.000000000000000000
+        Size.Width = 411.000000000000000000
+        Size.Height = 199.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 0
-        Viewport.Width = 381.000000000000000000
-        Viewport.Height = 462.000000000000000000
       end
-    end
-    object TabItem1: TTabItem
-      CustomIcon = <
-        item
-        end>
-      IsSelected = False
-      Size.Width = 69.000000000000000000
-      Size.Height = 49.000000000000000000
-      Size.PlatformDefault = False
-      StyleLookup = ''
-      TabOrder = 0
-      Text = 'TabItem1'
-      ExplicitSize.cx = 99.000000000000000000
-      ExplicitSize.cy = 49.000000000000000000
     end
   end
   object tmrCasRacunanja: TTimer
     Enabled = False
     OnTimer = tmrCasRacunanjaTimer
-    Left = 56
+    Left = 40
     Top = 261
   end
   object tmrPavza: TTimer
     Enabled = False
     Interval = 3000
     OnTimer = tmrPavzaTimer
-    Left = 104
+    Left = 96
     Top = 261
   end
   object ImageList: TImageList
@@ -3964,7 +4143,7 @@ object frmMain: TfrmMain
             SourceRect.Bottom = 626.000000000000000000
           end>
       end>
-    Left = 16
-    Top = 261
+    Left = 272
+    Top = 269
   end
 end
