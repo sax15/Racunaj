@@ -201,7 +201,7 @@ end;
 procedure MergeBitmap(const Source, Dest: TBitmap; SrcRect: TRect;
   DestX, DestY: Integer);
 var
-  I, J, MoveBytes: Integer;
+  I, J: Integer;
   SrcData, DestData: TBitmapData;
   lpColorSrc, lpColorDst: PInternalColor;
 begin
@@ -242,7 +242,6 @@ begin
             if (SrcRect.Left < SrcRect.Right) and (SrcRect.Top < SrcRect.Bottom)
             then
             begin
-              MoveBytes := SrcRect.Width * SrcData.BytesPerPixel;
               for I := 0 to SrcRect.Height - 1 do
               begin
                 lpColorSrc := SrcData.GetPixelAddr(SrcRect.Left,
@@ -318,7 +317,7 @@ var
   Var
     RGBEntry: TGifRGB;
     I: Integer;
-    c: TInternalColor;
+    //c: TInternalColor;
   begin
     SetLength(APalette, Size);
     For I := 0 To Size - 1 Do
@@ -335,8 +334,6 @@ var
   end;
 
   function ProcHeader: Boolean;
-  var
-    c: TInternalColor;
   begin
     Result := False;
     With FHeader do
@@ -470,7 +467,7 @@ var
           begin
             Inc(PackedSize, B);
             Stream.Seek(Int64(B), soFromCurrent);
-            CodeMask := (1 shl CodeSize) - 1;
+            //CodeMask := (1 shl CodeSize) - 1;
           end;
         until B = 0;
         SetLength(DataComp, 2 * PackedSize);
@@ -1026,8 +1023,6 @@ begin
 end;
 
 procedure TGifPlayer.TimerProc(Sender: TObject);
-var
-  Interval: Integer;
 begin
   if ([csDesigning, csDestroying, csLoading] * ComponentState) <> [] then
     Exit;
