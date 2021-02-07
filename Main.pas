@@ -10,7 +10,7 @@ uses
   SharedUnit, FMX.GifUtils, System.DateUtils, FMX.ScrollBox, FMX.Memo,
   System.IOUtils, FMX.ListView.Types, FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base, FMX.ListView, System.Rtti, FMX.Grid.Style,
-  FMX.Grid;
+  FMX.Grid, FMX.ComboEdit, System.Generics.Collections, FMX.WebBrowser;
 
 type
   TfrmMain = class(TForm)
@@ -20,7 +20,7 @@ type
     layGumbi: TLayout;
     btnStart: TSpeedButton;
     btnIzhod: TSpeedButton;
-    layRezultat1: TLayout;
+    layRezultat: TLayout;
     labRezultat: TLabel;
     layRacunaj: TLayout;
     edtPrvoSt: TEdit;
@@ -35,11 +35,11 @@ type
     imgAnimacija: TImage;
     ImageList: TImageList;
     lbNastavitve: TListBox;
-    lbiRacunajDo: TListBoxItem;
+    lbiSestevajDo: TListBoxItem;
     lbiCasRacunanja: TListBoxItem;
     lbiPoljubniNeznanClen: TListBoxItem;
     labRacunjaDo: TLabel;
-    edtRacunajDo: TEdit;
+    edtSestevajDo: TEdit;
     labCasRacunanja: TLabel;
     swcPoljubniNeznanClen: TSwitch;
     labPoljubniNeznanClen: TLabel;
@@ -48,16 +48,7 @@ type
     edtCasRacunanja: TEdit;
     labS: TLabel;
     tbiRezultati: TTabItem;
-    memRezultati: TMemo;
     tmrPavza: TTimer;
-    tbiUrejevalnikAnimacij: TTabItem;
-    Layout1: TLayout;
-    layDatoteke: TLayout;
-    imgUrejevalnikAnimacij: TImage;
-    libMape: TListBox;
-    cobMape: TComboBox;
-    livDatoteke: TListView;
-    btnDodajAnimacijo: TButton;
     lbiVklopiCas: TListBoxItem;
     labVklopiCasRacunanja: TLabel;
     swcVklopiCasRacunanja: TSwitch;
@@ -66,11 +57,43 @@ type
     stcPrviNNClen: TStringColumn;
     stcDrugiNNClen: TStringColumn;
     stcTretjiNNClen: TStringColumn;
-    Splitter: TSplitter;
     stcPovpCas: TStringColumn;
     lbiOperacije: TListBoxItem;
-    cobOperacije: TComboBox;
-    labOperacije: TLabel;
+    tbiOprogramu: TTabItem;
+    layMain: TLayout;
+    memRezultati: TMemo;
+    lbhSeštevanje: TListBoxGroupHeader;
+    lbhOdštevanje: TListBoxGroupHeader;
+    lbiOdstevanje: TListBoxItem;
+    labOdstevanjeDo: TLabel;
+    edtOdstevanjeDo: TEdit;
+    lbhMnozenje: TListBoxGroupHeader;
+    libMnozenjeFaktor: TListBoxItem;
+    labMnozenje: TLabel;
+    edtMnozenjeFaktor: TEdit;
+    lbiMnozenjeDo: TListBoxItem;
+    labMnozenjeDo: TLabel;
+    edtMaxMnozenec: TEdit;
+    lbhDeljenje: TListBoxGroupHeader;
+    lbiDeljenjeOd: TListBoxItem;
+    labDeljenjeOd: TLabel;
+    edtDeljenjeOd: TEdit;
+    lbiDeljenjeDelitelj: TListBoxItem;
+    labDeljenjeDelitelj: TLabel;
+    edtDeljenjeDeljitel: TEdit;
+    lbiAnimacija: TListBoxItem;
+    labAnimacija: TLabel;
+    swcPredvajajAnimacijo: TSwitch;
+    tbiDebug: TTabItem;
+    mDebug: TMemo;
+    GridPanelLayout1: TGridPanelLayout;
+    chbSestevanje: TCheckBox;
+    chbOdstevanje: TCheckBox;
+    chbMnozenje: TCheckBox;
+    chbDeljenje: TCheckBox;
+    lbhOperacije: TListBoxGroupHeader;
+    ScrollBox: TScrollBox;
+    WebBrowser: TWebBrowser;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -80,12 +103,12 @@ type
     procedure btnPreveriClick(Sender: TObject);
     procedure tmrCasRacunanjaTimer(Sender: TObject);
     procedure tmrPavzaTimer(Sender: TObject);
-    procedure cobMapeChange(Sender: TObject);
-    procedure livDatotekeChange(Sender: TObject);
-    procedure livDatotekeItemClick(const Sender: TObject;
-      const AItem: TListViewItem);
-    procedure edtRacunajDoExit(Sender: TObject);
     procedure swcVklopiCasRacunanjaClick(Sender: TObject);
+    procedure swcPredvajajAnimacijoClick(Sender: TObject);
+    procedure PreveriInShrani(Sender: TObject);
+    procedure PrikaziNastavitveOperacije(Sender: TObject);
+    procedure ImageLogoClick(Sender: TObject);
+    procedure tbiOprogramuClick(Sender: TObject);
   private
     { Private declarations }
     cas: Integer;
@@ -98,24 +121,26 @@ type
     //neodgovorjen plus, neodgovorjen minus, neodgovorjeno krat, neodgovorjeno deljeno
     povprecen_cas: array[0..11] of Integer;
     FGifPlayer: TGifPlayer;
-    FGifPlayerUrejevalnik: TGifPlayer;
     cas_zacetka: TDateTime;
     napaka, odlicno, razmisljam: TStringList;
     pravilni_izracun: String;
     function PreveriRezultat():Boolean;
     procedure PonastaviRezultate();
-    procedure IzpisiRezultate();
+    procedure IzpisiTrenutniRezultat();
+    procedure IzpisiVseRezultate();
     procedure IzberiNalogo();
     procedure NastaviVnosnaPolja(polje: TEdit; zaklenjeno: Boolean);
     procedure PocistiPolja();
     procedure PredvajajAnimacijo(animacija: String; seznam: TStringList);
-    procedure NapolniSeznamDatotek(mapa: String;var seznam: TStringList);
-    procedure NapolniListoDatotek();
-    procedure ShraniNastavitve();
+    procedure PreveriInShraniNastavitve();
     procedure ZacniIgro();
     procedure KoncajIgro();
     procedure PavzirajIgro();
     procedure NadaljujZIgro();
+    procedure NapolniSeznamDatotek(mapa: String;var seznam: TStringList);
+    procedure PrikaziUstrezneNastavitve();
+
+    procedure IzpisiList(i: TList<Integer>);
   public
     { Public declarations }
   end;
@@ -128,7 +153,7 @@ implementation
 
 {$R *.fmx}
 
-uses System.Math, System.Generics.Collections;
+uses System.Math, u_urlOpen;
 
 { TfrmManin }
 
@@ -158,45 +183,49 @@ begin
     povprecen_cas[2+oper]:=povprecen_cas[2+oper] + (cas_racunanja_enega_st-cas);
     PredvajajAnimacijo('napaka', napaka);
   end;
-  IzpisiRezultate();
+  IzpisiTrenutniRezultat();
   tmrPavza.Enabled:=True;
 end;
 
 procedure TfrmMain.btnStartClick(Sender: TObject);
 begin
-  if btnStart.ImageIndex=1 then // začni igro
-  begin
-    ZacniIgro();
-  end else    // končaj igro
-  begin
-    KoncajIgro();
+  case btnStart.ImageIndex of
+    0, 1: ZacniIgro();
+    2: KoncajIgro();
+    3: NadaljujZIgro();
   end;
 end;
 
 procedure TfrmMain.ZacniIgro();
 begin
-    btnStart.ImageIndex:=2;
-    cas_zacetka:=Now;
-    layRacunaj.Enabled:=True;
-    PocistiPolja();
-    PonastaviRezultate();
-    IzpisiRezultate();
-    IzberiNalogo();
+  TabControl.TabIndex:=0;
+  btnStart.ImageIndex:=2;
+  cas_zacetka:=Now;
+  layRacunaj.Enabled:=True;
+  PocistiPolja();
+  PonastaviRezultate();
+  IzpisiTrenutniRezultat();
+  IzberiNalogo();
 end;
 
 procedure TfrmMain.KoncajIgro();
-var
-  skupen_cas: Integer;
 begin
     FGifPlayer.stop;
     imgAnimacija.Visible:=False;
     btnStart.ImageIndex:=1;
     tmrCasRacunanja.Enabled:=False;
     tmrPavza.Enabled:=False;
-    skupen_cas:=SecondsBetween(Now, cas_zacetka);
     PocistiPolja();
     labCas.Text:='';
     layRacunaj.Enabled:=False;
+    IzpisiVseRezultate();
+end;
+
+procedure TfrmMain.IzpisiVseRezultate();
+var
+  skupen_cas: Integer;
+begin
+    skupen_cas:=SecondsBetween(Now, cas_zacetka);
     // rezultat[pravilno/napačno/potekel čas, plus/minus, prvi/drugi/tretji neznani člen
     // rezultat[pravilno/napačno/potekel čas, plus/minus/krat/deljeno, prvi/drugi/tretji neznani člen
     stgRezultati.Cells[0,0]:='Pravilni Plus';
@@ -261,10 +290,11 @@ begin
     stgRezultati.Cells[3,11]:=IntToStr(rezultati[2,3,2]);  // neodgovorjeni,minus,tretji nn člen
     stgRezultati.Cells[4,11]:=FloatToStr(povprecen_cas[11]/(rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2]));
 
-    memRezultati.Lines.Add(DateTimeToStr(Now) + ' ; čas reševanje=' + IntToStr(skupen_cas) + ' sec ; pravilnih=' + IntToSTr(pravilno) +
+    memRezultati.Lines.Text:=DateTimeToStr(Now) + ' ; čas reševanje=' + IntToStr(skupen_cas) + ' sec ; pravilnih=' + IntToSTr(pravilno) +
                             '; napačnih=' + IntToStr(napacno) + '; neodgovorjenih=' +
-                            IntToSTr(neodgovorjeno));
+                            IntToSTr(neodgovorjeno);
 end;
+
 
 procedure TfrmMain.PavzirajIgro();
 begin
@@ -273,6 +303,8 @@ begin
     if (FGifPlayer.IsPlaying)  then
       FGifPlayer.stop;
   end;
+  if btnStart.ImageIndex=2 then     // če smo sredi igre
+    btnStart.ImageIndex:=3;         // nastavi gumb na pavzo
   tmrCasRacunanja.Enabled:=False;
 end;
 
@@ -280,8 +312,31 @@ procedure TfrmMain.NadaljujZIgro();
 begin
   if FGifPlayer<>nil then
     FGifPlayer.Play;
+  btnStart.ImageIndex:=2;
   if swcVklopiCasRacunanja.IsChecked then
     tmrCasRacunanja.Enabled:=True;
+  TabControl.TabIndex:=0;
+end;
+
+procedure TfrmMain.NapolniSeznamDatotek(mapa: String; var seznam: TStringList);
+var
+  path, ffile: String;
+begin
+{ Deploying animation files
+For Android, set the Remote Path to .\assets\internal\Racunaj\odlicno ali napaka ali razmisljam
+For iOS, set the Remote Path to StartUp\Documents\Racunaj\odlicno ali napaka ali razmisljam
+XXXXFor Windows 10, set the Remote Path to  %UserProfile%\Racunaj\odlicno ali napaka ali razmisljam
+}
+
+{$IFDEF MSWINDOWS}
+  path:=ExtractFilePath(ParamStr(0)) + PathDelim + 'Animacije' + PathDelim  + mapa + PathDelim;
+{$ELSE}
+  path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'Animacije' + PathDelim  + mapa + PathDelim;
+{$ENDIF}
+  For ffile in TDirectory.GetFiles(path)  do
+  begin
+    seznam.Add(ffile);
+  end;
 end;
 
 procedure TfrmMain.edtDrugoStKeyDown(Sender: TObject; var Key: Word;
@@ -291,31 +346,40 @@ begin
     btnPreveriClick(Self);
 end;
 
-procedure TfrmMain.edtRacunajDoExit(Sender: TObject);
-begin
-  // Shrani nastavitve v System.ini
-  ShraniNastavitve();
-end;
-
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   cas_zacetka:=0;
   PonastaviRezultate();
-  TabControl.TabIndex:=0;
+  layRacunaj.Enabled:=False;
+  TabControl.TabIndex:=0;     // prikaži zavihek za igro
   ReadIni();
-  edtRacunajDo.Text:=IntToStr(racuna_do_st);
+
+  edtSestevajDo.Text:=IntToStr(sestevanje_do);
+  edtOdstevanjeDo.Text:=IntToStr(odstevanje_od);
+  edtMaxMnozenec.Text:=IntToStr(max_mnozenec);
+  edtMnozenjeFaktor.Text:=mnozenje_faktorji;
+  edtDeljenjeOd.Text:=IntToStr(deljenje_od);
+  edtDeljenjeDeljitel.Text:=deljenje_deljitelji;
+
   edtCasRacunanja.Text:=IntToStr(cas_racunanja_enega_st);
   swcPoljubniNeznanClen.IsChecked:=nakljucni_nn_clen;
+  swcPredvajajAnimacijo.IsChecked:=predvajaj_animacijo;
   swcVklopiCasRacunanja.IsChecked:=vklopi_cas_racunanja;
   lbiCasRacunanja.Enabled:=swcVklopiCasRacunanja.IsChecked;
-  cobOperacije.ItemIndex:=operacije;
+  if (GetBit(operacije, 0)=True) then
+    chbSestevanje.IsChecked:=True;
+  if (GetBit(operacije, 1)=True) then
+    chbOdstevanje.IsChecked:=True;
+  if (GetBit(operacije, 2)=True) then
+    chbMnozenje.IsChecked:=True;
+  if (GetBit(operacije, 3)=True) then
+    chbDeljenje.IsChecked:=True;
+
+  labOperator.Text:='';
   cas:=cas_racunanja_enega_st;
   try
     FGifPlayer := TGifPlayer.Create(Self);
     FGifPlayer.Image := imgAnimacija;
-    FGifPlayerUrejevalnik:=TGifPlayer.Create(Self);
-    FGifPlayerUrejevalnik.Image:=imgUrejevalnikAnimacij;
-    livDatoteke.Items.Clear;
     napaka:=TStringList.Create;
     odlicno:=TStringList.Create;
     razmisljam:=TStringList.Create;
@@ -323,12 +387,10 @@ begin
     NapolniSeznamDatotek('odlicno', odlicno);
     NapolniSeznamDatotek('razmisljam', razmisljam);
   Except
-
+{ TODO : Dodaj izjemo ob polnitvi liste datotek }
   end;
-  NapolniListoDatotek();
   PonastaviRezultate();
-  IzpisiRezultate();
-
+  IzpisiTrenutniRezultat();
 end;
 
 
@@ -348,13 +410,13 @@ begin
   neodgovorjeno:=0;
   // resetiraj števce rezultatov
   for i:=0 to 2 do
-    for j:=0 to 1 do
+    for j:=0 to 3 do
       for k:=0 to 2 do
         rezultati[i, j, k]:=0;
   // resetiraj povprečne čase
-  for i:=0 to 5 do
+  for i:=0 to 11 do
     povprecen_cas[i]:=0;
-
+  memRezultati.Lines.Clear;
 end;
 
 procedure TfrmMain.PredvajajAnimacijo(animacija: String; seznam: TStringList);
@@ -362,8 +424,12 @@ var
   ff, i: Integer;
   path: String;
 begin
-{ TODO : Odstrani za predvajanje animacije! }
-exit;
+  if NOT (predvajaj_animacijo) then
+  begin
+    FGifPlayer.stop;
+    imgAnimacija.Visible:=True;
+    exit;
+  end;
   // predvajaj animacijo
   path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'animation' + PathDelim  + animacija + PathDelim;
   ff:=seznam.Count-1;
@@ -373,6 +439,7 @@ exit;
   //FGifPlayer.LoadFromStream();
   FGifPlayer.Play;
 end;
+
 
 function TfrmMain.PreveriRezultat(): Boolean;
 var
@@ -423,18 +490,86 @@ begin
   End;
 end;
 
-procedure TfrmMain.ShraniNastavitve();
+
+procedure TfrmMain.PreveriInShrani(Sender: TObject);
 begin
+  PreveriInShraniNastavitve();
+end;
+
+procedure TfrmMain.PreveriInShraniNastavitve();
+var
+  napaka: String;
+  faktorji: TList<Integer>;
+begin
+  // preveri vsa vnosna polja v nastavitvah če so pravilna
+  napaka:='';
   Try
-    racuna_do_st:=StrToInt(edtRacunajDo.Text);
+    faktorji:=TList<Integer>.Create;
+
+    // preveri pravilnost vnesenih podatkov, ob napaki vrzi izjemo
+    if (StrToInt(edtCasRacunanja.Text)<0) then
+      napaka:='Nepravilen čas računanja enega števila!';
+    if (StrToInt(edtSestevajDo.Text)<0) then
+      napaka:='V polju Seštevanje do mora biti pozitivno število!';
+    if (StrToInt(edtOdstevanjeDo.Text)<0) then
+      napaka:='V polju Odštevanje od mora biti pozitivno število!';
+      // Množenje
+    StrToListIntFaktorji(edtMnozenjeFaktor.Text, StrToInt(edtMaxMnozenec.Text), faktorji);
+    if (faktorji.Count=0) then      // preveri ali so pravilno zapisani faktorji množenja
+      napaka:='Napaka pri zapisu faktorjev množenja!';
+      // Deljenje
+    faktorji.Clear;
+    StrToListIntFaktorji(edtDeljenjeDeljitel.Text, StrToInt(edtDeljenjeOd.Text), faktorji);   // fator/ji
+    if (faktorji.Count=0) then      // preveri ali so pravilno zapisani faktorji deljenja
+      napaka:='Napaka pri zapisu faktorjev deljenja!';
+    if (StrToInt(edtDeljenjeOd.Text)<GetMax(faktorji)) then
+      napaka:='V polju Deljenje do mora biti število večje od največjega delitelja!';
+
+    if (napaka<>'') then
+      raise Exception.Create(napaka);
+
+    sestevanje_do:=StrToInt(edtSestevajDo.Text);
+    odstevanje_od:=StrToInt(edtOdstevanjeDo.Text);
+    max_mnozenec:=StrToInt(edtMaxMnozenec.Text);
+    mnozenje_faktorji:=edtMnozenjeFaktor.Text;
+    deljenje_od:=StrToInt(edtDeljenjeOd.Text);
+    deljenje_deljitelji:=edtDeljenjeDeljitel.Text;
     cas_racunanja_enega_st:=StrToInt(edtCasRacunanja.Text);
-    nakljucni_nn_clen:=swcPoljubniNeznanClen.IsChecked;
+    if cas_racunanja_enega_st=0 then       // če je čas računanja enak 0 izklopi checkbox
+      swcVklopiCasRacunanja.IsChecked:=False;
     vklopi_cas_racunanja:=swcVklopiCasRacunanja.IsChecked;
-    operacije:=cobOperacije.ItemIndex;
+
+    nakljucni_nn_clen:=swcPoljubniNeznanClen.IsChecked;
+    predvajaj_animacijo:=swcPredvajajAnimacijo.IsChecked;
+
+    operacije:=0;
+    if chbSestevanje.IsChecked then
+      SetBit(operacije, 0);
+    if chbOdstevanje.IsChecked then
+      SetBit(operacije, 1);
+    if chbMnozenje.IsChecked then
+      SetBit(operacije, 2);
+    if chbDeljenje.IsChecked then
+      SetBit(operacije, 3);
+
     SaveIni();
   Except
-
+    ShowMessage(napaka);
+    TabControl.TabIndex:=1;
   End;
+end;
+
+procedure TfrmMain.swcPredvajajAnimacijoClick(Sender: TObject);
+begin
+  // Skrij / prikaži animacijo
+  { TODO : Predvajanje animacije se ne nadaljuje, nadaljuje se še le ko damo nov račun }
+  predvajaj_animacijo:=swcPredvajajAnimacijo.IsChecked;
+  if NOT (predvajaj_animacijo) then
+  begin
+    FGifPlayer.stop;
+    imgAnimacija.Visible:=False;
+  end else
+    imgAnimacija.Visible:=True;
 end;
 
 procedure TfrmMain.swcVklopiCasRacunanjaClick(Sender: TObject);
@@ -444,17 +579,14 @@ end;
 
 procedure TfrmMain.TabControlChange(Sender: TObject);
 begin
-  // Če ni izbran urejevalnik animacij, zaustavi animacijo v urejevalniku
-  if (TabControl.TabIndex<>3) and (FGifPlayerUrejevalnik<>nil) then
-    FGifPlayerUrejevalnik.stop;
+  // Če je izbran katerikoli drugi zavihek pavziraj igro
   if ((TabControl.TabIndex<>0) and (cas_zacetka>0)) then
     //KoncajIgro();
     PavzirajIgro();
-  // Če je bila igra pavzirana jonadaljuj
+  // Če je bila igra pavzirana jo nadaljuj
   if ((TabControl.TabIndex=0) and (cas_zacetka>0) and (btnStart.ImageIndex<>1)) then
     NadaljujZIgro();
 end;
-
 
 procedure TfrmMain.tmrCasRacunanjaTimer(Sender: TObject);
 begin
@@ -473,21 +605,22 @@ begin
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL! (' + pravilni_izracun + ')';
     layRacunaj.Enabled:=False;
     tmrPavza.Enabled:=True;
-    IzpisiRezultate();
+    IzpisiTrenutniRezultat();
   end;
 end;
-
 
 procedure TfrmMain.IzberiNalogo();
 var
   st1, st2,rez: Integer;
   tmp: Integer;
+  faktorji: TList<Integer>;
   delitelji: TList<Integer>;
+  i: Integer;
 
-  a: Integer;
 begin
   try
     delitelji:=TList<Integer>.Create;
+    faktorji:=TList<Integer>.Create;
     st1:=0;
     st2:=0;
     PocistiPolja();   // počisti polja
@@ -500,35 +633,74 @@ begin
 
     Randomize;
 
+    // če je opracija=0 potem ni izbrano nobeno polje -> exit
+    // 0=+; 1=-; 2=*; 3=/
     case operacije of
-      0: oper:=0; // +
-      1: oper:=1; //-
-      2: oper:=Random(2);    // 0=+; 1=-
-      3: oper:=2;            // 2=*
-      4: oper:=3;           // /
-      5: oper:=RandomRange(2,4);    // 2=*, 3=/
-      6: oper:=Random(4); // 0=+, 1=-, 2=*, 3=/
+      1: oper:=0;                 // 0=+
+      2: oper:=1;                 //1=-
+      3: oper:=Random(2);         // 0=+ in 1=-
+      4: oper:=2;                 // 2=*
+      5: oper:=Random(2)*2;       // 2=* in 0=+
+      6: oper:=RandomRange(1,3);  // 2=* in 1=-
+      7: oper:=Random(3);         // 2=*, 0=+ in 1=-
+      8: oper:=3;                 //3=/
+      9: oper:=Random(2)*3;       // 3=/ in 0=+
+      10: oper:=Random(2)*2+1;    //  3=/ in 1=-
+      11: // 3=/, 0=+ in 1=-
+      begin
+        oper:=Random(3);
+        if oper=2 then
+          oper:=3;
+      end;
+      12: oper:=RandomRange(2,4);   // 3=/ in 2=*
+      13: // 3=/, 2=* in 0=+
+      begin
+        oper:=RandomRange(1,4);
+        if oper=1 then
+          oper:=0;
+      end;
+      14: oper:=Random(4)+1;       // 3=/,2=* in 1=-
+      15: oper:=Random(4);         // 3=/, 2=*, 1=- in 0=+
     end;
 
     case oper of
-      0,1:     // za + in -
+      0:     // za +
       begin
-        st1:=Random(racuna_do_st + 1);
-        st2:=Random(racuna_do_st+1-st1);
+        st1:=Random(sestevanje_do + 1);
+        st2:=Random(sestevanje_do+1-st1);
+      end;
+      1:     // za  -
+      begin
+        st1:=Random(odstevanje_od + 1);
+        st2:=Random(odstevanje_od+1-st1);
       end;
       2:      // za *
       begin
-        tmp:=(Floor(Sqrt(racuna_do_st))+1);
-        st1:=Random(tmp);
-        st2:=Random(tmp);
+        StrToListIntFaktorji(edtMnozenjeFaktor.Text, max_mnozenec, faktorji);              // fator/ji
+        st1:=faktorji.items[Random(faktorji.Count)];     // izberi naključnega množitelja iz podanih
+        st2:=Random(max_mnozenec)+1;
+        if Random(100)>50 then
+          ZamenjajStevila(st1, st2);
       end;
-      3:    // za /
+      3:    // za /                        { TODO : Popravi, upoštevaj deljenje z }
       begin
-        st1:=Random(racuna_do_st) + 1;      // odstrani deljenje z 0
-        DeliteljiSt(st1, delitelji);
-        a:=Random(delitelji.Count);
-
-        st2:=delitelji.Items[a];
+        StrToListIntFaktorji(edtDeljenjeDeljitel.Text, deljenje_od, faktorji);   // fator/ji
+        if (faktorji.Items[0]=0) then
+          faktorji.Delete(0);         // izbriši 0, napaka deljenja z 0
+mDebug.Lines.Clear;
+mDebug.Lines.Add('Vsi faktorji');
+IzpisiList(faktorji);
+        st2:=faktorji.items[Random(faktorji.Count)];   // izberi naključni faktor med vsemi faktorji
+        { TODO : Popravi, dabo razporeditev naključnih številj drugačna. Večja verjetnost mora biti za 1/3 faktorjev.
+Drugače je velikokrat rezultat samo 1! }
+mDebug.Lines.Add('----------Izbran faktor----------------');
+mDebug.Lines.Add(IntToStr(st2));
+mDebug.Lines.Add('-------------Vsi delitelji---------------');
+        DeliteljiSt2(deljenje_od, st2, delitelji);
+IzpisiList(delitelji);
+//TabControl.TabIndex:=3;
+        i:=Random(delitelji.Count);
+        st1:=delitelji.Items[i];
       end;
     end;
 
@@ -556,7 +728,7 @@ begin
       begin
         labOperator.Text:='*';
         rez:=st1*st2;
-        pravilni_izracun:=IntToSTr(st1) + '*' + IntToStr(st2) + '=' + IntToStr(rez);
+        pravilni_izracun:=IntToSTr(st1) + '*' + IntToStr(st2) + '=' + IntToStr(rez)
       end;
       3:   // /
       begin
@@ -612,14 +784,15 @@ begin
       tmrCasRacunanja.Enabled:=True;
   finally
     delitelji.Free;
+    faktorji.Free;
   end;
 end;
 
-procedure TfrmMain.IzpisiRezultate();
+
+procedure TfrmMain.IzpisiTrenutniRezultat();
 begin
   labRezultat.Text:='PRAVILNO: ' + IntToStr(pravilno) + ', NAPAČNO: ' + IntToStr(napacno) + ', ' + 'NEODGOVORJENO: ' + IntToStr(neodgovorjeno);
 end;
-
 
 procedure TfrmMain.tmrPavzaTimer(Sender: TObject);
 begin
@@ -637,75 +810,78 @@ begin
     polje.SetFocus;
 end;
 
-procedure TfrmMain.NapolniSeznamDatotek(mapa: String;var seznam: TStringList);
-var
-  path, ffile: String;
+procedure TfrmMain.PrikaziNastavitveOperacije(Sender: TObject);
 begin
-  path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'animation' + PathDelim  + mapa + PathDelim;
-  For ffile in TDirectory.GetFiles(path)  do
+  PrikaziUstrezneNastavitve();
+end;
+
+procedure TfrmMain.PrikaziUstrezneNastavitve();
+begin
+  lbhSeštevanje.Visible:=False;
+  lbiSestevajDo.Visible:=False;
+  lbhOdštevanje.Visible:=False;
+  lbiOdstevanje.Visible:=False;
+  lbhMnozenje.Visible:=False;
+  lbiMnozenjeDo.Visible:=False;
+  libMnozenjeFaktor.Visible:=False;
+  lbhDeljenje.Visible:=False;
+  lbiDeljenjeOd.Visible:=False;
+  lbiDeljenjeDelitelj.Visible:=False;
+
+  if (chbSestevanje.IsChecked) then   // Plus (+)
   begin
-    seznam.Add(ffile);
+    lbhSeštevanje.Visible:=True;
+    lbiSestevajDo.Visible:=True;
   end;
-end;
-
-
-procedure TfrmMain.NapolniListoDatotek();
-var
-  mapa: TStrings;
-  LItem: TListViewItem;
-  i: Integer;
-begin
-  mapa:=napaka;
-  // napolni datoteke vsezna ListView
-  case cobMape.ItemIndex of       //napaka, odlicno, razmisljam
-    0:
-      mapa:=napaka;
-    1:
-      mapa:=odlicno;
-    2:
-      mapa:=razmisljam;
-  end;
-  livDatoteke.BeginUpdate;
-  for i:=0 to mapa.Count-1 do
+  if (chbOdstevanje.IsChecked) then   // Minus (-)
   begin
-    LItem := livDatoteke.Items.Add;
-    LItem.Text := mapa[i];
+    lbhOdštevanje.Visible:=True;
+    lbiOdstevanje.Visible:=True;
   end;
-  livDatoteke.EndUpdate;
+  if (chbMnozenje.IsChecked) then   // Krat (*)
+  begin
+    lbhMnozenje.Visible:=True;
+    lbiMnozenjeDo.Visible:=True;
+    libMnozenjeFaktor.Visible:=True;
+  end;
+  if (chbDeljenje.IsChecked) then   // Deljeno (/)
+  begin
+    lbhDeljenje.Visible:=True;
+    lbiDeljenjeOd.Visible:=True;
+    lbiDeljenjeDelitelj.Visible:=True;
+  end;
 end;
 
 
-procedure TfrmMain.cobMapeChange(Sender: TObject);
+procedure TfrmMain.ImageLogoClick(Sender: TObject);
 begin
-  // ker je bil izbrana druga možnost iz padajočega menija, ustrezno napolni seznam
-  livDatoteke.Items.Clear;
-  NapolniListoDatotek();
+  tUrlOpen.OpenURL('www.aspira.si');
 end;
 
 
-procedure TfrmMain.livDatotekeChange(Sender: TObject);
+procedure TfrmMain.tbiOprogramuClick(Sender: TObject);
 var
-  datoteka: String;
+  path: String;
 begin
-  // če izberemo datoteko, prikaži izbrano animacijo
-  FGifPlayerUrejevalnik.stop();
-  datoteka:=livDatoteke.Items[livDatoteke.ItemIndex].Text;
-  FGifPlayerUrejevalnik.LoadFromFile(datoteka);
-  FGifPlayerUrejevalnik.Play();
-  imgUrejevalnikAnimacij.Visible:=True;
+  // naloži about.html v brskalnik
+  {$IFDEF MSWINDOWS}
+    path:=ExtractFilePath(ParamStr(0)) + PathDelim + 'about.html';
+  {$ELSE}
+    path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'about.html';
+  {$ENDIF}
+
+  WebBrowser.LoadFromStrings(TFile.ReadAllText(path), '');
 end;
 
-procedure TfrmMain.livDatotekeItemClick(const Sender: TObject;
-  const AItem: TListViewItem);
+
+ { TODO : DEBUGG - odstrani }
+procedure TfrmMain.IzpisiList(i: TList<Integer>);
 var
-  datoteka: String;
+  j: integer;
 begin
-  // če izberemo datoteko, prikaži izbrano animacijo
-  FGifPlayerUrejevalnik.stop();
-  datoteka:=AItem.Text;
-  FGifPlayerUrejevalnik.LoadFromFile(datoteka);
-  FGifPlayerUrejevalnik.Play();
-  imgUrejevalnikAnimacij.Visible:=True;
+  for j:=0 to i.Count-1 do
+    mDebug.Lines.Add(IntToStr(i.Items[j]));
 end;
+ { TODO : DEBUGG - odstrani }
 
 end.
