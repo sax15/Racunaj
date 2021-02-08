@@ -94,6 +94,12 @@ type
     lbhOperacije: TListBoxGroupHeader;
     ScrollBox: TScrollBox;
     WebBrowser: TWebBrowser;
+    cobOmejitveRacunanja: TComboBox;
+    edtCasOmejitev: TEdit;
+    edtStRacunovOmejitev: TEdit;
+    tmrSkupniCas: TTimer;
+    layOmejitevRacunanja: TLayout;
+    labOmejitevRacunanja: TLabel;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -109,9 +115,13 @@ type
     procedure PrikaziNastavitveOperacije(Sender: TObject);
     procedure ImageLogoClick(Sender: TObject);
     procedure tbiOprogramuClick(Sender: TObject);
+    procedure cobOmejitveRacunanjaChange(Sender: TObject);
+    procedure tmrSkupniCasTimer(Sender: TObject);
   private
     { Private declarations }
     cas: Integer;
+    skupni_cas_racunanja: Integer;    // skupni čas vsega računanja
+    st_izracunanin_racunov: Integer;  // ŠT.ŽE IZRAČUNANIH RAČUNOV
     nnClen: Integer;  // neznani ćlen, 0=prvi člen, 1=drugi člen, 2=tretji člen
     oper: Integer;    // operator 0=+; 1=-
     pravilno, napacno, neodgovorjeno: Integer;
@@ -185,14 +195,41 @@ begin
   end;
   IzpisiTrenutniRezultat();
   tmrPavza.Enabled:=True;
+  // povečaj št.izračunanih računov in končaj igro če smo prišli do konca
+  Inc(st_izracunanin_racunov);
+  if (omejitev_racunanja=2) then
+  begin
+    layOmejitevRacunanja.Visible:=True;
+    labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanin_racunov) + ' od ' + IntToStr(omejitev_st_racunanja) + ' računov.';
+    if (omejitev_racunanja=2) AND (st_izracunanin_racunov>=omejitev_st_racunanja) then
+      KoncajIgro();
+  end;
 end;
 
 procedure TfrmMain.btnStartClick(Sender: TObject);
 begin
+  // resetiraj skupni čas računanja in število izračunanih računov
+  skupni_cas_racunanja:=0;
+  st_izracunanin_racunov:=0;
   case btnStart.ImageIndex of
     0, 1: ZacniIgro();
     2: KoncajIgro();
     3: NadaljujZIgro();
+  end;
+end;
+
+procedure TfrmMain.cobOmejitveRacunanjaChange(Sender: TObject);
+begin
+  // skrij edit box če ni izbra Omejitevčasa ali št. vprašanj
+  edtCasOmejitev.Visible:=False;
+  edtStRacunovOmejitev.Visible:=False;
+  if cobOmejitveRacunanja.ItemIndex>0 then     //prikaži layer/label z razpoložljivim časovza računanje ali št. preostalih računov
+    layOmejitevRacunanja.Visible:=True
+  else
+    layOmejitevRacunanja.Visible:=False;
+  case cobOmejitveRacunanja.ItemIndex of
+    1: edtCasOmejitev.Visible:=True;
+    2: edtStRacunovOmejitev.Visible:=True;
   end;
 end;
 
@@ -201,6 +238,22 @@ begin
   TabControl.TabIndex:=0;
   btnStart.ImageIndex:=2;
   cas_zacetka:=Now;
+  skupni_cas_racunanja:=0;    // skupni čas računanja vseh računov
+  case (omejitev_racunanja) of     // čeje nastavljena omejitev računanja jo prikaži
+  0: layOmejitevRacunanja.Visible:=False;
+  1:
+    begin
+      tmrSkupniCas.Enabled:=True;
+      layOmejitevRacunanja.Visible:=True;
+      labOmejitevRacunanja.Text:='Preostali čas računanja ' + IntToStr(omejitev_cas_racunanja*60 - skupni_cas_racunanja) + ' s';
+    end;
+  2:
+    begin
+      layOmejitevRacunanja.Visible:=True;
+      labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanin_racunov) + ' od ' + IntToStr(omejitev_st_racunanja) + ' računov.';
+    end;
+  end;
+
   layRacunaj.Enabled:=True;
   PocistiPolja();
   PonastaviRezultate();
@@ -211,6 +264,7 @@ end;
 procedure TfrmMain.KoncajIgro();
 begin
     FGifPlayer.stop;
+    tmrSkupniCas.Enabled:=False;;
     imgAnimacija.Visible:=False;
     btnStart.ImageIndex:=1;
     tmrCasRacunanja.Enabled:=False;
@@ -306,6 +360,7 @@ begin
   if btnStart.ImageIndex=2 then     // če smo sredi igre
     btnStart.ImageIndex:=3;         // nastavi gumb na pavzo
   tmrCasRacunanja.Enabled:=False;
+  tmrSkupniCas.Enabled:=False;
 end;
 
 procedure TfrmMain.NadaljujZIgro();
@@ -315,6 +370,8 @@ begin
   btnStart.ImageIndex:=2;
   if swcVklopiCasRacunanja.IsChecked then
     tmrCasRacunanja.Enabled:=True;
+  if omejitev_racunanja=1 then  // prikaži skupni čas računanja
+    tmrSkupniCas.Enabled:=True;
   TabControl.TabIndex:=0;
 end;
 
@@ -360,6 +417,15 @@ begin
   edtMnozenjeFaktor.Text:=mnozenje_faktorji;
   edtDeljenjeOd.Text:=IntToStr(deljenje_od);
   edtDeljenjeDeljitel.Text:=deljenje_deljitelji;
+
+  // nastavitve omjejitve čas računanja vseh računov ali števila računov
+  cobOmejitveRacunanja.ItemIndex:=omejitev_racunanja; //0=ni omejitve, 1=čas, 2=št. računov
+  skupni_cas_racunanja:=0;
+  st_izracunanin_racunov:=0;
+
+  edtCasOmejitev.Text:=IntToSTr(omejitev_cas_racunanja);
+  edtStRacunovOmejitev.Text:=IntToSTr(omejitev_st_racunanja);
+  cobOmejitveRacunanjaChange(Self);
 
   edtCasRacunanja.Text:=IntToStr(cas_racunanja_enega_st);
   swcPoljubniNeznanClen.IsChecked:=nakljucni_nn_clen;
@@ -541,6 +607,11 @@ begin
 
     nakljucni_nn_clen:=swcPoljubniNeznanClen.IsChecked;
     predvajaj_animacijo:=swcPredvajajAnimacijo.IsChecked;
+
+    omejitev_racunanja:=cobOmejitveRacunanja.ItemIndex;
+    cobOmejitveRacunanjaChange(Self);
+    omejitev_cas_racunanja:=StrToInt(edtCasOmejitev.Text);
+    omejitev_st_racunanja:=StrToInt(edtStRacunovOmejitev.Text);
 
     operacije:=0;
     if chbSestevanje.IsChecked then
@@ -801,6 +872,14 @@ begin
   IzberiNalogo();
 end;
 
+
+procedure TfrmMain.tmrSkupniCasTimer(Sender: TObject);
+begin
+  Inc(skupni_cas_racunanja);
+  labOmejitevRacunanja.Text:='Preostali čas računanja ' + IntToStr(omejitev_cas_racunanja*60 - skupni_cas_racunanja) + ' s';
+  if (skupni_cas_racunanja>=(omejitev_cas_racunanja*60)) then
+    KoncajIgro();    // čas za reševanje vsaeh računov se je iztekel.
+end;
 
 procedure TfrmMain.NastaviVnosnaPolja(polje: TEdit; zaklenjeno: Boolean);
 begin

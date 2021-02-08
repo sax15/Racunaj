@@ -13,6 +13,10 @@ var
   deljenje_od: Integer;
   deljenje_deljitelji: String;
 
+  omejitev_racunanja: Integer;    // ali imamo nastavljeno omejitev čas ali št. računanja
+  omejitev_cas_racunanja: Integer;   // omejitev čas računanja (ne vključuje časaanimacij)
+  omejitev_st_racunanja: Integer;     // omejitev števila računov
+
   predvajaj_animacijo: Boolean;
   vklopi_cas_racunanja: Boolean;
   cas_racunanja_enega_st: Integer;
@@ -64,6 +68,9 @@ begin
     IniFile.WriteInteger('Nastavitve', 'Deljenje od', deljenje_od);
     IniFile.WriteString('Nastavitve', 'Deljenje delitelji', deljenje_deljitelji);
 
+    IniFile.WriteInteger('Nastavitve', 'Omejitev racunanja', omejitev_racunanja);
+    IniFile.WriteInteger('Nastavitve', 'Omejitev cas racunanja', omejitev_cas_racunanja);
+    IniFile.WriteInteger('Nastavitve', 'Omejitev stevila racunov', omejitev_st_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Cas racunanja enega stevila', cas_racunanja_enega_st);
     IniFile.WriteBool('Nastavitve', 'Nakljucni nezna clen', nakljucni_nn_clen);
     IniFile.WriteBool('Nastavitve', 'Predvajaj animacijo', predvajaj_animacijo);
@@ -85,6 +92,10 @@ begin
     mnozenje_faktorji:=(IniFile.ReadString('Nastavitve', 'Mnozenje faktorji', '2'));
     deljenje_od:=(IniFile.ReadInteger('Nastavitve', 'Deljenje od', 10));
     deljenje_deljitelji:=(IniFile.ReadString('Nastavitve', 'Deljenje delitelji', '2'));
+
+    omejitev_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev racunanja', 0));
+    omejitev_cas_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev cas racunanja', 10));
+    omejitev_st_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev stevila racunov', 20));
 
     cas_racunanja_enega_st:=(IniFile.ReadInteger('Nastavitve', 'Cas racunanja enega stevila', 10));
     nakljucni_nn_clen:=IniFile.ReadBool('Nastavitve', 'Nakljucni nezna clen', False);

@@ -37,7 +37,7 @@
       Size.Height = 482.000000000000000000
       Size.PlatformDefault = False
       TabHeight = 40.000000000000000000
-      TabIndex = 3
+      TabIndex = 0
       TabOrder = 0
       TabPosition = PlatformDefault
       OnChange = TabControlChange
@@ -56,7 +56,7 @@
         CustomIcon = <
           item
           end>
-        IsSelected = False
+        IsSelected = True
         Size.Width = 62.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -67,10 +67,11 @@
         ExplicitSize.cy = 49.000000000000000000
         object layRezultat: TLayout
           Align = Top
+          Position.Y = 25.000000000000000000
           Size.Width = 485.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 0
+          TabOrder = 1
           object labRezultat: TLabel
             Align = Client
             StyledSettings = [Family, Style, FontColor]
@@ -84,11 +85,11 @@
         end
         object layRacunaj: TLayout
           Align = Top
-          Position.Y = 50.000000000000000000
+          Position.Y = 75.000000000000000000
           Size.Width = 485.000000000000000000
           Size.Height = 70.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 1
+          TabOrder = 2
           object edtPrvoSt: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = MostLeft
@@ -196,11 +197,11 @@
         end
         object layCas: TLayout
           Align = Top
-          Position.Y = 120.000000000000000000
+          Position.Y = 145.000000000000000000
           Size.Width = 485.000000000000000000
           Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 2
+          TabOrder = 3
           object labCas: TLabel
             Align = Top
             StyledSettings = [Family, Style, FontColor]
@@ -215,9 +216,9 @@
         object layAnimacija: TLayout
           Align = Client
           Size.Width = 485.000000000000000000
-          Size.Height = 293.000000000000000000
+          Size.Height = 268.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 3
+          TabOrder = 4
           object imgAnimacija: TImage
             MultiResBitmap.Height = 480
             MultiResBitmap.Width = 472
@@ -230,8 +231,25 @@
             Margins.Right = 5.000000000000000000
             Margins.Bottom = 5.000000000000000000
             Size.Width = 475.000000000000000000
-            Size.Height = 283.000000000000000000
+            Size.Height = 258.000000000000000000
             Size.PlatformDefault = False
+          end
+        end
+        object layOmejitevRacunanja: TLayout
+          Align = MostTop
+          Size.Width = 485.000000000000000000
+          Size.Height = 25.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object labOmejitevRacunanja: TLabel
+            Align = Client
+            StyledSettings = [Family, Style, FontColor]
+            Size.Width = 485.000000000000000000
+            Size.Height = 25.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.HorzAlign = Center
+            TabOrder = 0
           end
         end
       end
@@ -272,7 +290,68 @@
             DefaultItemStyles.GroupFooterStyle = ''
             Viewport.Width = 455.000000000000000000
             Viewport.Height = 428.000000000000000000
+            object TListBoxItem
+              Size.Width = 455.000000000000000000
+              Size.Height = 40.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 16
+              object cobOmejitveRacunanja: TComboBox
+                Align = Left
+                Items.Strings = (
+                  'Brez omejitev'
+                  'Omeji '#269'as re'#353'evanja na (min)'
+                  'Omeji '#353'tevilo ra'#269'unov')
+                ItemIndex = 0
+                Margins.Left = 5.000000000000000000
+                Margins.Top = 5.000000000000000000
+                Margins.Right = 5.000000000000000000
+                Margins.Bottom = 5.000000000000000000
+                Position.X = 5.000000000000000000
+                Position.Y = 5.000000000000000000
+                Size.Width = 252.000000000000000000
+                Size.Height = 30.000000000000000000
+                Size.PlatformDefault = False
+                TabOrder = 2
+                OnChange = cobOmejitveRacunanjaChange
+                OnExit = PreveriInShrani
+              end
+              object edtCasOmejitev: TEdit
+                Touch.InteractiveGestures = [LongTap, DoubleTap]
+                Align = MostRight
+                TabOrder = 0
+                KeyboardType = NumberPad
+                Text = '10'
+                Position.X = 361.000000000000000000
+                Position.Y = 5.000000000000000000
+                Margins.Left = 5.000000000000000000
+                Margins.Top = 5.000000000000000000
+                Margins.Right = 5.000000000000000000
+                Margins.Bottom = 5.000000000000000000
+                Size.Width = 89.000000000000000000
+                Size.Height = 30.000000000000000000
+                Size.PlatformDefault = False
+                OnExit = PreveriInShrani
+              end
+              object edtStRacunovOmejitev: TEdit
+                Touch.InteractiveGestures = [LongTap, DoubleTap]
+                Align = MostRight
+                TabOrder = 1
+                KeyboardType = NumberPad
+                Text = '30'
+                Position.X = 262.000000000000000000
+                Position.Y = 5.000000000000000000
+                Margins.Left = 5.000000000000000000
+                Margins.Top = 5.000000000000000000
+                Margins.Right = 5.000000000000000000
+                Margins.Bottom = 5.000000000000000000
+                Size.Width = 89.000000000000000000
+                Size.Height = 30.000000000000000000
+                Size.PlatformDefault = False
+                OnExit = PreveriInShrani
+              end
+            end
             object lbiAnimacija: TListBoxItem
+              Position.Y = 40.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -309,7 +388,7 @@
               end
             end
             object lbiVklopiCas: TListBoxItem
-              Position.Y = 40.000000000000000000
+              Position.Y = 80.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -325,7 +404,7 @@
                 Size.Width = 257.000000000000000000
                 Size.Height = 30.000000000000000000
                 Size.PlatformDefault = False
-                Text = 'Vklopi / Izklopi '#269'as ra'#269'unanja'
+                Text = 'Vklopi / Izklopi '#269'as ra'#269'unanja enega ra'#269'una'
                 TabOrder = 1
               end
               object swcVklopiCasRacunanja: TSwitch
@@ -346,7 +425,7 @@
               end
             end
             object lbiCasRacunanja: TListBoxItem
-              Position.Y = 80.000000000000000000
+              Position.Y = 120.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -396,7 +475,7 @@
               end
             end
             object lbiPoljubniNeznanClen: TListBoxItem
-              Position.Y = 120.000000000000000000
+              Position.Y = 160.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -430,12 +509,12 @@
               end
             end
             object lbhOperacije: TListBoxGroupHeader
-              Position.Y = 160.000000000000000000
+              Position.Y = 200.000000000000000000
               TabOrder = 15
               Text = 'Operacije'
             end
             object lbiOperacije: TListBoxItem
-              Position.Y = 179.000000000000000000
+              Position.Y = 219.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 62.000000000000000000
               Size.PlatformDefault = False
@@ -543,12 +622,12 @@
               end
             end
             object lbhSeštevanje: TListBoxGroupHeader
-              Position.Y = 241.000000000000000000
+              Position.Y = 281.000000000000000000
               TabOrder = 11
               Text = 'Se'#353'tevanje'
             end
             object lbiSestevajDo: TListBoxItem
-              Position.Y = 260.000000000000000000
+              Position.Y = 300.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -584,12 +663,12 @@
               end
             end
             object lbhOdštevanje: TListBoxGroupHeader
-              Position.Y = 300.000000000000000000
+              Position.Y = 340.000000000000000000
               TabOrder = 12
               Text = 'Od'#353'tevanje'
             end
             object lbiOdstevanje: TListBoxItem
-              Position.Y = 319.000000000000000000
+              Position.Y = 359.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -625,12 +704,12 @@
               end
             end
             object lbhMnozenje: TListBoxGroupHeader
-              Position.Y = 359.000000000000000000
+              Position.Y = 399.000000000000000000
               TabOrder = 14
               Text = 'Mno'#382'enje'
             end
             object lbiMnozenjeDo: TListBoxItem
-              Position.Y = 378.000000000000000000
+              Position.Y = 418.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -666,7 +745,7 @@
               end
             end
             object libMnozenjeFaktor: TListBoxItem
-              Position.Y = 418.000000000000000000
+              Position.Y = 458.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -702,12 +781,12 @@
               end
             end
             object lbhDeljenje: TListBoxGroupHeader
-              Position.Y = 458.000000000000000000
+              Position.Y = 498.000000000000000000
               TabOrder = 13
               Text = 'Deljenje'
             end
             object lbiDeljenjeOd: TListBoxItem
-              Position.Y = 477.000000000000000000
+              Position.Y = 517.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -743,7 +822,7 @@
               end
             end
             object lbiDeljenjeDelitelj: TListBoxItem
-              Position.Y = 517.000000000000000000
+              Position.Y = 557.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -850,7 +929,7 @@
         CustomIcon = <
           item
           end>
-        IsSelected = True
+        IsSelected = False
         Size.Width = 85.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -11356,5 +11435,11 @@
       end>
     Left = 384
     Top = 5
+  end
+  object tmrSkupniCas: TTimer
+    Enabled = False
+    OnTimer = tmrSkupniCasTimer
+    Left = 72
+    Top = 8
   end
 end
