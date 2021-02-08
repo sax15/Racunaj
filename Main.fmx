@@ -15,7 +15,7 @@
   object tmrCasRacunanja: TTimer
     Enabled = False
     OnTimer = tmrCasRacunanjaTimer
-    Left = 296
+    Left = 280
     Top = 5
   end
   object tmrPavza: TTimer
@@ -23,7 +23,7 @@
     Interval = 3000
     OnTimer = tmrPavzaTimer
     Left = 336
-    Top = 65533
+    Top = 13
   end
   object layMain: TLayout
     Align = Client
@@ -37,7 +37,7 @@
       Size.Height = 482.000000000000000000
       Size.PlatformDefault = False
       TabHeight = 40.000000000000000000
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 0
       TabPosition = PlatformDefault
       OnChange = TabControlChange
@@ -56,7 +56,7 @@
         CustomIcon = <
           item
           end>
-        IsSelected = True
+        IsSelected = False
         Size.Width = 62.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -257,7 +257,7 @@
         CustomIcon = <
           item
           end>
-        IsSelected = False
+        IsSelected = True
         Size.Width = 76.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -294,7 +294,7 @@
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
-              TabOrder = 16
+              TabOrder = 17
               object cobOmejitveRacunanja: TComboBox
                 Align = Left
                 Items.Strings = (
@@ -350,12 +350,49 @@
                 OnExit = PreveriInShrani
               end
             end
-            object lbiAnimacija: TListBoxItem
+            object lbiZvok: TListBoxItem
               Position.Y = 40.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
               TabOrder = 8
+              object labPredvajajZvok: TLabel
+                Align = Left
+                Margins.Left = 5.000000000000000000
+                Margins.Top = 5.000000000000000000
+                Margins.Right = 5.000000000000000000
+                Margins.Bottom = 5.000000000000000000
+                Position.X = 5.000000000000000000
+                Position.Y = 5.000000000000000000
+                Size.Width = 257.000000000000000000
+                Size.Height = 30.000000000000000000
+                Size.PlatformDefault = False
+                Text = 'Vklopi / Izklopi zvok'
+                TabOrder = 1
+              end
+              object swcPredvajajZvok: TSwitch
+                Align = MostRight
+                IsChecked = False
+                Margins.Left = 5.000000000000000000
+                Margins.Top = 5.000000000000000000
+                Margins.Right = 5.000000000000000000
+                Margins.Bottom = 5.000000000000000000
+                Position.X = 406.000000000000000000
+                Position.Y = 5.000000000000000000
+                Size.Width = 44.000000000000000000
+                Size.Height = 30.000000000000000000
+                Size.PlatformDefault = False
+                TabOrder = 0
+                OnClick = swcPredvajajAnimacijoClick
+                OnExit = PreveriInShrani
+              end
+            end
+            object lbiAnimacija: TListBoxItem
+              Position.Y = 80.000000000000000000
+              Size.Width = 455.000000000000000000
+              Size.Height = 40.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 9
               object labAnimacija: TLabel
                 Align = Left
                 Margins.Left = 5.000000000000000000
@@ -388,11 +425,11 @@
               end
             end
             object lbiVklopiCas: TListBoxItem
-              Position.Y = 80.000000000000000000
+              Position.Y = 120.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
-              TabOrder = 9
+              TabOrder = 10
               object labVklopiCasRacunanja: TLabel
                 Align = Left
                 Margins.Left = 5.000000000000000000
@@ -425,7 +462,7 @@
               end
             end
             object lbiCasRacunanja: TListBoxItem
-              Position.Y = 120.000000000000000000
+              Position.Y = 160.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -475,7 +512,7 @@
               end
             end
             object lbiPoljubniNeznanClen: TListBoxItem
-              Position.Y = 160.000000000000000000
+              Position.Y = 200.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -509,16 +546,16 @@
               end
             end
             object lbhOperacije: TListBoxGroupHeader
-              Position.Y = 200.000000000000000000
-              TabOrder = 15
+              Position.Y = 240.000000000000000000
+              TabOrder = 16
               Text = 'Operacije'
             end
             object lbiOperacije: TListBoxItem
-              Position.Y = 219.000000000000000000
+              Position.Y = 259.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 62.000000000000000000
               Size.PlatformDefault = False
-              TabOrder = 10
+              TabOrder = 11
               object GridPanelLayout1: TGridPanelLayout
                 Align = Client
                 Size.Width = 455.000000000000000000
@@ -622,12 +659,12 @@
               end
             end
             object lbhSeštevanje: TListBoxGroupHeader
-              Position.Y = 281.000000000000000000
-              TabOrder = 11
+              Position.Y = 321.000000000000000000
+              TabOrder = 12
               Text = 'Se'#353'tevanje'
             end
             object lbiSestevajDo: TListBoxItem
-              Position.Y = 300.000000000000000000
+              Position.Y = 340.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -663,12 +700,12 @@
               end
             end
             object lbhOdštevanje: TListBoxGroupHeader
-              Position.Y = 340.000000000000000000
-              TabOrder = 12
+              Position.Y = 380.000000000000000000
+              TabOrder = 13
               Text = 'Od'#353'tevanje'
             end
             object lbiOdstevanje: TListBoxItem
-              Position.Y = 359.000000000000000000
+              Position.Y = 399.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -704,12 +741,12 @@
               end
             end
             object lbhMnozenje: TListBoxGroupHeader
-              Position.Y = 399.000000000000000000
-              TabOrder = 14
+              Position.Y = 439.000000000000000000
+              TabOrder = 15
               Text = 'Mno'#382'enje'
             end
             object lbiMnozenjeDo: TListBoxItem
-              Position.Y = 418.000000000000000000
+              Position.Y = 458.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -745,7 +782,7 @@
               end
             end
             object libMnozenjeFaktor: TListBoxItem
-              Position.Y = 458.000000000000000000
+              Position.Y = 498.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -781,12 +818,12 @@
               end
             end
             object lbhDeljenje: TListBoxGroupHeader
-              Position.Y = 498.000000000000000000
-              TabOrder = 13
+              Position.Y = 538.000000000000000000
+              TabOrder = 14
               Text = 'Deljenje'
             end
             object lbiDeljenjeOd: TListBoxItem
-              Position.Y = 517.000000000000000000
+              Position.Y = 557.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -822,7 +859,7 @@
               end
             end
             object lbiDeljenjeDelitelj: TListBoxItem
-              Position.Y = 557.000000000000000000
+              Position.Y = 597.000000000000000000
               Size.Width = 455.000000000000000000
               Size.Height = 40.000000000000000000
               Size.PlatformDefault = False
@@ -1030,6 +1067,12 @@
       Text = 'RA'#268'UNANJE JE IGRA'
       TabOrder = 0
     end
+  end
+  object tmrSkupniCas: TTimer
+    Enabled = False
+    OnTimer = tmrSkupniCasTimer
+    Left = 72
+    Top = 8
   end
   object ImageList: TImageList
     Source = <
@@ -11436,10 +11479,8 @@
     Left = 384
     Top = 5
   end
-  object tmrSkupniCas: TTimer
-    Enabled = False
-    OnTimer = tmrSkupniCasTimer
-    Left = 72
-    Top = 8
+  object MediaPlayer: TMediaPlayer
+    Left = 120
+    Top = 15
   end
 end

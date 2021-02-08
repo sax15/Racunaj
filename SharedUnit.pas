@@ -17,7 +17,8 @@ var
   omejitev_cas_racunanja: Integer;   // omejitev čas računanja (ne vključuje časaanimacij)
   omejitev_st_racunanja: Integer;     // omejitev števila računov
 
-  predvajaj_animacijo: Boolean;
+  predvajaj_animacijo: Boolean; // vklopi izklopi animacijo
+  predvajaj_zvok: Boolean;  // vklopi izklopi zvok
   vklopi_cas_racunanja: Boolean;
   cas_racunanja_enega_st: Integer;
   nakljucni_nn_clen: Boolean;
@@ -74,6 +75,7 @@ begin
     IniFile.WriteInteger('Nastavitve', 'Cas racunanja enega stevila', cas_racunanja_enega_st);
     IniFile.WriteBool('Nastavitve', 'Nakljucni nezna clen', nakljucni_nn_clen);
     IniFile.WriteBool('Nastavitve', 'Predvajaj animacijo', predvajaj_animacijo);
+    IniFile.WriteBool('Nastavitve', 'Predvajaj zvok', predvajaj_zvok);
     IniFile.WriteBool('Nastavitve', 'Vklopi cas racunanja', vklopi_cas_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Operacije', operacije);
   finally
@@ -100,6 +102,7 @@ begin
     cas_racunanja_enega_st:=(IniFile.ReadInteger('Nastavitve', 'Cas racunanja enega stevila', 10));
     nakljucni_nn_clen:=IniFile.ReadBool('Nastavitve', 'Nakljucni nezna clen', False);
     predvajaj_animacijo:=IniFile.ReadBool('Nastavitve', 'Predvajaj animacijo', True);
+    predvajaj_zvok:=IniFile.ReadBool('Nastavitve', 'Predvajaj zvok', True);
     vklopi_cas_racunanja:=IniFile.ReadBool('Nastavitve', 'Vklopi cas racunanja', True);
     operacije:=IniFile.ReadInteger('Nastavitve', 'Operacije', 2);
   finally

@@ -10,7 +10,8 @@ uses
   SharedUnit, FMX.GifUtils, System.DateUtils, FMX.ScrollBox, FMX.Memo,
   System.IOUtils, FMX.ListView.Types, FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base, FMX.ListView, System.Rtti, FMX.Grid.Style,
-  FMX.Grid, FMX.ComboEdit, System.Generics.Collections, FMX.WebBrowser;
+  FMX.Grid, FMX.ComboEdit, System.Generics.Collections, FMX.WebBrowser,
+  FMX.Media;
 
 type
   TfrmMain = class(TForm)
@@ -100,6 +101,10 @@ type
     tmrSkupniCas: TTimer;
     layOmejitevRacunanja: TLayout;
     labOmejitevRacunanja: TLabel;
+    lbiZvok: TListBoxItem;
+    labPredvajajZvok: TLabel;
+    swcPredvajajZvok: TSwitch;
+    MediaPlayer: TMediaPlayer;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -133,6 +138,7 @@ type
     FGifPlayer: TGifPlayer;
     cas_zacetka: TDateTime;
     napaka, odlicno, razmisljam: TStringList;
+    zvok_napaka, zvok_odlicno, zvok_razmisljam: TStringList;
     pravilni_izracun: String;
     function PreveriRezultat():Boolean;
     procedure PonastaviRezultate();
@@ -141,13 +147,14 @@ type
     procedure IzberiNalogo();
     procedure NastaviVnosnaPolja(polje: TEdit; zaklenjeno: Boolean);
     procedure PocistiPolja();
-    procedure PredvajajAnimacijo(animacija: String; seznam: TStringList);
+    procedure PredvajajAnimacijo(seznam: TStringList);
+    procedure PredvajajZvok(seznam: TStringList);
     procedure PreveriInShraniNastavitve();
     procedure ZacniIgro();
     procedure KoncajIgro();
     procedure PavzirajIgro();
     procedure NadaljujZIgro();
-    procedure NapolniSeznamDatotek(mapa: String;var seznam: TStringList);
+    procedure NapolniSeznamDatotek(zvrst, mapa: String;var seznam: TStringList);
     procedure PrikaziUstrezneNastavitve();
 
     procedure IzpisiList(i: TList<Integer>);
@@ -184,14 +191,16 @@ begin
      Inc(pravilno);
      rezultati[0, oper, nnClen]:=rezultati[0, oper, nnClen] + 1;
      povprecen_cas[oper]:=povprecen_cas[oper] + (cas_racunanja_enega_st-cas);
-     PredvajajAnimacijo('odlicno', odlicno);
+     PredvajajAnimacijo(odlicno);
+     PredvajajZvok(zvok_odlicno);
   end else                    // odgovor je napačen
   begin
     labCas.Text:=':-( Pravilno je ' + pravilni_izracun + ' )';
     Inc(napacno);
     rezultati[1, oper, nnClen]:=rezultati[1, oper, nnClen] + 1;
     povprecen_cas[2+oper]:=povprecen_cas[2+oper] + (cas_racunanja_enega_st-cas);
-    PredvajajAnimacijo('napaka', napaka);
+    PredvajajAnimacijo(napaka);
+    PredvajajZvok(zvok_napaka);
   end;
   IzpisiTrenutniRezultat();
   tmrPavza.Enabled:=True;
@@ -375,7 +384,7 @@ begin
   TabControl.TabIndex:=0;
 end;
 
-procedure TfrmMain.NapolniSeznamDatotek(mapa: String; var seznam: TStringList);
+procedure TfrmMain.NapolniSeznamDatotek(zvrst, mapa: String; var seznam: TStringList);
 var
   path, ffile: String;
 begin
@@ -386,9 +395,9 @@ XXXXFor Windows 10, set the Remote Path to  %UserProfile%\Racunaj\odlicno ali na
 }
 
 {$IFDEF MSWINDOWS}
-  path:=ExtractFilePath(ParamStr(0)) + PathDelim + 'Animacije' + PathDelim  + mapa + PathDelim;
+  path:=ExtractFilePath(ParamStr(0)) + zvrst + PathDelim  + mapa + PathDelim;
 {$ELSE}
-  path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'Animacije' + PathDelim  + mapa + PathDelim;
+  path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + zvrst + PathDelim  + mapa + PathDelim;
 {$ENDIF}
   For ffile in TDirectory.GetFiles(path)  do
   begin
@@ -430,6 +439,7 @@ begin
   edtCasRacunanja.Text:=IntToStr(cas_racunanja_enega_st);
   swcPoljubniNeznanClen.IsChecked:=nakljucni_nn_clen;
   swcPredvajajAnimacijo.IsChecked:=predvajaj_animacijo;
+  swcPredvajajZvok.IsChecked:=predvajaj_zvok;
   swcVklopiCasRacunanja.IsChecked:=vklopi_cas_racunanja;
   lbiCasRacunanja.Enabled:=swcVklopiCasRacunanja.IsChecked;
   if (GetBit(operacije, 0)=True) then
@@ -449,9 +459,17 @@ begin
     napaka:=TStringList.Create;
     odlicno:=TStringList.Create;
     razmisljam:=TStringList.Create;
-    NapolniSeznamDatotek('napaka', napaka);      //napaka, odlicno, razmisljam
-    NapolniSeznamDatotek('odlicno', odlicno);
-    NapolniSeznamDatotek('razmisljam', razmisljam);
+    //napolni seznam animacij
+    NapolniSeznamDatotek('Animacije','napaka', napaka);      //napaka, odlicno, razmisljam
+    NapolniSeznamDatotek('Animacije', 'odlicno', odlicno);
+    NapolniSeznamDatotek('Animacije', 'razmisljam', razmisljam);
+    // napolni seznam zvokov
+    zvok_napaka:=TStringList.Create;
+    zvok_odlicno:=TStringList.Create;
+    zvok_razmisljam:=TStringList.Create;
+    NapolniSeznamDatotek('Zvok', 'napaka', zvok_napaka);      //napaka, odlicno, razmisljam
+    NapolniSeznamDatotek('Zvok', 'odlicno', zvok_odlicno);
+    NapolniSeznamDatotek('Zvok', 'razmisljam', zvok_razmisljam);
   Except
 { TODO : Dodaj izjemo ob polnitvi liste datotek }
   end;
@@ -485,10 +503,9 @@ begin
   memRezultati.Lines.Clear;
 end;
 
-procedure TfrmMain.PredvajajAnimacijo(animacija: String; seznam: TStringList);
+procedure TfrmMain.PredvajajAnimacijo(seznam: TStringList);
 var
   ff, i: Integer;
-  path: String;
 begin
   if NOT (predvajaj_animacijo) then
   begin
@@ -497,7 +514,6 @@ begin
     exit;
   end;
   // predvajaj animacijo
-  path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'animation' + PathDelim  + animacija + PathDelim;
   ff:=seznam.Count-1;
   i:=Random(ff)+1;
   FGifPlayer.LoadFromFile(seznam[i]);
@@ -506,6 +522,24 @@ begin
   FGifPlayer.Play;
 end;
 
+
+procedure TfrmMain.PredvajajZvok(seznam: TStringList);
+var
+  ff, i: Integer;
+begin
+  // predvajaj zvok
+   if NOT (predvajaj_zvok) then
+   begin
+    MediaPlayer.stop;
+    exit;
+   end;
+  // predvajaj zvok
+  ff:=seznam.Count-1;
+  i:=Random(ff)+1;
+  MediaPlayer.FileName:=seznam[i];
+  //FGifPlayer.LoadFromStream();
+  MediaPlayer.Play;
+end;
 
 function TfrmMain.PreveriRezultat(): Boolean;
 var
@@ -607,6 +641,7 @@ begin
 
     nakljucni_nn_clen:=swcPoljubniNeznanClen.IsChecked;
     predvajaj_animacijo:=swcPredvajajAnimacijo.IsChecked;
+    predvajaj_zvok:=swcPredvajajZvok.IsChecked;
 
     omejitev_racunanja:=cobOmejitveRacunanja.ItemIndex;
     cobOmejitveRacunanjaChange(Self);
@@ -850,7 +885,7 @@ IzpisiList(delitelji);
       NastaviVnosnaPolja(edtDrugoSt, True);
       NastaviVnosnaPolja(edtRezultat, False);
     end;
-    PredvajajAnimacijo('razmisljam', razmisljam);
+    PredvajajAnimacijo(razmisljam);
     if swcVklopiCasRacunanja.IsChecked then
       tmrCasRacunanja.Enabled:=True;
   finally
