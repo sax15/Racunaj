@@ -4,8 +4,15 @@ interface
 
 uses inifiles, SysUtils, System.IOUtils, System.Generics.Collections;
 
-var
+type
+  // definicija igralca
+  TIgralec = record
+    ID      : Integer;
+    naziv : String;
+  end;
 
+var
+  trenutni_igralec: TIgralec;   // record trenutnega igralca
   sestevanje_do: Integer;
   odstevanje_od: Integer;
   max_mnozenec: Integer;
@@ -25,6 +32,10 @@ var
   operacije: Integer;
   IniFile : TIniFile;
 
+const
+  SecPerDay = 86400;
+  SecPerHour = 3600;
+  SecPerMinute = 60;
 
 procedure SaveIni();
 procedure ReadIni();
@@ -40,6 +51,7 @@ procedure ClearBit(var Value: Integer; Index: Byte);
 procedure SetBit(var Value: Integer; Index: Byte);
 procedure PutBit(var Value: Integer; Index: Byte; State: Boolean);
 function GetBit(Value: Integer; Index: Byte): Boolean;
+function SecondToTime(const Seconds: Cardinal): Double;
 
 implementation
 
@@ -49,13 +61,11 @@ begin
 {$IFDEF MSWINDOWS}
   //Result:=TPath.GetDocumentsPath + PathDelim;
   Result:=ExtractFilePath(ParamStr(0));
+{$ELSE}
+  //Result:=TPath.GetDocumentsPath + PathDelim;
+  Result:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim;
 {$ENDIF}
-{$IFDEF LINUX}
-  Result:=TPath.GetDocumentsPath + PathDelim;
-{$ENDIF}
-{$IFDEF ANDROID}
-  Result:=TPath.GetDocumentsPath + PathDelim;
-{$ENDIF}
+
 end;
 
 procedure SaveIni();
@@ -68,6 +78,8 @@ begin
     IniFile.WriteString('Nastavitve', 'Mnozenje faktorji', mnozenje_faktorji);
     IniFile.WriteInteger('Nastavitve', 'Deljenje od', deljenje_od);
     IniFile.WriteString('Nastavitve', 'Deljenje delitelji', deljenje_deljitelji);
+    IniFile.WriteString('Nastavitve', 'Zadnji igralec naziv', trenutni_igralec.naziv);
+    IniFile.WriteInteger('Nastavitve', 'Zadnji igralec ID', trenutni_igralec.ID);
 
     IniFile.WriteInteger('Nastavitve', 'Omejitev racunanja', omejitev_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Omejitev cas racunanja', omejitev_cas_racunanja);
@@ -94,6 +106,9 @@ begin
     mnozenje_faktorji:=(IniFile.ReadString('Nastavitve', 'Mnozenje faktorji', '2'));
     deljenje_od:=(IniFile.ReadInteger('Nastavitve', 'Deljenje od', 10));
     deljenje_deljitelji:=(IniFile.ReadString('Nastavitve', 'Deljenje delitelji', '2'));
+
+    trenutni_igralec.naziv:=IniFile.ReadString('Nastavitve', 'Zadnji igralec naziv', '');
+    trenutni_igralec.ID:=IniFile.ReadInteger('Nastavitve', 'Zadnji igralec ID', -1);
 
     omejitev_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev racunanja', 0));
     omejitev_cas_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev cas racunanja', 10));
@@ -235,6 +250,18 @@ end;
 function GetBit(Value: Integer; Index: Byte): Boolean;
 begin
   Result := ((Value shr Index) and 1) = 1;
+end;
+
+function SecondToTime(const Seconds: Cardinal): Double;
+var
+  ms, ss, mm, hh, dd: Cardinal;
+begin
+  dd := Seconds div SecPerDay;
+  hh := (Seconds mod SecPerDay) div SecPerHour;
+  mm := ((Seconds mod SecPerDay) mod SecPerHour) div SecPerMinute;
+  ss := ((Seconds mod SecPerDay) mod SecPerHour) mod SecPerMinute;
+  ms := 0;
+  Result := dd + EncodeTime(hh, mm, ss, ms);
 end;
 
 end

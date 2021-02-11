@@ -11,7 +11,16 @@ uses
   System.IOUtils, FMX.ListView.Types, FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base, FMX.ListView, System.Rtti, FMX.Grid.Style,
   FMX.Grid, FMX.ComboEdit, System.Generics.Collections, FMX.WebBrowser,
-  FMX.Media;
+  FMX.Media, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error,
+  FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
+  FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef,
+  FireDAC.Stan.ExprFuncs, FireDAC.FMXUI.Wait, Data.DB, FireDAC.Comp.Client,
+  FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FMXTee.Engine, FMXTee.Series, FMXTee.Procs, FMXTee.Chart,
+  FMX.Ani, System.Bindings.Outputs, Fmx.Bind.Editors, Data.Bind.EngExt,
+  Fmx.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope, FMX.Effects;
+
+
 
 type
   TfrmMain = class(TForm)
@@ -48,7 +57,7 @@ type
     tmrCasRacunanja: TTimer;
     edtCasRacunanja: TEdit;
     labS: TLabel;
-    tbiRezultati: TTabItem;
+    tbiRezultatiX: TTabItem;
     tmrPavza: TTimer;
     lbiVklopiCas: TListBoxItem;
     labVklopiCasRacunanja: TLabel;
@@ -105,6 +114,30 @@ type
     labPredvajajZvok: TLabel;
     swcPredvajajZvok: TSwitch;
     MediaPlayer: TMediaPlayer;
+    FDConnection: TFDConnection;
+    FDQIgralci: TFDQuery;
+    btnDodajIzberiIgralca: TSpeedButton;
+    tbiRezultati: TTabItem;
+    scbGrafi: TScrollBox;
+    Chart1: TChart;
+    Series1: TPieSeries;
+    Chart2: TChart;
+    PieSeries1: TPieSeries;
+    flaVnosnaFormaIgralec: TFloatAnimation;
+    layVnosnaFormaIgralca: TLayout;
+    recForm: TRectangle;
+    btnIzberiIgralca: TButton;
+    cbeIgralci: TComboEdit;
+    labIgralec: TLabel;
+    btnIzbrisiIgralca: TButton;
+    crcClose: TCircle;
+    labX: TLabel;
+    layBottom: TLayout;
+    layCenter: TLayout;
+    recVnosnaFormaIgralec: TRectangle;
+    FDQIgralciID: TFDAutoIncField;
+    FDQIgralcinaziv: TStringField;
+    ShadowEffect1: TShadowEffect;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -122,6 +155,14 @@ type
     procedure tbiOprogramuClick(Sender: TObject);
     procedure cobOmejitveRacunanjaChange(Sender: TObject);
     procedure tmrSkupniCasTimer(Sender: TObject);
+    procedure btnDodajIzberiIgralcaClick(Sender: TObject);
+    procedure crcCloseClick(Sender: TObject);
+    procedure cbeIgralciClosePopup(Sender: TObject);
+    procedure btnIzberiIgralcaClick(Sender: TObject);
+    procedure btnIzbrisiIgralcaClick(Sender: TObject);
+    procedure flaVnosnaFormaIgralecFinish(Sender: TObject);
+    procedure cbeIgralciKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+      Shift: TShiftState);
   private
     { Private declarations }
     cas: Integer;
@@ -140,6 +181,7 @@ type
     napaka, odlicno, razmisljam: TStringList;
     zvok_napaka, zvok_odlicno, zvok_razmisljam: TStringList;
     pravilni_izracun: String;
+
     function PreveriRezultat():Boolean;
     procedure PonastaviRezultate();
     procedure IzpisiTrenutniRezultat();
@@ -156,8 +198,12 @@ type
     procedure NadaljujZIgro();
     procedure NapolniSeznamDatotek(zvrst, mapa: String;var seznam: TStringList);
     procedure PrikaziUstrezneNastavitve();
-
     procedure IzpisiList(i: TList<Integer>);
+    procedure CreateDatabaseAndTable();
+    procedure NapolniIgralce();
+    procedure ShraniIgralca(ime: String);
+    procedure IzbrisiIgralca(ID: Integer);
+    procedure ShraniRezultat();
   public
     { Public declarations }
   end;
@@ -170,9 +216,10 @@ implementation
 
 {$R *.fmx}
 
-uses System.Math, u_urlOpen;
+uses System.Math, u_urlOpen, FMX.DialogService;
 
 { TfrmManin }
+
 
 procedure TfrmMain.btnIzhodClick(Sender: TObject);
 begin
@@ -209,7 +256,8 @@ begin
   if (omejitev_racunanja=2) then
   begin
     layOmejitevRacunanja.Visible:=True;
-    labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanin_racunov) + ' od ' + IntToStr(omejitev_st_racunanja) + ' računov.';
+    labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanin_racunov) + ' od ' +
+                                IntToStr(omejitev_st_racunanja) + ' računov.';
     if (omejitev_racunanja=2) AND (st_izracunanin_racunov>=omejitev_st_racunanja) then
       KoncajIgro();
   end;
@@ -226,6 +274,7 @@ begin
     3: NadaljujZIgro();
   end;
 end;
+
 
 procedure TfrmMain.cobOmejitveRacunanjaChange(Sender: TObject);
 begin
@@ -244,6 +293,7 @@ end;
 
 procedure TfrmMain.ZacniIgro();
 begin
+  btnDodajIzberiIgralca.Enabled:=False;
   TabControl.TabIndex:=0;
   btnStart.ImageIndex:=2;
   cas_zacetka:=Now;
@@ -254,7 +304,9 @@ begin
     begin
       tmrSkupniCas.Enabled:=True;
       layOmejitevRacunanja.Visible:=True;
-      labOmejitevRacunanja.Text:='Preostali čas računanja ' + IntToStr(omejitev_cas_racunanja*60 - skupni_cas_racunanja) + ' s';
+      labOmejitevRacunanja.Text:='Preostali čas računanja ' +
+                                  FormatDateTime('hh:mm:ss', SecondToTime(omejitev_cas_racunanja*60 - skupni_cas_racunanja))  + ' s';
+
     end;
   2:
     begin
@@ -272,6 +324,7 @@ end;
 
 procedure TfrmMain.KoncajIgro();
 begin
+  btnDodajIzberiIgralca.Enabled:=True;
     FGifPlayer.stop;
     tmrSkupniCas.Enabled:=False;;
     imgAnimacija.Visible:=False;
@@ -281,7 +334,11 @@ begin
     PocistiPolja();
     labCas.Text:='';
     layRacunaj.Enabled:=False;
-    IzpisiVseRezultate();
+    if ((pravilno<>0) OR (napacno<>0) OR (neodgovorjeno<>0)) then     // če je bil vsaj en račun
+    begin
+      IzpisiVseRezultate();
+      ShraniRezultat();
+    end;
 end;
 
 procedure TfrmMain.IzpisiVseRezultate();
@@ -393,12 +450,7 @@ For Android, set the Remote Path to .\assets\internal\Racunaj\odlicno ali napaka
 For iOS, set the Remote Path to StartUp\Documents\Racunaj\odlicno ali napaka ali razmisljam
 XXXXFor Windows 10, set the Remote Path to  %UserProfile%\Racunaj\odlicno ali napaka ali razmisljam
 }
-
-{$IFDEF MSWINDOWS}
-  path:=ExtractFilePath(ParamStr(0)) + zvrst + PathDelim  + mapa + PathDelim;
-{$ELSE}
-  path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + zvrst + PathDelim  + mapa + PathDelim;
-{$ENDIF}
+  path:=GetExePath() + zvrst + PathDelim  + mapa + PathDelim;
   For ffile in TDirectory.GetFiles(path)  do
   begin
     seznam.Add(ffile);
@@ -414,11 +466,20 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  CreateDatabaseAndTable();
+  NapolniIgralce();
+  layVnosnaFormaIgralca.Visible:=False; // skri layout Vnosno Formo za igralca
   cas_zacetka:=0;
   PonastaviRezultate();
   layRacunaj.Enabled:=False;
   TabControl.TabIndex:=0;     // prikaži zavihek za igro
   ReadIni();
+  if (trenutni_igralec.ID<>-1) then
+    cbeIgralci.ItemIndex:=cbeIgralci.Items.IndexOf(trenutni_igralec.naziv);
+  if (cbeIgralci.ItemIndex=-1) then    // Nazadnje ni bil izbran noben igralec ali igralca ni več v bazi, zato odpri formo za izbiro igralca
+    btnDodajIzberiIgralcaClick(Self)
+  else
+    labNapis.Text:=trenutni_igralec.naziv;
 
   edtSestevajDo.Text:=IntToStr(sestevanje_do);
   edtOdstevanjeDo.Text:=IntToStr(odstevanje_od);
@@ -894,7 +955,6 @@ IzpisiList(delitelji);
   end;
 end;
 
-
 procedure TfrmMain.IzpisiTrenutniRezultat();
 begin
   labRezultat.Text:='PRAVILNO: ' + IntToStr(pravilno) + ', NAPAČNO: ' + IntToStr(napacno) + ', ' + 'NEODGOVORJENO: ' + IntToStr(neodgovorjeno);
@@ -911,7 +971,9 @@ end;
 procedure TfrmMain.tmrSkupniCasTimer(Sender: TObject);
 begin
   Inc(skupni_cas_racunanja);
-  labOmejitevRacunanja.Text:='Preostali čas računanja ' + IntToStr(omejitev_cas_racunanja*60 - skupni_cas_racunanja) + ' s';
+  labOmejitevRacunanja.Text:='Preostali čas računanja ' +
+                          FormatDateTime('hh:mm:ss', SecondToTime(omejitev_cas_racunanja*60 - skupni_cas_racunanja))  + ' s';
+
   if (skupni_cas_racunanja>=(omejitev_cas_racunanja*60)) then
     KoncajIgro();    // čas za reševanje vsaeh računov se je iztekel.
 end;
@@ -923,6 +985,7 @@ begin
   if NOT zaklenjeno then
     polje.SetFocus;
 end;
+
 
 procedure TfrmMain.PrikaziNastavitveOperacije(Sender: TObject);
 begin
@@ -969,6 +1032,7 @@ end;
 
 procedure TfrmMain.ImageLogoClick(Sender: TObject);
 begin
+  // odpri spletno stran aspira.si v privzetem brskalniku
   tUrlOpen.OpenURL('www.aspira.si');
 end;
 
@@ -978,14 +1042,267 @@ var
   path: String;
 begin
   // naloži about.html v brskalnik
-  {$IFDEF MSWINDOWS}
-    path:=ExtractFilePath(ParamStr(0)) + PathDelim + 'about.html';
-  {$ELSE}
-    path:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim + 'about.html';
-  {$ENDIF}
-
+  path:=GetExePath() + 'about.html';
   WebBrowser.LoadFromStrings(TFile.ReadAllText(path), '');
 end;
+
+
+procedure TfrmMain.CreateDatabaseAndTable();
+var
+  DBName: String;
+begin
+  // če podatkovna baza ne obstaja jo kreiraj, ustvari tabele in polja ter se priklopi nanjo
+  DBName:=GetExePath() + 'racunaj.sqlite';
+//  if FileExists(DBName) then
+//    DeleteFile(DBName);
+
+  FDConnection.Params.Values['database'] := DBName;
+  FDConnection.Connected:= True;
+
+  FDConnection.ExecSQL('CREATE TABLE IF NOT EXISTS Igralci ('+
+                      ' ID integer PRIMARY KEY AUTOINCREMENT, '+
+                      '	naziv varchar NOT NULL)');
+
+  FDConnection.ExecSQL('CREATE TABLE IF NOT EXISTS Igre (' +
+                        'ID integer PRIMARY KEY AUTOINCREMENT, ' +
+                        'igralec_ID integer NOT NULL, ' +
+                        'datum datetime, ' +
+                        'sestevanje_pravilni integer DEFAULT 0, ' +
+                        'sestevanje_napacni integer DEFAULT 0, ' +
+                        'sestevanje_neodgovorjeni integer DEFAULT 0, ' +
+                      	'sestevanje_povprecni_cas datetime, ' +
+                        'odstevanje_pravilni integer DEFAULT 0, ' +
+                        'odstevanje_napacni integer DEFAULT 0, ' +
+                        'odstevanje_neodgovorjeni integer DEFAULT 0, ' +
+                        'odstevanje_povprecni_cas datetime, ' +
+                        'mnozenje_pravilni integer DEFAULT 0, ' +
+                        'mnozenje_napacni integer DEFAULT 0, ' +
+                        'mnozenje_neodgovorjeni integer DEFAULT 0, ' +
+                        'mnozenje_povprecni_cas datetime, '+
+                        'deljenje_pravilni integer DEFAULT 0, ' +
+                        'deljenje_napacni integer DEFAULT 0, ' +
+                        'deljenje_neodgovorjeni integer DEFAULT 0, ' +
+                        'deljenje_povprecni_cas datetime )');
+
+end;
+
+procedure TfrmMain.ShraniIgralca(ime: String);
+begin
+  // Dodaj igralca v DB
+  FDQIgralci.SQL.Clear;
+  FDQIgralci.SQL.Add('INSERT INTO Igralci (naziv) VALUES (:naziv)');
+  FDQIgralci.Params.ParamByName('naziv').Value:=ime;
+  FDQIgralci.ExecSQL();
+end;
+
+procedure TfrmMain.ShraniRezultat();
+var
+  sql: String;
+begin
+  // shrani razultat za trenutnega igralca v DB
+  sql:='INSERT INTO Igre (igralec_ID, datum, sestevanje_pravilni, sestevanje_napacni, ' +
+      'sestevanje_neodgovorjeni, sestevanje_povprecni_cas, odstevanje_pravilni, odstevanje_napacni, ' +
+      'odstevanje_neodgovorjeni, odstevanje_povprecni_cas, mnozenje_pravilni, mnozenje_napacni, ' +
+      'mnozenje_neodgovorjeni, mnozenje_povprecni_cas, deljenje_pravilni, deljenje_napacni, ' +
+      'deljenje_neodgovorjeni, deljenje_povprecni_cas) VALUES (:igralec_ID, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
+      ':sestevanje_neodgovorjeni, :sestevanje_povprecni_cas, :odstevanje_pravilni, :odstevanje_napacni, ' +
+      ':odstevanje_neodgovorjeni, :odstevanje_povprecni_cas, :mnozenje_pravilni, :mnozenje_napacni, ' +
+      ':mnozenje_neodgovorjeni, :mnozenje_povprecni_cas, :deljenje_pravilni, :deljenje_napacni, ' +
+      ':deljenje_neodgovorjeni, :deljenje_povprecni_cas)';
+  FDQIgralci.SQL.Clear;
+  FDQIgralci.SQL.Add(sql);
+  FDQIgralci.Params.ParamByName('igralec_ID').Value:=trenutni_igralec.ID;
+  FDQIgralci.Params.ParamByName('datum').Value:=Now();
+
+  FDQIgralci.Params.ParamByName('sestevanje_pravilni').Value:=rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2];
+  FDQIgralci.Params.ParamByName('sestevanje_napacni').Value:=rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2];
+  FDQIgralci.Params.ParamByName('sestevanje_neodgovorjeni').Value:=rezultati[2,0,0] + rezultati[2,0,1] + rezultati[2,0,2];
+  FDQIgralci.Params.ParamByName('sestevanje_povprecni_cas').Value:=povprecen_cas[0]/(rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2]) +
+                                                                  povprecen_cas[4]/(rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2]) +
+                                                                  povprecen_cas[8]/(rezultati[2,0,0] + rezultati[1,0,1] + rezultati[2,0,2]);
+
+  FDQIgralci.Params.ParamByName('odstevanje_pravilni').Value:=rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2];
+  FDQIgralci.Params.ParamByName('odstevanje_napacni').Value:=rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2];
+  FDQIgralci.Params.ParamByName('odstevanje_neodgovorjeni').Value:=rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2];
+  FDQIgralci.Params.ParamByName('odstevanje_povprecni_cas').Value:=povprecen_cas[1]/(rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2]) +
+                                                                  povprecen_cas[5]/(rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2]) +
+                                                                  povprecen_cas[9]/(rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2]);
+
+  FDQIgralci.Params.ParamByName('mnozenje_pravilni').Value:=rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2];
+  FDQIgralci.Params.ParamByName('mnozenje_napacni').Value:=rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2];
+  FDQIgralci.Params.ParamByName('mnozenje_neodgovorjeni').Value:=rezultati[2,2,0] + rezultati[2,2,1] + rezultati[2,2,2];
+  FDQIgralci.Params.ParamByName('mnozenje_povprecni_cas').Value:=povprecen_cas[2]/(rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2]) +
+                                                                povprecen_cas[6]/(rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2]) +
+                                                                povprecen_cas[10]/(rezultati[2,2,0] + rezultati[1,2,1] + rezultati[2,2,2]);
+
+  FDQIgralci.Params.ParamByName('deljenje_pravilni').Value:=rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2];
+  FDQIgralci.Params.ParamByName('deljenje_napacni').Value:=rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2];
+  FDQIgralci.Params.ParamByName('deljenje_neodgovorjeni').Value:=rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2];
+  FDQIgralci.Params.ParamByName('deljenje_povprecni_cas').Value:=povprecen_cas[3]/(rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2]) +
+                                                          povprecen_cas[7]/(rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2]) +
+                                                          povprecen_cas[11]/(rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2]);
+  FDQIgralci.ExecSQL();
+end;
+
+procedure TfrmMain.IzbrisiIgralca(ID: Integer);
+begin
+  // Izbriši igralca iz DB in vse njegove rezutate
+  FDQIgralci.SQL.Clear;
+  FDQIgralci.SQL.Add('DELETE FROM Igralci WHERE ID=:id');
+  FDQIgralci.Params.ParamByName('id').Value:=ID;
+  FDQIgralci.ExecSQL();
+
+  FDQIgralci.SQL.Clear;
+  FDQIgralci.SQL.Add('DELETE FROM Igre WHERE igralec_ID=:igralec_id');
+  FDQIgralci.Params.ParamByName('igralec_id').Value:=ID;
+  FDQIgralci.ExecSQL();
+end;
+
+procedure TfrmMain.btnDodajIzberiIgralcaClick(Sender: TObject);
+begin
+  // Odpri formo za dodajanje / izbiranje igralcev
+  if layVnosnaFormaIgralca.Visible=False then
+  begin
+    layVnosnaFormaIgralca.Position.Y := frmMain.Height + 20;
+    layVnosnaFormaIgralca.Visible := true;
+
+    flaVnosnaFormaIgralec.Inverse := false;
+    flaVnosnaFormaIgralec.StartValue := frmMain.Height + 20;
+    flaVnosnaFormaIgralec.StopValue := 0;
+    flaVnosnaFormaIgralec.Start;
+  end else
+  begin
+    flaVnosnaFormaIgralec.Inverse := true;
+    flaVnosnaFormaIgralec.Start;
+  end;
+  if cbeIgralci.Text='' then
+  begin
+    btnIzberiIgralca.Enabled:=False;
+    crcClose.Enabled:=False;
+  end else
+  begin
+    btnIzberiIgralca.Enabled:=True;
+    crcClose.Enabled:=True;
+  end;
+  if cbeIgralci.ItemIndex<>-1 then
+    btnIzbrisiIgralca.Visible:=True;
+  btnStart.Enabled:=False;
+end;
+
+procedure TfrmMain.flaVnosnaFormaIgralecFinish(Sender: TObject);
+begin
+  // konec animacije forme za vnos igralca
+  if flaVnosnaFormaIgralec.Inverse = true then
+    layVnosnaFormaIgralca.Visible := false;
+end;
+
+procedure TfrmMain.cbeIgralciClosePopup(Sender: TObject);
+begin
+  // Prikaži možnost izbrisa igralca iz DB
+  if cbeIgralci.ItemIndex<>-1 then // ni bil izbran noben igralec iz menija
+    btnIzbrisiIgralca.Visible:=True;
+end;
+
+procedure TfrmMain.cbeIgralciKeyUp(Sender: TObject; var Key: Word;
+  var KeyChar: Char; Shift: TShiftState);
+begin
+  // Skrij možnost izbrisa igralca iz DB
+  btnIzbrisiIgralca.Visible:=False;
+  if cbeIgralci.Text='' then
+  begin
+    btnIzberiIgralca.Enabled:=False;
+    crcClose.Enabled:=False;
+  end else
+  begin
+    btnIzberiIgralca.Enabled:=True;
+  end;
+ { TODO 1 : Dodaj searcheble combobox! }
+{  cbeIgralci.Items.IndexOf(cbeIgralci.Text);
+  if cbeIgralci.ItemIndex>-1 then
+    cbeIgralci.DropDown()
+  else
+    cbeIgralci.CloseDropDown();
+}
+end;
+
+procedure TfrmMain.crcCloseClick(Sender: TObject);
+begin
+  // Zapri formo za dodajanje / izbiranje igralcev
+  flaVnosnaFormaIgralec.Inverse := true;
+  flaVnosnaFormaIgralec.Start;
+  btnStart.Enabled:=True;
+  cbeIgralci.Text:=cbeIgralci.Items[cbeIgralci.ItemIndex];
+end;
+
+procedure TfrmMain.NapolniIgralce();
+begin
+  // Napolni že obstoječće igralce iz DB v cbeIgralci
+  cbeIgralci.Items.Clear;
+  FDQIgralci.SQL.Clear;
+  FDQIgralci.SQL.Add('SELECT * FROM Igralci');
+  FDQIgralci.Open();
+
+  while not FDQIgralci.Eof do begin
+    cbeIgralci.Items.AddObject(FDQIgralci.FieldByName('naziv').AsString, TObject(FDQIgralci.FieldByName('ID').AsInteger));
+    FDQIgralci.Next;
+  end;
+
+  FDQIgralci.Close;
+end;
+
+procedure TfrmMain.btnIzberiIgralcaClick(Sender: TObject);
+var
+  igralec: String;
+begin
+  // Potrdi izbranega Igralca
+  flaVnosnaFormaIgralec.Inverse := true;
+  flaVnosnaFormaIgralec.Start;
+
+  cbeIgralci.Items.IndexOf(cbeIgralci.Text);  // če ime že obstaja v cbeIgralci in DB, samo nastavi kot izbranega v cbeIgralce
+  if cbeIgralci.ItemIndex=-1 then // če dodamo noveg igralca
+  begin
+    // Dodaj novega igralca v DB
+    igralec:=cbeIgralci.Text;
+    ShraniIgralca(igralec);
+    NapolniIgralce();
+    cbeIgralci.ItemIndex:=cbeIgralci.Items.IndexOf(igralec);
+  end;
+  // nastavi trenutnega igralca
+  trenutni_igralec.ID:=Integer(cbeIgralci.Items.Objects[cbeIgralci.ItemIndex]);
+  trenutni_igralec.naziv:=cbeIgralci.Items.KeyNames[cbeIgralci.ItemIndex];
+  labNapis.Text:=trenutni_igralec.naziv;
+  btnStart.Enabled:=True;
+  SaveIni();
+end;
+
+
+procedure TfrmMain.btnIzbrisiIgralcaClick(Sender: TObject);
+var
+  igralec: String;
+begin
+  // Ali res želiš izbrisati igralca X in vse njegove podatke?
+  igralec:=cbeIgralci.Text;
+  TDialogService.MessageDialog(('Ali želite resnično izbrisati igralca ' + igralec + ' in vse njegove rezultate?'),
+    system.UITypes.TMsgDlgType.mtConfirmation, [system.UITypes.TMsgDlgBtn.mbYes, system.UITypes.TMsgDlgBtn.mbNo],
+    system.UITypes.TMsgDlgBtn.mbYes,0,
+    procedure (const AResult: System.UITypes.TModalResult)
+    begin
+        if AResult=mrYes then
+        begin
+          IzbrisiIgralca(Integer(cbeIgralci.Items.Objects[cbeIgralci.ItemIndex]));
+          if (cbeIgralci.ItemIndex<>-1) then     // če igralec obstaja ga izbriši
+              cbeIgralci.Items.Delete(cbeIgralci.ItemIndex);
+          if cbeIgralci.Items.Count=0 then  //če je bil izbrisan zadnji igralec skrij gumb briši in onemogoči gumb OK
+          begin   // če ne obstaja
+            cbeIgralci.Text:='';
+            btnIzbrisiIgralca.Visible:=False;
+            btnIzberiIgralca.Enabled:=False;
+            crcClose.Enabled:=False;
+          end;
+        end;
+    end);
+end;
+
 
 
  { TODO : DEBUGG - odstrani }
