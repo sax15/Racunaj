@@ -18,7 +18,8 @@ uses
   FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
   FireDAC.Comp.DataSet, FMXTee.Engine, FMXTee.Series, FMXTee.Procs, FMXTee.Chart,
   FMX.Ani, System.Bindings.Outputs, Fmx.Bind.Editors, Data.Bind.EngExt,
-  Fmx.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope, FMX.Effects;
+  Fmx.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope, FMX.Effects,
+  Fmx.Bind.Grid, Data.Bind.Grid;
 
 
 
@@ -119,10 +120,6 @@ type
     btnDodajIzberiIgralca: TSpeedButton;
     tbiRezultati: TTabItem;
     scbGrafi: TScrollBox;
-    Chart1: TChart;
-    Series1: TPieSeries;
-    Chart2: TChart;
-    PieSeries1: TPieSeries;
     flaVnosnaFormaIgralec: TFloatAnimation;
     layVnosnaFormaIgralca: TLayout;
     recForm: TRectangle;
@@ -138,6 +135,22 @@ type
     FDQIgralciID: TFDAutoIncField;
     FDQIgralcinaziv: TStringField;
     ShadowEffect1: TShadowEffect;
+    grdRezultati: TGrid;
+    Splitter1: TSplitter;
+    layGumbIzvoz: TLayout;
+    btnIzvoz: TSpeedButton;
+    FDQIgre: TFDQuery;
+    bilIgre: TBindingsList;
+    bsdIgre: TBindSourceDB;
+    LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource;
+    chrMnozenje: TChart;
+    Series2: TPieSeries;
+    chrDeljenje: TChart;
+    PieSeries2: TPieSeries;
+    chrSestevanje: TChart;
+    PieSeries3: TPieSeries;
+    chrOdstevanje: TChart;
+    PieSeries4: TPieSeries;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -163,6 +176,7 @@ type
     procedure flaVnosnaFormaIgralecFinish(Sender: TObject);
     procedure cbeIgralciKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
+    procedure grdRezultatiCellClick(const Column: TColumn; const Row: Integer);
   private
     { Private declarations }
     cas: Integer;
@@ -204,6 +218,7 @@ type
     procedure ShraniIgralca(ime: String);
     procedure IzbrisiIgralca(ID: Integer);
     procedure ShraniRezultat();
+    procedure IzpisiRezultate();
   public
     { Public declarations }
   end;
@@ -338,6 +353,7 @@ begin
     begin
       IzpisiVseRezultate();
       ShraniRezultat();
+      IzpisiRezultate();  // izpiši rezultate v TGrid (zavihek Rezultati)
     end;
 end;
 
@@ -479,7 +495,10 @@ begin
   if (cbeIgralci.ItemIndex=-1) then    // Nazadnje ni bil izbran noben igralec ali igralca ni več v bazi, zato odpri formo za izbiro igralca
     btnDodajIzberiIgralcaClick(Self)
   else
+  begin
     labNapis.Text:=trenutni_igralec.naziv;
+    IzpisiRezultate();
+  end;
 
   edtSestevajDo.Text:=IntToStr(sestevanje_do);
   edtOdstevanjeDo.Text:=IntToStr(odstevanje_od);
@@ -537,7 +556,6 @@ begin
   PonastaviRezultate();
   IzpisiTrenutniRezultat();
 end;
-
 
 procedure TfrmMain.PocistiPolja();
 begin
@@ -1099,16 +1117,17 @@ procedure TfrmMain.ShraniRezultat();
 var
   sql: String;
 begin
-  // shrani razultat za trenutnega igralca v DB
+   { TODO : Povprečni časi se morajov bazo zapisati kot TDateTime }
+  // shrani razultat za trenutnega igralca v DB  // //
   sql:='INSERT INTO Igre (igralec_ID, datum, sestevanje_pravilni, sestevanje_napacni, ' +
-      'sestevanje_neodgovorjeni, sestevanje_povprecni_cas, odstevanje_pravilni, odstevanje_napacni, ' +
-      'odstevanje_neodgovorjeni, odstevanje_povprecni_cas, mnozenje_pravilni, mnozenje_napacni, ' +
-      'mnozenje_neodgovorjeni, mnozenje_povprecni_cas, deljenje_pravilni, deljenje_napacni, ' +
-      'deljenje_neodgovorjeni, deljenje_povprecni_cas) VALUES (:igralec_ID, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
-      ':sestevanje_neodgovorjeni, :sestevanje_povprecni_cas, :odstevanje_pravilni, :odstevanje_napacni, ' +
-      ':odstevanje_neodgovorjeni, :odstevanje_povprecni_cas, :mnozenje_pravilni, :mnozenje_napacni, ' +
-      ':mnozenje_neodgovorjeni, :mnozenje_povprecni_cas, :deljenje_pravilni, :deljenje_napacni, ' +
-      ':deljenje_neodgovorjeni, :deljenje_povprecni_cas)';
+      'sestevanje_neodgovorjeni, odstevanje_pravilni, odstevanje_napacni, ' +
+      'odstevanje_neodgovorjeni, mnozenje_pravilni, mnozenje_napacni, ' +
+      'mnozenje_neodgovorjeni, deljenje_pravilni, deljenje_napacni, ' +
+      'deljenje_neodgovorjeni) VALUES (:igralec_ID, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
+      ':sestevanje_neodgovorjeni, :odstevanje_pravilni, :odstevanje_napacni, ' +
+      ':odstevanje_neodgovorjeni, :mnozenje_pravilni, :mnozenje_napacni, ' +
+      ':mnozenje_neodgovorjeni, :deljenje_pravilni, :deljenje_napacni, ' +
+      ':deljenje_neodgovorjeni)';
   FDQIgralci.SQL.Clear;
   FDQIgralci.SQL.Add(sql);
   FDQIgralci.Params.ParamByName('igralec_ID').Value:=trenutni_igralec.ID;
@@ -1117,30 +1136,30 @@ begin
   FDQIgralci.Params.ParamByName('sestevanje_pravilni').Value:=rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2];
   FDQIgralci.Params.ParamByName('sestevanje_napacni').Value:=rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2];
   FDQIgralci.Params.ParamByName('sestevanje_neodgovorjeni').Value:=rezultati[2,0,0] + rezultati[2,0,1] + rezultati[2,0,2];
-  FDQIgralci.Params.ParamByName('sestevanje_povprecni_cas').Value:=povprecen_cas[0]/(rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2]) +
-                                                                  povprecen_cas[4]/(rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2]) +
-                                                                  povprecen_cas[8]/(rezultati[2,0,0] + rezultati[1,0,1] + rezultati[2,0,2]);
+  //FDQIgralci.Params.ParamByName('sestevanje_povprecni_cas').Value:=povprecen_cas[0]/(rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2]) +
+  //                                                                povprecen_cas[4]/(rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2]) +
+  //                                                                povprecen_cas[8]/(rezultati[2,0,0] + rezultati[1,0,1] + rezultati[2,0,2]);
 
   FDQIgralci.Params.ParamByName('odstevanje_pravilni').Value:=rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2];
   FDQIgralci.Params.ParamByName('odstevanje_napacni').Value:=rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2];
   FDQIgralci.Params.ParamByName('odstevanje_neodgovorjeni').Value:=rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2];
-  FDQIgralci.Params.ParamByName('odstevanje_povprecni_cas').Value:=povprecen_cas[1]/(rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2]) +
-                                                                  povprecen_cas[5]/(rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2]) +
-                                                                  povprecen_cas[9]/(rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2]);
+  //FDQIgralci.Params.ParamByName('odstevanje_povprecni_cas').Value:=povprecen_cas[1]/(rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2]) +
+  //                                                                povprecen_cas[5]/(rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2]) +
+  //                                                                povprecen_cas[9]/(rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2]);
 
   FDQIgralci.Params.ParamByName('mnozenje_pravilni').Value:=rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2];
   FDQIgralci.Params.ParamByName('mnozenje_napacni').Value:=rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2];
   FDQIgralci.Params.ParamByName('mnozenje_neodgovorjeni').Value:=rezultati[2,2,0] + rezultati[2,2,1] + rezultati[2,2,2];
-  FDQIgralci.Params.ParamByName('mnozenje_povprecni_cas').Value:=povprecen_cas[2]/(rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2]) +
-                                                                povprecen_cas[6]/(rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2]) +
-                                                                povprecen_cas[10]/(rezultati[2,2,0] + rezultati[1,2,1] + rezultati[2,2,2]);
+  //FDQIgralci.Params.ParamByName('mnozenje_povprecni_cas').Value:=povprecen_cas[2]/(rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2]) +
+  //                                                              povprecen_cas[6]/(rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2]) +
+  //                                                              povprecen_cas[10]/(rezultati[2,2,0] + rezultati[1,2,1] + rezultati[2,2,2]);
 
   FDQIgralci.Params.ParamByName('deljenje_pravilni').Value:=rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2];
   FDQIgralci.Params.ParamByName('deljenje_napacni').Value:=rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2];
   FDQIgralci.Params.ParamByName('deljenje_neodgovorjeni').Value:=rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2];
-  FDQIgralci.Params.ParamByName('deljenje_povprecni_cas').Value:=povprecen_cas[3]/(rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2]) +
-                                                          povprecen_cas[7]/(rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2]) +
-                                                          povprecen_cas[11]/(rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2]);
+  //FDQIgralci.Params.ParamByName('deljenje_povprecni_cas').Value:=povprecen_cas[3]/(rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2]) +
+  //                                                        povprecen_cas[7]/(rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2]) +
+  //                                                       povprecen_cas[11]/(rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2]);
   FDQIgralci.ExecSQL();
 end;
 
@@ -1156,6 +1175,57 @@ begin
   FDQIgralci.SQL.Add('DELETE FROM Igre WHERE igralec_ID=:igralec_id');
   FDQIgralci.Params.ParamByName('igralec_id').Value:=ID;
   FDQIgralci.ExecSQL();
+end;
+
+
+procedure TfrmMain.NapolniIgralce();
+begin
+  // Napolni že obstoječće igralce iz DB v cbeIgralci
+  cbeIgralci.Items.Clear;
+  FDQIgralci.SQL.Clear;
+  FDQIgralci.SQL.Add('SELECT * FROM Igralci');
+  FDQIgralci.Open();
+
+  while not FDQIgralci.Eof do begin
+    cbeIgralci.Items.AddObject(FDQIgralci.FieldByName('naziv').AsString, TObject(FDQIgralci.FieldByName('ID').AsInteger));
+    FDQIgralci.Next;
+  end;
+  FDQIgralci.Close;
+end;
+
+
+procedure TfrmMain.IzpisiRezultate();
+begin
+  // Izpiši vse rezultate za izbranega igralca in jih predstavi v tabeli (zavihek Rezultati)
+  FDQIgre.SQL.Clear;
+  FDQIgre.SQL.Add('SELECT * FROM Igre WHERE igralec_ID=:igralec_ID');
+  FDQIgre.Params.ParamByName('igralec_ID').Value:=trenutni_igralec.ID;
+  FDQIgre.Open();
+end;
+
+procedure TfrmMain.grdRezultatiCellClick(const Column: TColumn;
+  const Row: Integer);
+begin
+  // Seštevanje
+  chrSestevanje.Series[0].Clear;
+  chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_pravilni').Value, 'Pravilni', clTeeColor);
+  chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_napacni').Value, 'Napačni', clTeeColor);
+  chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+  // Odštevanje
+  chrOdstevanje.Series[0].Clear;
+  chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_pravilni').Value, 'Pravilni', clTeeColor);
+  chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_napacni').Value, 'Napačni', clTeeColor);
+  chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+  // Množenje
+  chrMnozenje.Series[0].Clear;
+  chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_pravilni').Value, 'Pravilni', clTeeColor);
+  chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_napacni').Value, 'Napačni', clTeeColor);
+  chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+  // Deljenje
+  chrDeljenje.Series[0].Clear;
+  chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_pravilni').Value, 'Pravilni', clTeeColor);
+  chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_napacni').Value, 'Napačni', clTeeColor);
+  chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
 end;
 
 procedure TfrmMain.btnDodajIzberiIgralcaClick(Sender: TObject);
@@ -1234,21 +1304,6 @@ begin
   cbeIgralci.Text:=cbeIgralci.Items[cbeIgralci.ItemIndex];
 end;
 
-procedure TfrmMain.NapolniIgralce();
-begin
-  // Napolni že obstoječće igralce iz DB v cbeIgralci
-  cbeIgralci.Items.Clear;
-  FDQIgralci.SQL.Clear;
-  FDQIgralci.SQL.Add('SELECT * FROM Igralci');
-  FDQIgralci.Open();
-
-  while not FDQIgralci.Eof do begin
-    cbeIgralci.Items.AddObject(FDQIgralci.FieldByName('naziv').AsString, TObject(FDQIgralci.FieldByName('ID').AsInteger));
-    FDQIgralci.Next;
-  end;
-
-  FDQIgralci.Close;
-end;
 
 procedure TfrmMain.btnIzberiIgralcaClick(Sender: TObject);
 var
@@ -1272,6 +1327,7 @@ begin
   trenutni_igralec.naziv:=cbeIgralci.Items.KeyNames[cbeIgralci.ItemIndex];
   labNapis.Text:=trenutni_igralec.naziv;
   btnStart.Enabled:=True;
+  IzpisiRezultate();
   SaveIni();
 end;
 
@@ -1304,7 +1360,6 @@ begin
 end;
 
 
-
  { TODO : DEBUGG - odstrani }
 procedure TfrmMain.IzpisiList(i: TList<Integer>);
 var
@@ -1313,6 +1368,6 @@ begin
   for j:=0 to i.Count-1 do
     mDebug.Lines.Add(IntToStr(i.Items[j]));
 end;
- { TODO : DEBUGG - odstrani }
+{ TODO : DEBUGG - odstrani }
 
 end.
