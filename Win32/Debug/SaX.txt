@@ -1,0 +1,2 @@
+ID,igralec_ID,Datum,Seštevanje Pravilni,Seštevanje Napaèni,Seštevanje Neodgovorjeni,sestevanje_povprecni_cas,Odštevanje Pravilni,Odštevanje Napaèni,Odštevanje Neodgovorjeni,odstevanje_povprecni_cas,Množenje Pravilni,Množenje Napaèni,Množenje Neodgovorjeni,mnozenje_povprecni_cas,Deljenje Pravilni,Deljenje Napaèni,Deljenje Neodgvoorjeni,deljenje_povprecni_cas
+5,2,13/02/2021 16:32:00,6,1,0,,3,0,2,,5,1,0,,2,0,0,13/02/2021 16:32:00

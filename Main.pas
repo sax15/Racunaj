@@ -151,6 +151,9 @@ type
     PieSeries3: TPieSeries;
     chrOdstevanje: TChart;
     PieSeries4: TPieSeries;
+    Splitter4: TSplitter;
+    chrSkupaj: TChart;
+    PieSeries1: TPieSeries;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -177,6 +180,7 @@ type
     procedure cbeIgralciKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
     procedure grdRezultatiCellClick(const Column: TColumn; const Row: Integer);
+    procedure btnIzvozClick(Sender: TObject);
   private
     { Private declarations }
     cas: Integer;
@@ -240,6 +244,45 @@ procedure TfrmMain.btnIzhodClick(Sender: TObject);
 begin
   // Zapri aplikacijo
   Application.Terminate;
+end;
+
+procedure TfrmMain.btnIzvozClick(Sender: TObject);
+var
+  List: TStringList;
+  S: String;
+  i: Integer;
+begin
+  // Izvoz podatkov v csv obliko
+     { TODO : Popravi izvoz v csv. Dodaj izbiro lokacije datoteke in možnost vnosa imena.}
+    try
+      List := TStringList.Create;
+      // Izvozi najprej glavo
+      s:='';
+      for i := 0 to grdRezultati.ColumnCount -1 do
+      begin
+        if s>'' then
+          s:=s + ',';
+        s:=s + grdRezultati.ColumnByIndex(i).Header;
+      end;
+      List.Add(s);
+      // Izvozi še podatke
+      FDQIgre.First;
+      while not FDQIgre.Eof do
+      begin
+        s:='';
+        for i:= 0 to FDQIgre.FieldCount - 1 do
+        begin
+          if s>'' then
+            s:=s + ',';
+          s:=s + FDQIgre.Fields[i].AsString;
+        end;
+        List.Add(s);
+        FDQIgre.Next;
+      end;
+    finally
+      List.SaveToFile(GetExePath() + PathDelim + trenutni_igralec.naziv + '.csv');
+      List.Free;
+    end;
 end;
 
 procedure TfrmMain.btnPreveriClick(Sender: TObject);
@@ -1205,6 +1248,8 @@ end;
 
 procedure TfrmMain.grdRezultatiCellClick(const Column: TColumn;
   const Row: Integer);
+var
+  pravilni, napacni, neodgovorjeni: Integer;
 begin
   // Seštevanje
   chrSestevanje.Series[0].Clear;
@@ -1226,6 +1271,17 @@ begin
   chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_pravilni').Value, 'Pravilni', clTeeColor);
   chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_napacni').Value, 'Napačni', clTeeColor);
   chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+  // SKUPAJ
+  pravilni:=FDQIgre.FieldByName('sestevanje_pravilni').Value + FDQIgre.FieldByName('odstevanje_pravilni').Value +
+            FDQIgre.FieldByName('mnozenje_pravilni').Value +  FDQIgre.FieldByName('deljenje_pravilni').Value;
+  napacni:=FDQIgre.FieldByName('sestevanje_napacni').Value + FDQIgre.FieldByName('odstevanje_napacni').Value +
+            FDQIgre.FieldByName('mnozenje_napacni').Value +  FDQIgre.FieldByName('deljenje_napacni').Value;
+  neodgovorjeni:=FDQIgre.FieldByName('sestevanje_neodgovorjeni').Value + FDQIgre.FieldByName('odstevanje_neodgovorjeni').Value +
+            FDQIgre.FieldByName('mnozenje_neodgovorjeni').Value +  FDQIgre.FieldByName('deljenje_neodgovorjeni').Value;
+  chrSkupaj.Series[0].Clear;
+  chrSkupaj.Series[0].Add(pravilni, 'Pravilni', clTeeColor);
+  chrSkupaj.Series[0].Add(napacni, 'Napačni', clTeeColor);
+  chrSkupaj.Series[0].Add(neodgovorjeni, 'Neodgovorjeni', clTeeColor);
 end;
 
 procedure TfrmMain.btnDodajIzberiIgralcaClick(Sender: TObject);

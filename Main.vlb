@@ -1,359 +1,384 @@
 ﻿[layRacunaj]
-Coordinates=10,170,68,33
+Coordinates=10,170,78,36
 
 [btnIzhod]
-Coordinates=99,10,57,51
+Coordinates=99,10,64,58
 
 [btnStart]
-Coordinates=173,10,53,51
+Coordinates=173,10,60,58
 
 [tbiNastavitve]
-Coordinates=96,78,78,33
+Coordinates=96,78,89,36
 
 [labRezultat]
-Coordinates=10,10,69,51
+Coordinates=10,10,79,58
 Visible=True
 
 [tbiRacunaj]
-Coordinates=10,78,66,33
+Coordinates=10,78,76,36
 
 []
-Coordinates=262,267,46,33
+Coordinates=0,727,62,36
 Visible=False
 
 [layGumbi]
-Coordinates=201,124,61,33
+Coordinates=201,124,69,36
 
 [TabControl]
-Coordinates=106,124,69,33
+Coordinates=106,124,78,36
 
 [layRezultat]
-Coordinates=10,124,68,33
+Coordinates=10,124,78,36
 
 [labVklopiCasRacunanja]
-Coordinates=311,1,131,51
+Coordinates=311,1,151,58
 
 [swcVklopiCasRacunanja]
-Coordinates=500,1,135,51
+Coordinates=500,1,156,58
 
 [chbMnozenje]
-Coordinates=311,232,79,51
+Coordinates=311,232,91,58
 
 [stcLabela]
-Coordinates=881,540,61,33
+Coordinates=881,540,70,36
 
 [edtMnozenjeFaktor]
-Coordinates=173,423,108,51
+Coordinates=173,423,125,58
 
 [stcTretjiNNClen]
-Coordinates=881,595,91,33
+Coordinates=881,595,105,36
 
 [memRezultati]
-Coordinates=694,309,81,51
+Coordinates=694,309,93,58
 
 [lbhSeštevanje]
-Coordinates=782,615,83,33
+Coordinates=782,615,95,36
 
 [lbhDeljenje]
-Coordinates=693,615,69,33
+Coordinates=693,615,79,36
 
 [cobOmejitveRacunanja]
-Coordinates=500,78,128,123
+Coordinates=500,78,147,146
 
 [layMain]
-Coordinates=624,615,52,33
+Coordinates=624,615,59,36
 
 [lbiVklopiCas]
-Coordinates=535,615,76,33
+Coordinates=535,615,86,36
 
 [edtCasOmejitev]
-Coordinates=139,231,92,51
+Coordinates=139,231,106,58
 
 [lbhOdštevanje]
-Coordinates=436,615,85,33
+Coordinates=436,615,97,36
 
 [libMnozenjeFaktor]
-Coordinates=307,615,104,33
+Coordinates=307,615,120,36
 
 [lbhOperacije]
-Coordinates=218,615,76,33
+Coordinates=218,615,87,36
 
 [edtDrugoSt]
-Coordinates=500,397,70,51
+Coordinates=500,397,79,58
 
 [layCas]
-Coordinates=159,615,47,33
+Coordinates=159,615,54,36
 
 [edtStRacunovOmejitev]
-Coordinates=881,1,127,51
+Coordinates=881,1,146,58
 
 [chbSestevanje]
-Coordinates=694,386,86,51
+Coordinates=694,386,99,58
 
 [lbiAnimacija]
-Coordinates=70,615,75,33
+Coordinates=70,615,84,36
 
 [lbiOdstevanje]
-Coordinates=1072,1,81,33
+Coordinates=1072,1,93,36
 
 [swcPredvajajZvok]
-Coordinates=575,519,103,51
+Coordinates=575,519,118,58
 
 [lbiMnozenjeDo]
-Coordinates=1072,56,87,33
+Coordinates=1072,56,100,36
 
 [ImageList]
-Coordinates=1072,111,62,33
+Coordinates=1072,111,70,36
 
 [lbiCasRacunanja]
-Coordinates=1072,166,97,33
+Coordinates=1072,166,112,36
 
 [ScrollBox]
-Coordinates=0,579,62,33
+Coordinates=0,579,69,36
 
 [edtCasRacunanja]
-Coordinates=456,519,100,51
+Coordinates=456,519,117,58
 
 [btnPreveri]
-Coordinates=232,327,65,51
+Coordinates=232,327,73,58
 
 [tbiOprogramu]
-Coordinates=1072,221,83,33
+Coordinates=1072,221,93,36
 
 [chbOdstevanje]
-Coordinates=158,164,88,51
+Coordinates=158,164,100,58
 
 [labOdstevanjeDo]
-Coordinates=311,155,98,51
+Coordinates=311,155,113,58
 
 [labAnimacija]
-Coordinates=311,78,77,51
+Coordinates=311,78,88,58
 
 [labCas]
-Coordinates=110,519,48,51
+Coordinates=110,519,55,58
 
 [labDeljenjeDelitelj]
-Coordinates=500,320,102,51
+Coordinates=500,320,118,58
 
 [edtOdstevanjeDo]
-Coordinates=694,1,99,51
+Coordinates=694,1,114,58
 
 [swcPoljubniNeznanClen]
-Coordinates=881,386,133,51
+Coordinates=881,386,153,58
 
 [GridPanelLayout1]
-Coordinates=1072,276,102,33
+Coordinates=1072,276,118,36
 
 [labRacunjaDo]
-Coordinates=694,155,83,51
+Coordinates=694,155,95,58
 
 [mDebug]
-Coordinates=694,463,55,51
+Coordinates=694,463,63,58
 
 [edtSestevajDo]
-Coordinates=881,463,85,51
+Coordinates=881,463,98,58
 
 [stcPovpCas]
-Coordinates=1072,331,73,33
+Coordinates=1072,331,83,36
 
 [labDeljenjeOd]
-Coordinates=268,519,83,51
+Coordinates=268,519,96,58
 
 [stcDrugiNNClen]
-Coordinates=1072,386,93,33
+Coordinates=1072,386,107,36
 
 [lbiPoljubniNeznanClen]
-Coordinates=1072,441,125,33
+Coordinates=1072,441,144,36
 
 [tbiDebug]
-Coordinates=1072,496,58,33
+Coordinates=1072,496,66,36
 
 [lbiDeljenjeDelitelj]
-Coordinates=1072,551,99,33
+Coordinates=1072,551,114,36
 
 [layOmejitevRacunanja]
-Coordinates=1072,606,124,33
+Coordinates=1072,606,143,36
 
 [edtDeljenjeDeljitel]
-Coordinates=881,232,103,51
+Coordinates=881,232,119,58
 
 [stgRezultati]
-Coordinates=311,309,72,51
+Coordinates=311,309,82,58
 
 [labOperator]
-Coordinates=50,231,72,51
+Coordinates=50,231,83,58
 
 [edtPrvoSt]
-Coordinates=421,423,62,51
+Coordinates=421,423,71,58
 
 [labPoljubniNeznanClen]
-Coordinates=694,78,128,51
+Coordinates=694,78,149,58
 
 [WebBrowser]
-Coordinates=1072,661,77,33
+Coordinates=1072,661,88,36
 
 [edtRezultat]
-Coordinates=367,519,69,51
+Coordinates=367,519,80,58
 
 [labJeEnako]
-Coordinates=84,423,71,51
+Coordinates=84,423,82,58
 
 [labPredvajajZvok]
-Coordinates=302,423,99,51
+Coordinates=302,423,113,58
 
 [tmrSkupniCas]
-Coordinates=973,689,84,33
+Coordinates=973,689,95,36
 
 [lbNastavitve]
-Coordinates=0,0,116,177
+Coordinates=0,0,139,212
 
 [tmrCasRacunanja]
-Coordinates=854,689,101,33
+Coordinates=854,689,117,36
 
 [lbiDeljenjeOd]
-Coordinates=755,689,80,33
+Coordinates=755,689,92,36
 
 [MediaPlayer]
-Coordinates=666,689,74,33
+Coordinates=666,689,86,36
 
 [lbhMnozenje]
-Coordinates=577,689,76,33
+Coordinates=577,689,87,36
 
 [labOmejitevRacunanja]
-Coordinates=881,78,124,51
+Coordinates=881,78,144,58
 
 [chbDeljenje]
-Coordinates=881,309,72,51
+Coordinates=881,309,82,58
 
 [imgAnimacija]
-Coordinates=169,519,81,51
+Coordinates=169,519,91,58
 
 [layAnimacija]
-Coordinates=399,689,77,33
+Coordinates=399,689,87,36
 
 [stcPrviNNClen]
-Coordinates=300,689,85,33
+Coordinates=300,689,98,36
 
 [lbiZvok]
-Coordinates=241,689,50,33
+Coordinates=241,689,56,36
 
 [labCasRacunanja]
-Coordinates=881,155,100,51
+Coordinates=881,155,116,58
 
 [labMnozenjeDo]
-Coordinates=34,327,89,51
+Coordinates=34,327,104,58
 
 [edtDeljenjeOd]
-Coordinates=11,519,83,51
+Coordinates=11,519,96,58
 
 [tmrPavza]
-Coordinates=162,689,60,33
+Coordinates=162,689,69,36
 
 [lbiOperacije]
-Coordinates=73,689,73,33
+Coordinates=73,689,83,36
 
 [lbiSestevajDo]
-Coordinates=1254,1,81,33
+Coordinates=1254,1,93,36
 
 [swcPredvajajAnimacijo]
-Coordinates=500,243,128,51
+Coordinates=500,243,146,58
 
 [labMnozenje]
-Coordinates=143,327,76,51
+Coordinates=143,327,87,58
 
 [labS]
-Coordinates=35,423,40,51
+Coordinates=35,423,40,58
 
 [labNapis]
-Coordinates=694,232,57,51
+Coordinates=694,232,65,58
 
 [edtMaxMnozenec]
-Coordinates=158,87,99,51
+Coordinates=158,87,115,58
 
 [btnDodajIzberiIgralca]
-Coordinates=1254,133,119,51
+Coordinates=1254,133,137,58
 
 [FDConnection]
-Coordinates=563,727,84,33
+Coordinates=563,727,97,36
 
 [FDQIgralci]
-Coordinates=530,780,66,87
+Coordinates=530,780,76,102
 
 [tbiRezultatiX]
-Coordinates=488,689,76,33
+Coordinates=488,689,87,36
 
 [recVnosnaFormaIgralec]
-Coordinates=0,383,131,33
+Coordinates=0,383,152,36
 
 [btnIzbrisiIgralca]
-Coordinates=1235,203,93,51
+Coordinates=1235,203,105,58
 
 [labIgralec]
-Coordinates=1235,273,62,51
+Coordinates=1235,273,71,58
 
 [flaVnosnaFormaIgralec]
-Coordinates=563,454,128,33
+Coordinates=563,454,148,36
 
 [btnIzberiIgralca]
-Coordinates=1235,53,90,51
+Coordinates=1235,53,103,58
 
 [tbiRezultati]
-Coordinates=430,358,69,33
+Coordinates=430,358,79,36
 
 [recForm]
-Coordinates=504,454,55,33
+Coordinates=504,454,62,36
 
 [layCenter]
-Coordinates=741,552,61,33
+Coordinates=741,552,70,36
 
 [labX]
-Coordinates=0,269,40,51
+Coordinates=0,269,40,58
 
 [layVnosnaFormaIgralca]
-Coordinates=1235,343,130,33
+Coordinates=1235,343,150,36
 
 [crcClose]
-Coordinates=1235,395,57,33
+Coordinates=1235,395,65,36
 
 [cbeIgralci]
-Coordinates=680,740,72,87
+Coordinates=680,740,86,102
 Visible=True
 
 [scbGrafi]
-Coordinates=1235,447,56,33
+Coordinates=1235,447,63,36
 
 [layBottom]
-Coordinates=1235,499,64,33
+Coordinates=1235,499,72,36
 
 [FDQIgralciID]
-Coordinates=992,623,76,33
+Coordinates=992,623,89,36
 
 [FDQIgralcinaziv]
-Coordinates=1235,551,92,33
+Coordinates=1235,551,106,36
 
 [ShadowEffect1]
-Coordinates=1254,606,88,33
+Coordinates=1254,606,101,36
 
 [btnIzvoz]
-Coordinates=1106,831,55,51
+Coordinates=1106,831,63,58
 
 [layGumbIzvoz]
-Coordinates=1254,661,83,33
+Coordinates=1254,661,96,36
 
 [Splitter1]
-Coordinates=1185,850,55,33
+Coordinates=1185,850,62,36
+Visible=True
 
 [grdRezultati]
-Coordinates=180,770,73,51
+Coordinates=180,770,84,344
 Visible=True
 
 [FDQIgre]
-Coordinates=228,770,54,33
+Coordinates=228,770,64,36
 Visible=False
 
 [bsdIgre]
-Coordinates=70,760,92,69
+Coordinates=70,760,195,366
 
 [bilIgre]
-Coordinates=603,454,82,33
+Coordinates=603,454,50,36
+
+[chrOdstevanje]
+Coordinates=1254,716,97,36
+
+[chrDeljenje]
+Coordinates=1235,763,79,36
+
+[PieSeries2]
+Coordinates=1156,763,77,36
+
+[chrMnozenje]
+Coordinates=1067,763,88,36
+
+[PieSeries3]
+Coordinates=988,763,77,36
+
+[PieSeries4]
+Coordinates=909,763,77,36
+
+[chrSestevanje]
+Coordinates=810,763,96,36
+
+[Series2]
+Coordinates=14,689,58,36
 
