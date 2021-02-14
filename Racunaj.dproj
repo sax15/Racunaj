@@ -404,7 +404,9 @@
         <DCCReference Include="SplashScreen.pas">
             <Form>frmSplashScreen</Form>
         </DCCReference>
-        <DCCReference Include="u_urlOpen.pas"/>
+        <DCCReference Include="u_urlOpen.pas">
+            <Form>$R *.res</Form>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

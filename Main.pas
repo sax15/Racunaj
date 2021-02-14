@@ -58,21 +58,13 @@ type
     tmrCasRacunanja: TTimer;
     edtCasRacunanja: TEdit;
     labS: TLabel;
-    tbiRezultatiX: TTabItem;
     tmrPavza: TTimer;
     lbiVklopiCas: TListBoxItem;
     labVklopiCasRacunanja: TLabel;
     swcVklopiCasRacunanja: TSwitch;
-    stgRezultati: TStringGrid;
-    stcLabela: TStringColumn;
-    stcPrviNNClen: TStringColumn;
-    stcDrugiNNClen: TStringColumn;
-    stcTretjiNNClen: TStringColumn;
-    stcPovpCas: TStringColumn;
     lbiOperacije: TListBoxItem;
     tbiOprogramu: TTabItem;
     layMain: TLayout;
-    memRezultati: TMemo;
     lbhSeštevanje: TListBoxGroupHeader;
     lbhOdštevanje: TListBoxGroupHeader;
     lbiOdstevanje: TListBoxItem;
@@ -140,9 +132,6 @@ type
     layGumbIzvoz: TLayout;
     btnIzvoz: TSpeedButton;
     FDQIgre: TFDQuery;
-    bilIgre: TBindingsList;
-    bsdIgre: TBindSourceDB;
-    LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource;
     chrMnozenje: TChart;
     Series2: TPieSeries;
     chrDeljenje: TChart;
@@ -154,6 +143,9 @@ type
     Splitter4: TSplitter;
     chrSkupaj: TChart;
     PieSeries1: TPieSeries;
+    bsdIgre: TBindSourceDB;
+    LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource;
+    bilIgre: TBindingsList;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -193,7 +185,7 @@ type
     rezultati: array[0..2, 0..3, 0..2] of Integer;
     //pravilno plus, pravilno minus, pravilno krat, pravilno deljeno, napačni plus, napačni minus, napačno krat, napačno deljeno,
     //neodgovorjen plus, neodgovorjen minus, neodgovorjeno krat, neodgovorjeno deljeno
-    povprecen_cas: array[0..11] of Integer;
+
     FGifPlayer: TGifPlayer;
     cas_zacetka: TDateTime;
     napaka, odlicno, razmisljam: TStringList;
@@ -203,7 +195,6 @@ type
     function PreveriRezultat():Boolean;
     procedure PonastaviRezultate();
     procedure IzpisiTrenutniRezultat();
-    procedure IzpisiVseRezultate();
     procedure IzberiNalogo();
     procedure NastaviVnosnaPolja(polje: TEdit; zaklenjeno: Boolean);
     procedure PocistiPolja();
@@ -223,6 +214,7 @@ type
     procedure IzbrisiIgralca(ID: Integer);
     procedure ShraniRezultat();
     procedure IzpisiRezultate();
+    procedure NarisiGrafe();
   public
     { Public declarations }
   end;
@@ -254,8 +246,8 @@ var
 begin
   // Izvoz podatkov v csv obliko
      { TODO : Popravi izvoz v csv. Dodaj izbiro lokacije datoteke in možnost vnosa imena.}
+    List := TStringList.Create;
     try
-      List := TStringList.Create;
       // Izvozi najprej glavo
       s:='';
       for i := 0 to grdRezultati.ColumnCount -1 do
@@ -283,6 +275,7 @@ begin
       List.SaveToFile(GetExePath() + PathDelim + trenutni_igralec.naziv + '.csv');
       List.Free;
     end;
+    { TODO : MSG izvoz uspel }
 end;
 
 procedure TfrmMain.btnPreveriClick(Sender: TObject);
@@ -295,7 +288,6 @@ begin
      labCas.Text:='BRAVO !!!';
      Inc(pravilno);
      rezultati[0, oper, nnClen]:=rezultati[0, oper, nnClen] + 1;
-     povprecen_cas[oper]:=povprecen_cas[oper] + (cas_racunanja_enega_st-cas);
      PredvajajAnimacijo(odlicno);
      PredvajajZvok(zvok_odlicno);
   end else                    // odgovor je napačen
@@ -303,7 +295,6 @@ begin
     labCas.Text:=':-( Pravilno je ' + pravilni_izracun + ' )';
     Inc(napacno);
     rezultati[1, oper, nnClen]:=rezultati[1, oper, nnClen] + 1;
-    povprecen_cas[2+oper]:=povprecen_cas[2+oper] + (cas_racunanja_enega_st-cas);
     PredvajajAnimacijo(napaka);
     PredvajajZvok(zvok_napaka);
   end;
@@ -394,84 +385,9 @@ begin
     layRacunaj.Enabled:=False;
     if ((pravilno<>0) OR (napacno<>0) OR (neodgovorjeno<>0)) then     // če je bil vsaj en račun
     begin
-      IzpisiVseRezultate();
       ShraniRezultat();
       IzpisiRezultate();  // izpiši rezultate v TGrid (zavihek Rezultati)
     end;
-end;
-
-procedure TfrmMain.IzpisiVseRezultate();
-var
-  skupen_cas: Integer;
-begin
-    skupen_cas:=SecondsBetween(Now, cas_zacetka);
-    // rezultat[pravilno/napačno/potekel čas, plus/minus, prvi/drugi/tretji neznani člen
-    // rezultat[pravilno/napačno/potekel čas, plus/minus/krat/deljeno, prvi/drugi/tretji neznani člen
-    stgRezultati.Cells[0,0]:='Pravilni Plus';
-    stgRezultati.Cells[1,0]:=IntToStr(rezultati[0,0,0]);  // pravilni,plus,prvi nn člen
-    stgRezultati.Cells[2,0]:=IntToStr(rezultati[0,0,1]);  // pravilni,plus,drugi nn člen
-    stgRezultati.Cells[3,0]:=IntToStr(rezultati[0,0,2]);  // pravilni,plus,tretji nn člen
-    stgRezultati.Cells[4,0]:=FloatToStr(povprecen_cas[0]/(rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2]));
-    stgRezultati.Cells[0,1]:='Pravilni Minus';
-    stgRezultati.Cells[1,1]:=IntToStr(rezultati[0,1,0]);  // pravilni,minus,prvi nn člen
-    stgRezultati.Cells[2,1]:=IntToStr(rezultati[0,1,1]);  // pravilni,minus,drugi nn člen
-    stgRezultati.Cells[3,1]:=IntToStr(rezultati[0,1,2]);  // pravilni,minus,tretji nn člen
-    stgRezultati.Cells[4,1]:=FloatToStr(povprecen_cas[1]/(rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2]));
-    stgRezultati.Cells[0,2]:='Pravilni Krat';
-    stgRezultati.Cells[1,2]:=IntToStr(rezultati[0,2,0]);  // pravilni,krat,prvi nn člen
-    stgRezultati.Cells[2,2]:=IntToStr(rezultati[0,2,1]);  // pravilni,krat,drugi nn člen
-    stgRezultati.Cells[3,2]:=IntToStr(rezultati[0,2,2]);  // pravilni,krat,tretji nn člen
-    stgRezultati.Cells[4,2]:=FloatToStr(povprecen_cas[2]/(rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2]));
-    stgRezultati.Cells[0,3]:='Pravilni Deljeno';
-    stgRezultati.Cells[1,3]:=IntToStr(rezultati[0,3,0]);  // pravilni,deljeno,prvi nn člen
-    stgRezultati.Cells[2,3]:=IntToStr(rezultati[0,3,1]);  // pravilni,deljeno,drugi nn člen
-    stgRezultati.Cells[3,3]:=IntToStr(rezultati[0,3,2]);  // pravilni,deljeno,tretji nn člen
-    stgRezultati.Cells[4,3]:=FloatToStr(povprecen_cas[3]/(rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2]));
-    stgRezultati.Cells[0,4]:='Napačno Plus';
-    stgRezultati.Cells[1,4]:=IntToStr(rezultati[1,0,0]);  // napačni,plus,prvi nn člen
-    stgRezultati.Cells[2,4]:=IntToStr(rezultati[1,0,1]);  // napačni,plus,drugi nn člen
-    stgRezultati.Cells[3,4]:=IntToStr(rezultati[1,0,2]);  // napačni,plus,tretji nn člen
-    stgRezultati.Cells[4,4]:=FloatToStr(povprecen_cas[4]/(rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2]));
-    stgRezultati.Cells[0,5]:='Napačno Minus';
-    stgRezultati.Cells[1,5]:=IntToStr(rezultati[1,1,0]);  // napačni,minus,prvi nn člen
-    stgRezultati.Cells[2,5]:=IntToStr(rezultati[1,1,1]);  // napačni,minus,drugi nn člen
-    stgRezultati.Cells[3,5]:=IntToStr(rezultati[1,1,2]);  // napačni,minus,tretji nn člen
-    stgRezultati.Cells[4,5]:=FloatToStr(povprecen_cas[5]/(rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2]));
-    stgRezultati.Cells[0,6]:='Napačno Krat';
-    stgRezultati.Cells[1,6]:=IntToStr(rezultati[1,2,0]);  // napačni,krat,prvi nn člen
-    stgRezultati.Cells[2,6]:=IntToStr(rezultati[1,2,1]);  // napačni,krat,drugi nn člen
-    stgRezultati.Cells[3,6]:=IntToStr(rezultati[1,2,2]);  // napačni,krat,tretji nn člen
-    stgRezultati.Cells[4,6]:=FloatToStr(povprecen_cas[6]/(rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2]));
-    stgRezultati.Cells[0,7]:='Napačno Deljeno';
-    stgRezultati.Cells[1,7]:=IntToStr(rezultati[1,3,0]);  // napačni,deljeno,prvi nn člen
-    stgRezultati.Cells[2,7]:=IntToStr(rezultati[1,3,1]);  // napačni,deljeno,drugi nn člen
-    stgRezultati.Cells[3,7]:=IntToStr(rezultati[1,3,2]);  // napačni,deljeno,tretji nn člen
-    stgRezultati.Cells[4,7]:=FloatToStr(povprecen_cas[7]/(rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2]));
-    stgRezultati.Cells[0,8]:='Neodgovorjeno Plus';
-    stgRezultati.Cells[1,8]:=IntToStr(rezultati[2,0,0]);  // neodgovorjeni,plus,prvi nn člen
-    stgRezultati.Cells[2,8]:=IntToStr(rezultati[2,0,1]);  // neodgovorjeni,plus,drugi nn člen
-    stgRezultati.Cells[3,8]:=IntToStr(rezultati[2,0,2]);  // neodgovorjeni,plus,tretji nn člen
-    stgRezultati.Cells[4,8]:=FloatToStr(povprecen_cas[8]/(rezultati[2,0,0] + rezultati[1,0,1] + rezultati[2,0,2]));
-    stgRezultati.Cells[0,9]:='Neodgovorjeno Minus';
-    stgRezultati.Cells[1,9]:=IntToStr(rezultati[2,1,0]);  // neodgovorjeni,minus,prvi nn člen
-    stgRezultati.Cells[2,9]:=IntToStr(rezultati[2,1,1]);  // neodgovorjeni,minus,drugi nn člen
-    stgRezultati.Cells[3,9]:=IntToStr(rezultati[2,1,2]);  // neodgovorjeni,minus,tretji nn člen
-    stgRezultati.Cells[4,9]:=FloatToStr(povprecen_cas[9]/(rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2]));
-
-    stgRezultati.Cells[0,10]:='Neodgovorjeno Krat';
-    stgRezultati.Cells[1,10]:=IntToStr(rezultati[2,2,0]);  // neodgovorjeni,plus,prvi nn člen
-    stgRezultati.Cells[2,10]:=IntToStr(rezultati[2,2,1]);  // neodgovorjeni,plus,drugi nn člen
-    stgRezultati.Cells[3,10]:=IntToStr(rezultati[2,2,2]);  // neodgovorjeni,plus,tretji nn člen
-    stgRezultati.Cells[4,10]:=FloatToStr(povprecen_cas[10]/(rezultati[2,2,0] + rezultati[1,2,1] + rezultati[2,2,2]));
-    stgRezultati.Cells[0,11]:='Neodgovorjeno Deljeno';
-    stgRezultati.Cells[1,11]:=IntToStr(rezultati[2,3,0]);  // neodgovorjeni,minus,prvi nn člen
-    stgRezultati.Cells[2,11]:=IntToStr(rezultati[2,3,1]);  // neodgovorjeni,minus,drugi nn člen
-    stgRezultati.Cells[3,11]:=IntToStr(rezultati[2,3,2]);  // neodgovorjeni,minus,tretji nn člen
-    stgRezultati.Cells[4,11]:=FloatToStr(povprecen_cas[11]/(rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2]));
-
-    memRezultati.Lines.Text:=DateTimeToStr(Now) + ' ; čas reševanje=' + IntToStr(skupen_cas) + ' sec ; pravilnih=' + IntToSTr(pravilno) +
-                            '; napačnih=' + IntToStr(napacno) + '; neodgovorjenih=' +
-                            IntToSTr(neodgovorjeno);
 end;
 
 
@@ -619,10 +535,6 @@ begin
     for j:=0 to 3 do
       for k:=0 to 2 do
         rezultati[i, j, k]:=0;
-  // resetiraj povprečne čase
-  for i:=0 to 11 do
-    povprecen_cas[i]:=0;
-  memRezultati.Lines.Clear;
 end;
 
 procedure TfrmMain.PredvajajAnimacijo(seznam: TStringList);
@@ -829,7 +741,6 @@ begin
     Inc(neodgovorjeno);
     // rezultat[pravilno/napačno/potekel čas, plus/minus, prvi/drugi/tretji neznani člen
     rezultati[2, oper, nnClen]:=rezultati[2, oper, nnClen] + 1;
-    povprecen_cas[4+oper]:=povprecen_cas[4+oper] + cas_racunanja_enega_st;
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL! (' + pravilni_izracun + ')';
     layRacunaj.Enabled:=False;
     tmrPavza.Enabled:=True;
@@ -1121,29 +1032,25 @@ begin
   FDConnection.Connected:= True;
 
   FDConnection.ExecSQL('CREATE TABLE IF NOT EXISTS Igralci ('+
-                      ' ID integer PRIMARY KEY AUTOINCREMENT, '+
+                      ' id integer PRIMARY KEY AUTOINCREMENT, '+
                       '	naziv varchar NOT NULL)');
 
   FDConnection.ExecSQL('CREATE TABLE IF NOT EXISTS Igre (' +
-                        'ID integer PRIMARY KEY AUTOINCREMENT, ' +
-                        'igralec_ID integer NOT NULL, ' +
+                        'id integer PRIMARY KEY AUTOINCREMENT, ' +
+                        'igralec_id integer NOT NULL, ' +
                         'datum datetime, ' +
                         'sestevanje_pravilni integer DEFAULT 0, ' +
                         'sestevanje_napacni integer DEFAULT 0, ' +
                         'sestevanje_neodgovorjeni integer DEFAULT 0, ' +
-                      	'sestevanje_povprecni_cas datetime, ' +
                         'odstevanje_pravilni integer DEFAULT 0, ' +
                         'odstevanje_napacni integer DEFAULT 0, ' +
                         'odstevanje_neodgovorjeni integer DEFAULT 0, ' +
-                        'odstevanje_povprecni_cas datetime, ' +
                         'mnozenje_pravilni integer DEFAULT 0, ' +
                         'mnozenje_napacni integer DEFAULT 0, ' +
                         'mnozenje_neodgovorjeni integer DEFAULT 0, ' +
-                        'mnozenje_povprecni_cas datetime, '+
                         'deljenje_pravilni integer DEFAULT 0, ' +
                         'deljenje_napacni integer DEFAULT 0, ' +
-                        'deljenje_neodgovorjeni integer DEFAULT 0, ' +
-                        'deljenje_povprecni_cas datetime )');
+                        'deljenje_neodgovorjeni integer DEFAULT 0)');
 
 end;
 
@@ -1162,60 +1069,46 @@ var
 begin
    { TODO : Povprečni časi se morajov bazo zapisati kot TDateTime }
   // shrani razultat za trenutnega igralca v DB  // //
-  sql:='INSERT INTO Igre (igralec_ID, datum, sestevanje_pravilni, sestevanje_napacni, ' +
+  sql:='INSERT INTO Igre (igralec_id, datum, sestevanje_pravilni, sestevanje_napacni, ' +
       'sestevanje_neodgovorjeni, odstevanje_pravilni, odstevanje_napacni, ' +
       'odstevanje_neodgovorjeni, mnozenje_pravilni, mnozenje_napacni, ' +
       'mnozenje_neodgovorjeni, deljenje_pravilni, deljenje_napacni, ' +
-      'deljenje_neodgovorjeni) VALUES (:igralec_ID, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
+      'deljenje_neodgovorjeni) VALUES (:igralec_id, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
       ':sestevanje_neodgovorjeni, :odstevanje_pravilni, :odstevanje_napacni, ' +
       ':odstevanje_neodgovorjeni, :mnozenje_pravilni, :mnozenje_napacni, ' +
       ':mnozenje_neodgovorjeni, :deljenje_pravilni, :deljenje_napacni, ' +
       ':deljenje_neodgovorjeni)';
   FDQIgralci.SQL.Clear;
   FDQIgralci.SQL.Add(sql);
-  FDQIgralci.Params.ParamByName('igralec_ID').Value:=trenutni_igralec.ID;
+  FDQIgralci.Params.ParamByName('igralec_id').Value:=trenutni_igralec.ID;
   FDQIgralci.Params.ParamByName('datum').Value:=Now();
 
   FDQIgralci.Params.ParamByName('sestevanje_pravilni').Value:=rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2];
   FDQIgralci.Params.ParamByName('sestevanje_napacni').Value:=rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2];
   FDQIgralci.Params.ParamByName('sestevanje_neodgovorjeni').Value:=rezultati[2,0,0] + rezultati[2,0,1] + rezultati[2,0,2];
-  //FDQIgralci.Params.ParamByName('sestevanje_povprecni_cas').Value:=povprecen_cas[0]/(rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2]) +
-  //                                                                povprecen_cas[4]/(rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2]) +
-  //                                                                povprecen_cas[8]/(rezultati[2,0,0] + rezultati[1,0,1] + rezultati[2,0,2]);
-
   FDQIgralci.Params.ParamByName('odstevanje_pravilni').Value:=rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2];
   FDQIgralci.Params.ParamByName('odstevanje_napacni').Value:=rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2];
   FDQIgralci.Params.ParamByName('odstevanje_neodgovorjeni').Value:=rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2];
-  //FDQIgralci.Params.ParamByName('odstevanje_povprecni_cas').Value:=povprecen_cas[1]/(rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2]) +
-  //                                                                povprecen_cas[5]/(rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2]) +
-  //                                                                povprecen_cas[9]/(rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2]);
-
   FDQIgralci.Params.ParamByName('mnozenje_pravilni').Value:=rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2];
   FDQIgralci.Params.ParamByName('mnozenje_napacni').Value:=rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2];
   FDQIgralci.Params.ParamByName('mnozenje_neodgovorjeni').Value:=rezultati[2,2,0] + rezultati[2,2,1] + rezultati[2,2,2];
-  //FDQIgralci.Params.ParamByName('mnozenje_povprecni_cas').Value:=povprecen_cas[2]/(rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2]) +
-  //                                                              povprecen_cas[6]/(rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2]) +
-  //                                                              povprecen_cas[10]/(rezultati[2,2,0] + rezultati[1,2,1] + rezultati[2,2,2]);
-
   FDQIgralci.Params.ParamByName('deljenje_pravilni').Value:=rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2];
   FDQIgralci.Params.ParamByName('deljenje_napacni').Value:=rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2];
   FDQIgralci.Params.ParamByName('deljenje_neodgovorjeni').Value:=rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2];
-  //FDQIgralci.Params.ParamByName('deljenje_povprecni_cas').Value:=povprecen_cas[3]/(rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2]) +
-  //                                                        povprecen_cas[7]/(rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2]) +
-  //                                                       povprecen_cas[11]/(rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2]);
   FDQIgralci.ExecSQL();
+  IzpisiRezultate();
 end;
 
 procedure TfrmMain.IzbrisiIgralca(ID: Integer);
 begin
   // Izbriši igralca iz DB in vse njegove rezutate
   FDQIgralci.SQL.Clear;
-  FDQIgralci.SQL.Add('DELETE FROM Igralci WHERE ID=:id');
+  FDQIgralci.SQL.Add('DELETE FROM Igralci WHERE id=:id');
   FDQIgralci.Params.ParamByName('id').Value:=ID;
   FDQIgralci.ExecSQL();
 
   FDQIgralci.SQL.Clear;
-  FDQIgralci.SQL.Add('DELETE FROM Igre WHERE igralec_ID=:igralec_id');
+  FDQIgralci.SQL.Add('DELETE FROM Igre WHERE igralec_id=:igralec_id');
   FDQIgralci.Params.ParamByName('igralec_id').Value:=ID;
   FDQIgralci.ExecSQL();
 end;
@@ -1230,7 +1123,7 @@ begin
   FDQIgralci.Open();
 
   while not FDQIgralci.Eof do begin
-    cbeIgralci.Items.AddObject(FDQIgralci.FieldByName('naziv').AsString, TObject(FDQIgralci.FieldByName('ID').AsInteger));
+    cbeIgralci.Items.AddObject(FDQIgralci.FieldByName('naziv').AsString, TObject(FDQIgralci.FieldByName('id').AsInteger));
     FDQIgralci.Next;
   end;
   FDQIgralci.Close;
@@ -1241,59 +1134,29 @@ procedure TfrmMain.IzpisiRezultate();
 begin
   // Izpiši vse rezultate za izbranega igralca in jih predstavi v tabeli (zavihek Rezultati)
   FDQIgre.SQL.Clear;
-  FDQIgre.SQL.Add('SELECT * FROM Igre WHERE igralec_ID=:igralec_ID');
-  FDQIgre.Params.ParamByName('igralec_ID').Value:=trenutni_igralec.ID;
+  FDQIgre.SQL.Add('SELECT * FROM Igre WHERE igralec_id=:igralec_id');
+  FDQIgre.Params.ParamByName('igralec_id').Value:=trenutni_igralec.ID;
   FDQIgre.Open();
+  NarisiGrafe();
 end;
 
 procedure TfrmMain.grdRezultatiCellClick(const Column: TColumn;
   const Row: Integer);
-var
-  pravilni, napacni, neodgovorjeni: Integer;
-begin
-  // Seštevanje
-  chrSestevanje.Series[0].Clear;
-  chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_pravilni').Value, 'Pravilni', clTeeColor);
-  chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_napacni').Value, 'Napačni', clTeeColor);
-  chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
-  // Odštevanje
-  chrOdstevanje.Series[0].Clear;
-  chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_pravilni').Value, 'Pravilni', clTeeColor);
-  chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_napacni').Value, 'Napačni', clTeeColor);
-  chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
-  // Množenje
-  chrMnozenje.Series[0].Clear;
-  chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_pravilni').Value, 'Pravilni', clTeeColor);
-  chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_napacni').Value, 'Napačni', clTeeColor);
-  chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
-  // Deljenje
-  chrDeljenje.Series[0].Clear;
-  chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_pravilni').Value, 'Pravilni', clTeeColor);
-  chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_napacni').Value, 'Napačni', clTeeColor);
-  chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
-  // SKUPAJ
-  pravilni:=FDQIgre.FieldByName('sestevanje_pravilni').Value + FDQIgre.FieldByName('odstevanje_pravilni').Value +
-            FDQIgre.FieldByName('mnozenje_pravilni').Value +  FDQIgre.FieldByName('deljenje_pravilni').Value;
-  napacni:=FDQIgre.FieldByName('sestevanje_napacni').Value + FDQIgre.FieldByName('odstevanje_napacni').Value +
-            FDQIgre.FieldByName('mnozenje_napacni').Value +  FDQIgre.FieldByName('deljenje_napacni').Value;
-  neodgovorjeni:=FDQIgre.FieldByName('sestevanje_neodgovorjeni').Value + FDQIgre.FieldByName('odstevanje_neodgovorjeni').Value +
-            FDQIgre.FieldByName('mnozenje_neodgovorjeni').Value +  FDQIgre.FieldByName('deljenje_neodgovorjeni').Value;
-  chrSkupaj.Series[0].Clear;
-  chrSkupaj.Series[0].Add(pravilni, 'Pravilni', clTeeColor);
-  chrSkupaj.Series[0].Add(napacni, 'Napačni', clTeeColor);
-  chrSkupaj.Series[0].Add(neodgovorjeni, 'Neodgovorjeni', clTeeColor);
-end;
+  Begin
+    NarisiGrafe();
+  end;
 
 procedure TfrmMain.btnDodajIzberiIgralcaClick(Sender: TObject);
 begin
   // Odpri formo za dodajanje / izbiranje igralcev
   if layVnosnaFormaIgralca.Visible=False then
   begin
-    layVnosnaFormaIgralca.Position.Y := frmMain.Height + 20;
+    layVnosnaFormaIgralca.Position.Y := Self.Height + 20;   //frmMain.Height
     layVnosnaFormaIgralca.Visible := true;
+    cbeIgralci.SetFocus;
 
     flaVnosnaFormaIgralec.Inverse := false;
-    flaVnosnaFormaIgralec.StartValue := frmMain.Height + 20;
+    flaVnosnaFormaIgralec.StartValue := Self.Height + 20;   //frmMain.Height
     flaVnosnaFormaIgralec.StopValue := 0;
     flaVnosnaFormaIgralec.Start;
   end else
@@ -1342,6 +1205,9 @@ begin
   begin
     btnIzberiIgralca.Enabled:=True;
   end;
+  // čeje bilpritisnjen Enter klikni na gumb OK
+  if Key=vkReturn then
+    btnIzberiIgralcaClick(Self);
  { TODO 1 : Dodaj searcheble combobox! }
 {  cbeIgralci.Items.IndexOf(cbeIgralci.Text);
   if cbeIgralci.ItemIndex>-1 then
@@ -1413,6 +1279,47 @@ begin
           end;
         end;
     end);
+end;
+
+
+procedure TfrmMain.NarisiGrafe();
+var
+  pravilni, napacni, neodgovorjeni: Integer;
+begin
+  chrSestevanje.Series[0].Clear;
+  chrOdstevanje.Series[0].Clear;
+  chrMnozenje.Series[0].Clear;
+  chrDeljenje.Series[0].Clear;
+  chrSkupaj.Series[0].Clear;
+  if NOT (FDQIgre.IsEmpty) then   // čeobstajajo rezultati jih prikaži na grafu
+  begin
+    // Seštevanje
+    chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_pravilni').Value, 'Pravilni', clTeeColor);
+    chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_napacni').Value, 'Napačni', clTeeColor);
+    chrSestevanje.Series[0].Add(FDQIgre.FieldByName('sestevanje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+    // Odštevanje
+    chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_pravilni').Value, 'Pravilni', clTeeColor);
+    chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_napacni').Value, 'Napačni', clTeeColor);
+    chrOdstevanje.Series[0].Add(FDQIgre.FieldByName('odstevanje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+    // Množenje
+    chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_pravilni').Value, 'Pravilni', clTeeColor);
+    chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_napacni').Value, 'Napačni', clTeeColor);
+    chrMnozenje.Series[0].Add(FDQIgre.FieldByName('mnozenje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+    // Deljenje
+    chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_pravilni').Value, 'Pravilni', clTeeColor);
+    chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_napacni').Value, 'Napačni', clTeeColor);
+    chrDeljenje.Series[0].Add(FDQIgre.FieldByName('deljenje_neodgovorjeni').Value, 'Neodgovorjeni', clTeeColor);
+    // SKUPAJ
+    pravilni:=FDQIgre.FieldByName('sestevanje_pravilni').Value + FDQIgre.FieldByName('odstevanje_pravilni').Value +
+              FDQIgre.FieldByName('mnozenje_pravilni').Value +  FDQIgre.FieldByName('deljenje_pravilni').Value;
+    napacni:=FDQIgre.FieldByName('sestevanje_napacni').Value + FDQIgre.FieldByName('odstevanje_napacni').Value +
+              FDQIgre.FieldByName('mnozenje_napacni').Value +  FDQIgre.FieldByName('deljenje_napacni').Value;
+    neodgovorjeni:=FDQIgre.FieldByName('sestevanje_neodgovorjeni').Value + FDQIgre.FieldByName('odstevanje_neodgovorjeni').Value +
+              FDQIgre.FieldByName('mnozenje_neodgovorjeni').Value +  FDQIgre.FieldByName('deljenje_neodgovorjeni').Value;
+    chrSkupaj.Series[0].Add(pravilni, 'Pravilni', clTeeColor);
+    chrSkupaj.Series[0].Add(napacni, 'Napačni', clTeeColor);
+    chrSkupaj.Series[0].Add(neodgovorjeni, 'Neodgovorjeni', clTeeColor);
+  end;
 end;
 
 
