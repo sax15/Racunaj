@@ -1,2 +1,0 @@
-id,igralec_id,Datum,Seštevanje Pravilni,Seštevanje Napacni,Seštevanje Neodgovorjeni,Odštevanje Pravilni,Odštevanje Napacni,Odštevanje Neodgovorjeni,Množenje Pravilni,Množenje Napacni,Množenje Neodgovorjeni,Deljene Pravilni,Deljene Napacni,Deljene Neodgovorjeni
-1,1,14/02/2021 21:40:34,0,0,0,0,1,0,0,0,0,0,0,0

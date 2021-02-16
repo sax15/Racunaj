@@ -181,11 +181,7 @@ type
     nnClen: Integer;  // neznani ćlen, 0=prvi člen, 1=drugi člen, 2=tretji člen
     oper: Integer;    // operator 0=+; 1=-
     pravilno, napacno, neodgovorjeno: Integer;
-    // rezultat[pravilno/napačno/potekel čas, plus/minus/krat/deljeno, prvi/drugi/tretji neznani člen
-    rezultati: array[0..2, 0..3, 0..2] of Integer;
-    //pravilno plus, pravilno minus, pravilno krat, pravilno deljeno, napačni plus, napačni minus, napačno krat, napačno deljeno,
-    //neodgovorjen plus, neodgovorjen minus, neodgovorjeno krat, neodgovorjeno deljeno
-
+    rezultati: array[0..3, 0..2] of Integer;     //[prlus/minus/krat/deljeno, pravilni/napačni/neodgovorjeni]
     FGifPlayer: TGifPlayer;
     cas_zacetka: TDateTime;
     napaka, odlicno, razmisljam: TStringList;
@@ -253,7 +249,7 @@ begin
       for i := 0 to grdRezultati.ColumnCount -1 do
       begin
         if s>'' then
-          s:=s + ',';
+          s:=s + ';';
         s:=s + grdRezultati.ColumnByIndex(i).Header;
       end;
       List.Add(s);
@@ -265,7 +261,7 @@ begin
         for i:= 0 to FDQIgre.FieldCount - 1 do
         begin
           if s>'' then
-            s:=s + ',';
+            s:=s + ';';
           s:=s + FDQIgre.Fields[i].AsString;
         end;
         List.Add(s);
@@ -281,20 +277,19 @@ end;
 procedure TfrmMain.btnPreveriClick(Sender: TObject);
 begin
   // preveri rezultate
-  // rezultat[pravilno/napačno/potekel čas, plus/minus, prvi/drugi/tretji neznani člen
   layRacunaj.Enabled:=False;
   if PreveriRezultat() then   // če je odgovor je pravilen
   begin
      labCas.Text:='BRAVO !!!';
      Inc(pravilno);
-     rezultati[0, oper, nnClen]:=rezultati[0, oper, nnClen] + 1;
+     rezultati[oper, 0]:=rezultati[oper,0] + 1;   // Pravilni = 0
      PredvajajAnimacijo(odlicno);
      PredvajajZvok(zvok_odlicno);
   end else                    // odgovor je napačen
   begin
     labCas.Text:=':-( Pravilno je ' + pravilni_izracun + ' )';
     Inc(napacno);
-    rezultati[1, oper, nnClen]:=rezultati[1, oper, nnClen] + 1;
+    rezultati[oper, 1]:=rezultati[oper, 1] + 1; // Napačni = 1
     PredvajajAnimacijo(napaka);
     PredvajajZvok(zvok_napaka);
   end;
@@ -531,10 +526,9 @@ begin
   napacno:=0;
   neodgovorjeno:=0;
   // resetiraj števce rezultatov
-  for i:=0 to 2 do
-    for j:=0 to 3 do
-      for k:=0 to 2 do
-        rezultati[i, j, k]:=0;
+  for i:=0 to 3 do
+    for j:=0 to 2 do
+        rezultati[i, j]:=0;
 end;
 
 procedure TfrmMain.PredvajajAnimacijo(seznam: TStringList);
@@ -739,8 +733,7 @@ begin
   begin
     tmrCasRacunanja.Enabled:=False;
     Inc(neodgovorjeno);
-    // rezultat[pravilno/napačno/potekel čas, plus/minus, prvi/drugi/tretji neznani člen
-    rezultati[2, oper, nnClen]:=rezultati[2, oper, nnClen] + 1;
+    rezultati[oper, 2]:=rezultati[oper, 2] + 1;        // Neodgovorjeni = 2
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL! (' + pravilni_izracun + ')';
     layRacunaj.Enabled:=False;
     tmrPavza.Enabled:=True;
@@ -1067,7 +1060,6 @@ procedure TfrmMain.ShraniRezultat();
 var
   sql: String;
 begin
-   { TODO : Povprečni časi se morajov bazo zapisati kot TDateTime }
   // shrani razultat za trenutnega igralca v DB  // //
   sql:='INSERT INTO Igre (igralec_id, datum, sestevanje_pravilni, sestevanje_napacni, ' +
       'sestevanje_neodgovorjeni, odstevanje_pravilni, odstevanje_napacni, ' +
@@ -1083,18 +1075,21 @@ begin
   FDQIgralci.Params.ParamByName('igralec_id').Value:=trenutni_igralec.ID;
   FDQIgralci.Params.ParamByName('datum').Value:=Now();
 
-  FDQIgralci.Params.ParamByName('sestevanje_pravilni').Value:=rezultati[0,0,0] + rezultati[0,0,1] + rezultati[0,0,2];
-  FDQIgralci.Params.ParamByName('sestevanje_napacni').Value:=rezultati[1,0,0] + rezultati[1,0,1] + rezultati[1,0,2];
-  FDQIgralci.Params.ParamByName('sestevanje_neodgovorjeni').Value:=rezultati[2,0,0] + rezultati[2,0,1] + rezultati[2,0,2];
-  FDQIgralci.Params.ParamByName('odstevanje_pravilni').Value:=rezultati[0,1,0] + rezultati[0,1,1] + rezultati[0,1,2];
-  FDQIgralci.Params.ParamByName('odstevanje_napacni').Value:=rezultati[1,1,0] + rezultati[1,1,1] + rezultati[1,1,2];
-  FDQIgralci.Params.ParamByName('odstevanje_neodgovorjeni').Value:=rezultati[2,1,0] + rezultati[2,1,1] + rezultati[2,1,2];
-  FDQIgralci.Params.ParamByName('mnozenje_pravilni').Value:=rezultati[0,2,0] + rezultati[0,2,1] + rezultati[0,2,2];
-  FDQIgralci.Params.ParamByName('mnozenje_napacni').Value:=rezultati[1,2,0] + rezultati[1,2,1] + rezultati[1,2,2];
-  FDQIgralci.Params.ParamByName('mnozenje_neodgovorjeni').Value:=rezultati[2,2,0] + rezultati[2,2,1] + rezultati[2,2,2];
-  FDQIgralci.Params.ParamByName('deljenje_pravilni').Value:=rezultati[0,3,0] + rezultati[0,3,1] + rezultati[0,3,2];
-  FDQIgralci.Params.ParamByName('deljenje_napacni').Value:=rezultati[1,3,0] + rezultati[1,3,1] + rezultati[1,3,2];
-  FDQIgralci.Params.ParamByName('deljenje_neodgovorjeni').Value:=rezultati[2,3,0] + rezultati[2,3,1] + rezultati[2,3,2];
+  FDQIgralci.Params.ParamByName('sestevanje_pravilni').Value:=rezultati[0,0];
+  FDQIgralci.Params.ParamByName('sestevanje_napacni').Value:=rezultati[0,1];
+  FDQIgralci.Params.ParamByName('sestevanje_neodgovorjeni').Value:=rezultati[0,2];
+
+  FDQIgralci.Params.ParamByName('odstevanje_pravilni').Value:=rezultati[1,0];
+  FDQIgralci.Params.ParamByName('odstevanje_napacni').Value:=rezultati[1,1];
+  FDQIgralci.Params.ParamByName('odstevanje_neodgovorjeni').Value:=rezultati[1,2];
+
+  FDQIgralci.Params.ParamByName('mnozenje_pravilni').Value:=rezultati[2,0];
+  FDQIgralci.Params.ParamByName('mnozenje_napacni').Value:=rezultati[2,1];
+  FDQIgralci.Params.ParamByName('mnozenje_neodgovorjeni').Value:=rezultati[2,2];
+
+  FDQIgralci.Params.ParamByName('deljenje_pravilni').Value:=rezultati[3,0];
+  FDQIgralci.Params.ParamByName('deljenje_napacni').Value:=rezultati[3,1];
+  FDQIgralci.Params.ParamByName('deljenje_neodgovorjeni').Value:=rezultati[3,2];
   FDQIgralci.ExecSQL();
   IzpisiRezultate();
 end;
