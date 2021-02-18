@@ -542,8 +542,9 @@ begin
     exit;
   end;
   // predvajaj animacijo
-  ff:=seznam.Count-1;
-  i:=Random(ff)+1;
+  { TODO : Preveri če je sploh kakšna animacija v mapi! }
+  ff:=seznam.Count;
+  i:=Random(ff);
   FGifPlayer.LoadFromFile(seznam[i]);
   imgAnimacija.Visible:=True;
   //FGifPlayer.LoadFromStream();
@@ -556,14 +557,15 @@ var
   ff, i: Integer;
 begin
   // predvajaj zvok
+  { TODO : Preveri če je sploh kakšna animacija v mapi! }
    if NOT (predvajaj_zvok) then
    begin
     MediaPlayer.stop;
     exit;
    end;
   // predvajaj zvok
-  ff:=seznam.Count-1;
-  i:=Random(ff)+1;
+  ff:=seznam.Count;
+  i:=Random(ff);
   MediaPlayer.FileName:=seznam[i];
   //FGifPlayer.LoadFromStream();
   MediaPlayer.Play;
@@ -912,6 +914,7 @@ IzpisiList(delitelji);
       NastaviVnosnaPolja(edtRezultat, False);
     end;
     PredvajajAnimacijo(razmisljam);
+    PredvajajZvok(zvok_razmisljam);
     if swcVklopiCasRacunanja.IsChecked then
       tmrCasRacunanja.Enabled:=True;
   finally
