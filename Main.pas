@@ -421,9 +421,11 @@ For iOS, set the Remote Path to StartUp\Documents\Racunaj\odlicno ali napaka ali
 XXXXFor Windows 10, set the Remote Path to  %UserProfile%\Racunaj\odlicno ali napaka ali razmisljam
 }
   path:=GetExePath() + zvrst + PathDelim  + mapa + PathDelim;
-  For ffile in TDirectory.GetFiles(path)  do
-  begin
-    seznam.Add(ffile);
+  try
+    For ffile in TDirectory.GetFiles(path)  do
+      seznam.Add(ffile);
+  Except
+    ShowMessage('Pot ' + path + ' ne obstaja!');
   end;
 end;
 
@@ -520,7 +522,7 @@ end;
 
 procedure TfrmMain.PonastaviRezultate();
 var
-  i, j, k: Integer;
+  i, j: Integer;
 begin
   pravilno:=0;
   napacno:=0;
@@ -544,11 +546,14 @@ begin
   // predvajaj animacijo
   { TODO : Preveri če je sploh kakšna animacija v mapi! }
   ff:=seznam.Count;
-  i:=Random(ff);
-  FGifPlayer.LoadFromFile(seznam[i]);
-  imgAnimacija.Visible:=True;
-  //FGifPlayer.LoadFromStream();
-  FGifPlayer.Play;
+  if ff>0 then
+  begin
+    i:=Random(ff);
+    FGifPlayer.LoadFromFile(seznam[i]);
+    imgAnimacija.Visible:=True;
+    //FGifPlayer.LoadFromStream();
+    FGifPlayer.Play;
+  end;
 end;
 
 
@@ -565,10 +570,13 @@ begin
    end;
   // predvajaj zvok
   ff:=seznam.Count;
-  i:=Random(ff);
-  MediaPlayer.FileName:=seznam[i];
-  //FGifPlayer.LoadFromStream();
-  MediaPlayer.Play;
+  if ff>0 then
+  begin
+    i:=Random(ff);
+    MediaPlayer.FileName:=seznam[i];
+    //FGifPlayer.LoadFromStream();
+    MediaPlayer.Play;
+  end;
 end;
 
 function TfrmMain.PreveriRezultat(): Boolean;
