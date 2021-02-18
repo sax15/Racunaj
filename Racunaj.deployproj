@@ -101,6 +101,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="about.html" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>about.html</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\res\drawable-hdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
@@ -182,19 +191,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\library\lib\armeabi\</RemoteDir>
-            <RemoteName>libRacunaj.so</RemoteName>
-            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\res\drawable-xxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon144</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\res\drawable-xxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon144</DeployClass>
+        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\library\lib\armeabi\</RemoteDir>
+            <RemoteName>libRacunaj.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>

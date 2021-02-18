@@ -18,7 +18,7 @@ Visible=True
 Coordinates=10,78,66,33
 
 []
-Coordinates=341,358,82,33
+Coordinates=770,920,92,105
 Visible=False
 
 [layGumbi]
@@ -209,6 +209,7 @@ Coordinates=881,309,72,51
 
 [imgAnimacija]
 Coordinates=169,519,81,51
+Visible=True
 
 [layAnimacija]
 Coordinates=399,689,77,33
@@ -256,10 +257,11 @@ Coordinates=1254,133,119,51
 Coordinates=563,727,84,33
 
 [FDQIgralci]
-Coordinates=530,780,66,87
+Coordinates=846,930,66,33
 
 [recVnosnaFormaIgralec]
 Coordinates=0,383,131,33
+Visible=True
 
 [btnIzbrisiIgralca]
 Coordinates=1235,203,93,51
@@ -292,7 +294,7 @@ Coordinates=1235,343,130,33
 Coordinates=1235,395,57,33
 
 [cbeIgralci]
-Coordinates=680,740,72,87
+Coordinates=560,900,72,87
 Visible=True
 
 [scbGrafi]
@@ -321,7 +323,7 @@ Coordinates=1185,850,55,33
 Visible=True
 
 [grdRezultati]
-Coordinates=180,770,73,51
+Coordinates=180,770,73,321
 Visible=True
 
 [FDQIgre]
@@ -362,8 +364,8 @@ Coordinates=694,309,66,33
 Coordinates=881,540,55,33
 
 [bsdIgre]
-Coordinates=302,780,126,339
+Coordinates=302,780,163,339
 
 [bilIgre]
-Coordinates=341,358,82,33
+Coordinates=341,358,45,33
 

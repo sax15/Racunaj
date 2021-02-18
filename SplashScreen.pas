@@ -44,7 +44,11 @@ procedure TfrmSplashScreen.FormCreate(Sender: TObject);
 begin
 //  tmrStart.Enabled:= false;
 //  tmrStart.Interval:= 5000; // can be changed to improve startup speed in later releases
-
+{$IFDEF MSWINDOWS}
+  frmSplashScreen.Transparency:=True;
+{$ELSE}
+  frmSplashScreen.Transparency:=False;
+{$ENDIF}
   progress:=100;
   RippleTransitionEffect1.Enabled:=True;
   tmrRiipleTransition.Enabled:=True;

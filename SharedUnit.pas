@@ -58,12 +58,15 @@ implementation
 
 function GetExePath(): String;
 begin
+//For Android, set the Remote Path to .\assets\internal
+///data/user/0/com.embarcadero.Racunaj/files/Racunaj/racunaj.sqlite
+//For iOS, set the Remote Path to StartUp\Documents
 {$IFDEF MSWINDOWS}
   //Result:=TPath.GetDocumentsPath + PathDelim;
   Result:=ExtractFilePath(ParamStr(0));
 {$ELSE}
   //Result:=TPath.GetDocumentsPath + PathDelim;
-  Result:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim;
+  Result:=TPath.GetDocumentsPath + PathDelim;
 {$ENDIF}
 
 end;
@@ -119,7 +122,7 @@ begin
     predvajaj_animacijo:=IniFile.ReadBool('Nastavitve', 'Predvajaj animacijo', True);
     predvajaj_zvok:=IniFile.ReadBool('Nastavitve', 'Predvajaj zvok', True);
     vklopi_cas_racunanja:=IniFile.ReadBool('Nastavitve', 'Vklopi cas racunanja', True);
-    operacije:=IniFile.ReadInteger('Nastavitve', 'Operacije', 2);
+    operacije:=IniFile.ReadInteger('Nastavitve', 'Operacije', 15);
   finally
     IniFile.Free
   end;
