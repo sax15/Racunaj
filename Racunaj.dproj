@@ -6,7 +6,7 @@
         <MainSource>Racunaj.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Platform Condition="'$(Platform)'==''">Android</Platform>
         <TargetedPlatforms>37983</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
@@ -61,6 +61,12 @@
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
         <Cfg_1>true</Cfg_1>
         <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Android' and '$(Cfg_1)'=='true') or '$(Cfg_1_Android)'!=''">
+        <Cfg_1_Android>true</Cfg_1_Android>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
@@ -369,12 +375,27 @@
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Android)'!=''">
+        <VerInfo_Build>1</VerInfo_Build>
+        <IncludeAndroid_Splash>False</IncludeAndroid_Splash>
+        <Android_NotificationAccentColor>#000000</Android_NotificationAccentColor>
+        <Android_LauncherIcon36>Images\Icons\36 36.png</Android_LauncherIcon36>
+        <Android_LauncherIcon48>Images\Icons\48 48.png</Android_LauncherIcon48>
+        <Android_LauncherIcon72>Images\Icons\72 72.png</Android_LauncherIcon72>
+        <Android_LauncherIcon96>Images\Icons\96 96.png</Android_LauncherIcon96>
+        <Android_LauncherIcon144>Images\Icons\144 144.png</Android_LauncherIcon144>
+        <VerInfo_Keys>package=si.aspira.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1060</VerInfo_Locale>
+        <Icon_MainIcon>Racunaj_Icon3.ico</Icon_MainIcon>
+        <Icns_MainIcns>Racunaj_Icns.icns</Icns_MainIcns>
+        <UWP_DelphiLogo44>Images\Icons\48 48.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>Images\Icons\152 152.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -435,45 +456,23 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Android\Debug\libRacunaj.so" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\Animacije\odlicno\Hands_clap_2.gif" Configuration="Debug" Class="File">
                     <Platform Name="Android">
-                        <RemoteName>libRacunaj.so</RemoteName>
+                        <RemoteDir>.\assets\internal\Animacije\odlicno\</RemoteDir>
+                        <RemoteName>Hands_clap_2.gif</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Configuration="Debug" Class="Android_LauncherIcon36">
+                <DeployFile LocalName="Win32\Debug\Animacije\razmisljam\Sick_person.gif" Configuration="Debug" Class="File">
                     <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
+                        <RemoteDir>.\assets\internal\Animacije\razmisljam\</RemoteDir>
+                        <RemoteName>Sick_person.gif</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Debug" Class="Android_NotificationIcon72">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_24x24.png" Configuration="Release" Class="Android_NotificationIcon24">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Win32\Debug\Racunaj.exe" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>Racunaj.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Debug" Class="Android_LauncherIcon72">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Configuration="Debug" Class="Android_SplashImage640">
-                    <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Debug" Class="Android_SplashImage960">
-                    <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -483,10 +482,10 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="about.html" Configuration="Debug" Class="File">
+                <DeployFile LocalName="Win32\Debug\Animacije\odlicno\kissing_clown.gif" Configuration="Debug" Class="File">
                     <Platform Name="Android">
-                        <RemoteDir>.\assets\internal</RemoteDir>
-                        <RemoteName>about.html</RemoteName>
+                        <RemoteDir>.\assets\internal\Animacije\odlicno\</RemoteDir>
+                        <RemoteName>kissing_clown.gif</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -496,36 +495,14 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Configuration="Debug" Class="Android_LauncherIcon48">
+                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Release" Class="AndroidGDBServer">
                     <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile">
                     <Platform Name="Android">
                         <RemoteName>libRacunaj.so</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Debug\classes.dex" Configuration="Debug" Class="AndroidClassesDexFile">
-                    <Platform Name="Android">
-                        <RemoteName>classes.dex</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Debug" Class="AndroidGDBServer">
-                    <Platform Name="Android">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Debug\splash_image_def.xml" Configuration="Debug" Class="AndroidSplashImageDef">
-                    <Platform Name="Android">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Debug\styles.xml" Configuration="Debug" Class="AndroidSplashStyles">
-                    <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -537,12 +514,7 @@
                 </DeployFile>
                 <DeployFile LocalName="Android\Debug\AndroidManifest.xml" Configuration="Debug" Class="ProjectAndroidManifest">
                     <Platform Name="Android">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Configuration="Debug" Class="Android_LauncherIcon144">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -552,19 +524,38 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Android\Release\styles-v21.xml" Configuration="Release" Class="AndroidSplashStylesV21">
+                    <Platform Name="Android">
+                        <RemoteName>styles.xml</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
-                    <Platform Name="iOSSimulator">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Debug" Class="Android_SplashImage470">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Release" Class="Android_SplashImage470">
                     <Platform Name="Android">
                         <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_96x96.png" Configuration="Release" Class="Android_NotificationIcon96">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Images\Icons\48 48.png" Configuration="Debug" Class="Android_LauncherIcon48">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -584,15 +575,291 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Configuration="Debug" Class="Android_LauncherIcon96">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Configuration="Debug" Class="Android_NotificationIcon48">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Images\Icons\152 152.png" Configuration="Debug" Class="UWP_DelphiLogo150">
+                    <Platform Name="Win32">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo150x150.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Images\Icons\36 36.png" Configuration="Debug" Class="Android_LauncherIcon36">
                     <Platform Name="Android">
                         <RemoteName>ic_launcher.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Configuration="Debug" Class="Android_NotificationIcon48">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Configuration="Release" Class="Android_NotificationIcon48">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\napaka\Angry_man_2.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\napaka\</RemoteDir>
+                        <RemoteName>Angry_man_2.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\classes.dex" Configuration="Release" Class="AndroidClassesDexFile">
+                    <Platform Name="Android">
+                        <RemoteName>classes.dex</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\strings.xml" Configuration="Debug" Class="Android_Strings">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Configuration="Release" Class="Android_LauncherIcon48">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Images\Icons\144 144.png" Configuration="Debug" Class="Android_LauncherIcon144">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\libRacunaj.so" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Android">
+                        <RemoteName>libRacunaj.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Debug" Class="Android_NotificationIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\napaka\Electrocuted.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\napaka\</RemoteDir>
+                        <RemoteName>Electrocuted.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Configuration="Release" Class="Android_LauncherIcon36">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Racunaj.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>Racunaj.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\napaka\Hot_head.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\napaka\</RemoteDir>
+                        <RemoteName>Hot_head.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Configuration="Release" Class="Android_SplashImage426">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\odlicno\Very_excited.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\odlicno\</RemoteDir>
+                        <RemoteName>Very_excited.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Release" Class="Android_SplashImage960">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Configuration="Debug" Class="Android_SplashImage640">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Zvok\razmisljam\cakam.mp3" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Zvok\razmisljam\</RemoteDir>
+                        <RemoteName>cakam.mp3</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Debug" Class="Android_SplashImage960">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Release" Class="Android_LauncherIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Images\Icons\96 96.png" Configuration="Debug" Class="Android_LauncherIcon96">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Images\Icons\72 72.png" Configuration="Debug" Class="Android_LauncherIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="about.html" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal</RemoteDir>
+                        <RemoteName>about.html</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\classes.dex" Configuration="Debug" Class="AndroidClassesDexFile">
+                    <Platform Name="Android">
+                        <RemoteName>classes.dex</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Debug" Class="AndroidGDBServer">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\napaka\Man_frustrated.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\napaka\</RemoteDir>
+                        <RemoteName>Man_frustrated.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Images\Icons\48 48.png" Configuration="Debug" Class="UWP_DelphiLogo44">
+                    <Platform Name="Win32">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo44x44.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Release" Class="Android_NotificationIcon36">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\napaka\Man_screams.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\napaka\</RemoteDir>
+                        <RemoteName>Man_screams.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\odlicno\Excited_man_3.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\odlicno\</RemoteDir>
+                        <RemoteName>Excited_man_3.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\razmisljam\Tourist_confused.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\razmisljam\</RemoteDir>
+                        <RemoteName>Tourist_confused.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Configuration="Release" Class="Android_LauncherIcon144">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Configuration="Release" Class="Android_LauncherIcon96">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
+                    <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Debug" Class="Android_SplashImage470">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Zvok\odlicno\applause.mp3" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Zvok\odlicno\</RemoteDir>
+                        <RemoteName>applause.mp3</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\strings.xml" Configuration="Release" Class="Android_Strings">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\libRacunaj.so" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Android">
+                        <RemoteName>libRacunaj.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\razmisljam\pages_turn.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\razmisljam\</RemoteDir>
+                        <RemoteName>pages_turn.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\odlicno\Excited_man_2.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\odlicno\</RemoteDir>
+                        <RemoteName>Excited_man_2.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Animacije\razmisljam\Excited_and_scared.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\razmisljam\</RemoteDir>
+                        <RemoteName>Excited_and_scared.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\colors.xml" Configuration="Release" Class="Android_Colors">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Configuration="Release" Class="Android_SplashImage640">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\Zvok\napaka\napacno.mp3" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Zvok\napaka\</RemoteDir>
+                        <RemoteName>napacno.mp3</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -602,7 +869,14 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Android\Debug\strings.xml" Configuration="Debug" Class="Android_Strings">
+                <DeployFile LocalName="Win32\Debug\Animacije\razmisljam\Walking_to_school.gif" Configuration="Debug" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\Animacije\razmisljam\</RemoteDir>
+                        <RemoteName>Walking_to_school.gif</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\AndroidManifest.xml" Configuration="Release" Class="ProjectAndroidManifest">
                     <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
