@@ -1,6 +1,14 @@
 ﻿program Racunaj;
 
-{$R *.dres}
+{$IFDEF MSWINDOWS}
+{$R RacunajWin.dres}
+{$ENDIF}
+{$IFDEF ANDROID}
+{$R RacunajAndroid.dres}
+{$ENDIF}
+{$IFDEF IOS}
+{$R RacunajIOS.dres}
+{$ENDIF}
 
 uses
   System.StartUpCopy,
@@ -12,7 +20,15 @@ uses
   SplashScreen in 'SplashScreen.pas' {frmSplashScreen},
   u_urlOpen in 'u_urlOpen.pas';
 
-{$R *.res}
+{$IFDEF MSWINDOWS}
+{$R RacunajWin.res}
+{$ENDIF}
+{$IFDEF ANDROID}
+{$R RacunajAndroid.res}
+{$ENDIF}
+{$IFDEF IOS}
+{$R RacunajIOS.res}
+{$ENDIF}
 
 begin
   Application.Initialize;
