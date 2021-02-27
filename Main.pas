@@ -140,12 +140,18 @@ type
     PieSeries3: TPieSeries;
     chrOdstevanje: TChart;
     PieSeries4: TPieSeries;
-    Splitter4: TSplitter;
     chrSkupaj: TChart;
     PieSeries1: TPieSeries;
     bsdIgre: TBindSourceDB;
     LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource;
     bilIgre: TBindingsList;
+    libOmejitve: TListBoxItem;
+    libPreobleke: TListBoxItem;
+    cobPreobleke: TComboBox;
+    labPreobleke: TLabel;
+    lbhPreobleke: TListBoxGroupHeader;
+    lbhZvokAnimacija: TListBoxGroupHeader;
+    lbhOmejitve: TListBoxGroupHeader;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -174,6 +180,8 @@ type
     procedure grdRezultatiCellClick(const Column: TColumn; const Row: Integer);
     procedure btnIzvozClick(Sender: TObject);
     procedure cbeIgralciTyping(Sender: TObject);
+    procedure cobPreoblekeChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     cas: Integer;
@@ -214,6 +222,10 @@ type
     procedure ShraniRezultat();
     procedure IzpisiRezultate();
     procedure NarisiGrafe();
+    procedure NapolniPreobleke();
+    {$IFDEF MSWINDOWS}
+    procedure NastaviPolozajForme();
+    {$ENDIF}
   public
     { Public declarations }
   end;
@@ -226,7 +238,7 @@ implementation
 
 {$R *.fmx}
 
-uses System.Math, u_urlOpen, FMX.DialogService;
+uses System.Math, u_urlOpen, FMX.DialogService, FMX.Styles;
 
 { TfrmManin }
 
@@ -244,7 +256,6 @@ var
   i: Integer;
 begin
   // Izvoz podatkov v csv obliko
-     { TODO : Popravi izvoz v csv. Dodaj izbiro lokacije datoteke in možnost vnosa imena.}
     List := TStringList.Create;
     try
       // Izvozi najprej glavo
@@ -274,7 +285,7 @@ begin
       List.SaveToFile(GetExePath() + trenutni_igralec.naziv + '.csv');
       List.Free;
     end;
-    ShowMessage('Podatki so izvozeni ' + GetExePath() + trenutni_igralec.naziv + '.csv');
+    ShowMessage('Podatki so izvoženi ' + GetExePath() + trenutni_igralec.naziv + '.csv');
 end;
 
 procedure TfrmMain.btnPreveriClick(Sender: TObject);
@@ -312,11 +323,8 @@ end;
 
 procedure TfrmMain.btnStartClick(Sender: TObject);
 begin
-  // resetiraj skupni čas računanja in število izračunanih računov
-  skupni_cas_racunanja:=0;
-  st_izracunanin_racunov:=0;
   case btnStart.ImageIndex of
-    0, 1: ZacniIgro();
+    1: ZacniIgro();
     2: KoncajIgro();
     3: NadaljujZIgro();
   end;
@@ -446,6 +454,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   CreateDatabaseAndTable();
   NapolniIgralce();
+  NapolniPreobleke();
   layVnosnaFormaIgralca.Visible:=False; // skri layout Vnosno Formo za igralca
   cas_zacetka:=0;
   PonastaviRezultate();
@@ -461,6 +470,8 @@ begin
     labNapis.Text:=trenutni_igralec.naziv;
     IzpisiRezultate();
   end;
+
+  cobPreobleke.ItemIndex:=preobleka;
 
   edtSestevajDo.Text:=IntToStr(sestevanje_do);
   edtOdstevanjeDo.Text:=IntToStr(odstevanje_od);
@@ -484,14 +495,31 @@ begin
   swcPredvajajZvok.IsChecked:=predvajaj_zvok;
   swcVklopiCasRacunanja.IsChecked:=vklopi_cas_racunanja;
   lbiCasRacunanja.Enabled:=swcVklopiCasRacunanja.IsChecked;
+  btnStart.Enabled:=False;
   if (GetBit(operacije, 0)=True) then
+  begin
     chbSestevanje.IsChecked:=True;
+    btnStart.Enabled:=True;
+  end;
   if (GetBit(operacije, 1)=True) then
+  begin
     chbOdstevanje.IsChecked:=True;
+    btnStart.Enabled:=True;
+  end;
   if (GetBit(operacije, 2)=True) then
+  begin
     chbMnozenje.IsChecked:=True;
+    btnStart.Enabled:=True;
+  end;
   if (GetBit(operacije, 3)=True) then
+  begin
     chbDeljenje.IsChecked:=True;
+    btnStart.Enabled:=True;
+  end;
+
+  {$IFDEF MSWINDOWS}
+  NastaviPolozajForme();
+  {$ENDIF}
 
   labOperator.Text:='';
   cas:=cas_racunanja_enega_st;
@@ -518,6 +546,7 @@ begin
   PonastaviRezultate();
   IzpisiTrenutniRezultat();
 end;
+
 
 procedure TfrmMain.PocistiPolja();
 begin
@@ -681,6 +710,8 @@ begin
       swcVklopiCasRacunanja.IsChecked:=False;
     vklopi_cas_racunanja:=swcVklopiCasRacunanja.IsChecked;
 
+    preobleka:=cobPreobleke.ItemIndex;
+
     nakljucni_nn_clen:=swcPoljubniNeznanClen.IsChecked;
     predvajaj_animacijo:=swcPredvajajAnimacijo.IsChecked;
     predvajaj_zvok:=swcPredvajajZvok.IsChecked;
@@ -699,7 +730,6 @@ begin
       SetBit(operacije, 2);
     if chbDeljenje.IsChecked then
       SetBit(operacije, 3);
-
     SaveIni();
   Except
     ShowMessage(napaka);
@@ -746,6 +776,8 @@ begin
   if cas=0 then  // čas je potekel
   begin
     tmrCasRacunanja.Enabled:=False;
+    MediaPlayer.stop;   // ustavi zvok
+    FGifPlayer.stop;    // ustavi animacijo
     Inc(neodgovorjeno);
     rezultati[oper, 2]:=rezultati[oper, 2] + 1;        // Neodgovorjeni = 2
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL! (' + pravilni_izracun + ')';
@@ -782,6 +814,7 @@ begin
     // če je opracija=0 potem ni izbrano nobeno polje -> exit
     // 0=+; 1=-; 2=*; 3=/
     case operacije of
+      0: Exit;
       1: oper:=0;                 // 0=+
       2: oper:=1;                 //1=-
       3: oper:=Random(2);         // 0=+ in 1=-
@@ -958,6 +991,7 @@ begin
     KoncajIgro();    // čas za reševanje vsaeh računov se je iztekel.
 end;
 
+
 procedure TfrmMain.NastaviVnosnaPolja(polje: TEdit; zaklenjeno: Boolean);
 begin
   polje.CanFocus:=NOT zaklenjeno;
@@ -974,6 +1008,7 @@ end;
 
 procedure TfrmMain.PrikaziUstrezneNastavitve();
 begin
+  btnStart.Enabled:=False;
   lbhSeštevanje.Visible:=False;
   lbiSestevajDo.Visible:=False;
   lbhOdštevanje.Visible:=False;
@@ -989,23 +1024,27 @@ begin
   begin
     lbhSeštevanje.Visible:=True;
     lbiSestevajDo.Visible:=True;
+    btnStart.Enabled:=True;
   end;
   if (chbOdstevanje.IsChecked) then   // Minus (-)
   begin
     lbhOdštevanje.Visible:=True;
     lbiOdstevanje.Visible:=True;
+    btnStart.Enabled:=True;
   end;
   if (chbMnozenje.IsChecked) then   // Krat (*)
   begin
     lbhMnozenje.Visible:=True;
     lbiMnozenjeDo.Visible:=True;
     libMnozenjeFaktor.Visible:=True;
+    btnStart.Enabled:=True;
   end;
   if (chbDeljenje.IsChecked) then   // Deljeno (/)
   begin
     lbhDeljenje.Visible:=True;
     lbiDeljenjeOd.Visible:=True;
     lbiDeljenjeDelitelj.Visible:=True;
+    btnStart.Enabled:=True;
   end;
 end;
 
@@ -1159,7 +1198,6 @@ begin
   end;
   FDQIgralci.Close;
 end;
-
 
 procedure TfrmMain.IzpisiRezultate();
 begin
@@ -1349,6 +1387,90 @@ begin
     chrSkupaj.Series[0].Add(neodgovorjeni, 'Neodgovorjeni', clTeeColor);
   end;
 end;
+
+procedure TfrmMain.NapolniPreobleke();
+begin
+  cobPreobleke.Clear;
+  {$IFDEF MSWINDOWS}
+  cobPreobleke.Items.Add('Privzeto');
+  cobPreobleke.Items.Add('Transparent');
+  cobPreobleke.Items.Add('Win10ModernBlue');
+  cobPreobleke.Items.Add('Win10ModernGreen');
+  cobPreobleke.Items.Add('Win10ModernPurple');
+  cobPreobleke.Items.Add('Win10ModernSlateGray');
+  {$ENDIF}
+  {$IFDEF ANDROID}
+  cobPreobleke.Items.Add('Privzeto');
+  cobPreobleke.Items.Add('AndroidLDarkBlue');
+  cobPreobleke.Items.Add('AndroidLDark');
+  cobPreobleke.Items.Add('AndroidLight');
+  {$ENDIF}
+  {$IFDEF IOS}
+  { TODO : Preveri iOS preobleke }
+  libPreobleke.Visible:=False;
+{$ENDIF}
+end;
+
+
+procedure TfrmMain.cobPreoblekeChange(Sender: TObject);
+var
+  s: String;
+begin
+  s:=cobPreobleke.Items[cobPreobleke.ItemIndex];
+  if s='Privzeto' then
+    TStyleManager.SetStyle(nil)
+  else
+    TStyleManager.TrySetStyleFromResource(s);
+end;
+
+{$IFDEF MSWINDOWS}
+procedure TfrmMain.NastaviPolozajForme();
+begin
+  // Windows - položaj in velikost okna
+  if (forma_visina=-1) or (forma_sirina=-1) then
+  begin
+    // Forma je v Maximized state
+    Self.WindowState:=TWindowState.wsMaximized;
+    exit;
+  end else
+  begin
+    Self.Height:=forma_visina;
+    Self.Width:=forma_sirina;
+  end;
+  if (forma_levo=-1) or (forma_zgoraj=-1) then
+  begin
+    // nastavi formo na sredino zaslona
+    Self.Left:=(Screen.Size.Width div 2) - (Self.Width div 2);
+    Self.Top:=(Screen.Size.Height div 2) - (Self.Height div 2);
+  end else
+  begin
+    Self.Top:=forma_zgoraj;
+    Self.Left:=forma_levo;
+  end;
+end;
+{$ENDIF}
+
+procedure TfrmMain.FormDestroy(Sender: TObject);
+begin
+  {$IFDEF MSWINDOWS}
+  // Windows - položaj in velikost okna
+  if (Self.WindowState=TWindowState.wsMaximized) then
+  begin
+    forma_sirina:=-1;
+    forma_visina:=-1;
+    forma_levo:=-1;
+    forma_zgoraj:=-1;
+  end else
+  begin
+    forma_sirina:=Self.Width;
+    forma_visina:=Self.Height;
+    forma_levo:=Self.Left;
+    forma_zgoraj:=Self.Top;
+  end;
+  SaveIni();
+  {$ENDIF}
+end;
+
 
 
  { TODO : DEBUGG - odstrani }

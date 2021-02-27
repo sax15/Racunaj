@@ -14,6 +14,42 @@
     <ItemGroup Condition="'$(Platform)'=='Win64'"/>
     <ItemGroup Condition="'$(Platform)'=='iOSDevice32'"/>
     <ItemGroup Condition="'$(Platform)'=='Win32'">
+        <DeployFile Include="Styles\Windows\Win10ModernDark.Style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\</RemoteDir>
+            <RemoteName>Win10ModernDark.Style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernSlateGray.style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\</RemoteDir>
+            <RemoteName>Win10ModernSlateGray.style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Transparent.Style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\</RemoteDir>
+            <RemoteName>Transparent.Style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Images\Icons\152 152.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>Racunaj\Assets\</RemoteDir>
+            <RemoteName>Logo150x150.png</RemoteName>
+            <DeployClass>UWP_DelphiLogo150</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Images\Icons\152 152.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\Assets\</RemoteDir>
             <RemoteName>Logo150x150.png</RemoteName>
@@ -33,11 +69,47 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernGreen.style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\</RemoteDir>
+            <RemoteName>Win10ModernGreen.style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Images\Icons\48 48.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\Assets\</RemoteDir>
             <RemoteName>Logo44x44.png</RemoteName>
             <DeployClass>UWP_DelphiLogo44</DeployClass>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernPurple.style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\</RemoteDir>
+            <RemoteName>Win10ModernPurple.style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Images\Icons\48 48.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>Racunaj\Assets\</RemoteDir>
+            <RemoteName>Logo44x44.png</RemoteName>
+            <DeployClass>UWP_DelphiLogo44</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernBlue.Style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\</RemoteDir>
+            <RemoteName>Win10ModernBlue.Style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -235,6 +307,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Styles\Android\AndroidLDark.fsf" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>AndroidLDark.fsf</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>Racunaj\res\drawable-xhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
@@ -398,6 +479,24 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Styles\Windows\Transparent.Style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Transparent.Style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernBlue.Style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Win10ModernBlue.Style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Images\Icons\96 96.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\res\drawable-xhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
@@ -420,6 +519,33 @@
             <RemoteDir>Racunaj\assets\internal\</RemoteDir>
             <RemoteName>about.html</RemoteName>
             <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernGreen.style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Win10ModernGreen.style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernPurple.style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Win10ModernPurple.style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Android\AndroidLDarkBlue.fsf" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>AndroidLDarkBlue.fsf</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -457,6 +583,15 @@
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon36</DeployClass>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernSlateGray.style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Win10ModernSlateGray.style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -506,6 +641,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Styles\Android\AndroidLight.fsf" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>AndroidLight.fsf</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\res\drawable-normal\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
@@ -519,6 +663,15 @@
             <RemoteDir>Racunaj\assets\internal\Zvok\odlicno\</RemoteDir>
             <RemoteName>applause.mp3</RemoteName>
             <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernDark.Style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Win10ModernDark.Style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>

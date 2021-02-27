@@ -18,7 +18,7 @@ Visible=True
 Coordinates=10,78,66,33
 
 []
-Coordinates=770,920,92,105
+Coordinates=881,540,55,33
 Visible=False
 
 [layGumbi]
@@ -359,9 +359,6 @@ Coordinates=311,309,64,33
 
 [PieSeries1]
 Coordinates=694,309,66,33
-
-[Splitter4]
-Coordinates=881,540,55,33
 
 [bsdIgre]
 Coordinates=302,780,163,339

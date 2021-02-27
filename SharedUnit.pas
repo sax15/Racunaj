@@ -19,6 +19,7 @@ var
   mnozenje_faktorji: String;
   deljenje_od: Integer;
   deljenje_deljitelji: String;
+  preobleka: Integer;
 
   omejitev_racunanja: Integer;    // ali imamo nastavljeno omejitev čas ali št. računanja
   omejitev_cas_racunanja: Integer;   // omejitev čas računanja (ne vključuje časaanimacij)
@@ -30,6 +31,10 @@ var
   cas_racunanja_enega_st: Integer;
   nakljucni_nn_clen: Boolean;
   operacije: Integer;
+  {$IFDEF MSWINDOWS}
+  // Windows - položaj in velikost okna
+  forma_sirina, forma_visina, forma_levo, forma_zgoraj: Integer;
+  {$ENDIF}
   IniFile : TIniFile;
 
 const
@@ -61,13 +66,13 @@ begin
 //For Android, set the Remote Path to .\assets\internal
 ///data/user/0/com.embarcadero.Racunaj/files/Racunaj/racunaj.sqlite
 //For iOS, set the Remote Path to StartUp\Documents
-{$IFDEF MSWINDOWS}
-  //Result:=TPath.GetDocumentsPath + PathDelim;
-  Result:=ExtractFilePath(ParamStr(0));
-{$ELSE}
+  {$IFDEF MSWINDOWS}
+  Result:=TPath.GetDocumentsPath + PathDelim + 'Racunaj' + PathDelim;
+  //Result:=ExtractFilePath(ParamStr(0));
+  {$ELSE}
   //Result:=TPath.GetDocumentsPath + PathDelim;
   Result:=TPath.GetDocumentsPath + PathDelim;
-{$ENDIF}
+  {$ENDIF}
 
 end;
 
@@ -84,6 +89,8 @@ begin
     IniFile.WriteString('Nastavitve', 'Zadnji igralec naziv', trenutni_igralec.naziv);
     IniFile.WriteInteger('Nastavitve', 'Zadnji igralec ID', trenutni_igralec.ID);
 
+    IniFile.WriteInteger('Nastavitve', 'Preobleka', preobleka);
+
     IniFile.WriteInteger('Nastavitve', 'Omejitev racunanja', omejitev_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Omejitev cas racunanja', omejitev_cas_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Omejitev stevila racunov', omejitev_st_racunanja);
@@ -93,6 +100,14 @@ begin
     IniFile.WriteBool('Nastavitve', 'Predvajaj zvok', predvajaj_zvok);
     IniFile.WriteBool('Nastavitve', 'Vklopi cas racunanja', vklopi_cas_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Operacije', operacije);
+
+    {$IFDEF MSWINDOWS}
+    // Windows - položaj in velikost okna
+    IniFile.WriteInteger('Nastavitve', 'Velikost sirina', forma_sirina);
+    IniFile.WriteInteger('Nastavitve', 'Velikost visina', forma_visina);
+    IniFile.WriteInteger('Nastavitve', 'Polozaj levo', forma_levo);
+    IniFile.WriteInteger('Nastavitve', 'Polozaj zgoraj', forma_zgoraj);
+    {$ENDIF}
   finally
     IniFile.Free;
   end;
@@ -113,16 +128,25 @@ begin
     trenutni_igralec.naziv:=IniFile.ReadString('Nastavitve', 'Zadnji igralec naziv', '');
     trenutni_igralec.ID:=IniFile.ReadInteger('Nastavitve', 'Zadnji igralec ID', -1);
 
+    preobleka:=IniFile.ReadInteger('Nastavitve', 'Preobleka', 0);
+
     omejitev_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev racunanja', 0));
     omejitev_cas_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev cas racunanja', 10));
     omejitev_st_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev stevila racunov', 20));
 
-    cas_racunanja_enega_st:=(IniFile.ReadInteger('Nastavitve', 'Cas racunanja enega stevila', 10));
+    cas_racunanja_enega_st:=IniFile.ReadInteger('Nastavitve', 'Cas racunanja enega stevila', 10);
     nakljucni_nn_clen:=IniFile.ReadBool('Nastavitve', 'Nakljucni nezna clen', False);
     predvajaj_animacijo:=IniFile.ReadBool('Nastavitve', 'Predvajaj animacijo', True);
     predvajaj_zvok:=IniFile.ReadBool('Nastavitve', 'Predvajaj zvok', True);
     vklopi_cas_racunanja:=IniFile.ReadBool('Nastavitve', 'Vklopi cas racunanja', True);
     operacije:=IniFile.ReadInteger('Nastavitve', 'Operacije', 15);
+    {$IFDEF MSWINDOWS}
+    // Windows - položaj in velikost okna
+    forma_sirina:=IniFile.ReadInteger('Nastavitve', 'Velikost sirina', 500);
+    forma_visina:=IniFile.ReadInteger('Nastavitve', 'Velikost visina', 500);
+    forma_levo:=IniFile.ReadInteger('Nastavitve', 'Polozaj levo', -1);     // -1 postavi na sredinoekrana
+    forma_zgoraj:=IniFile.ReadInteger('Nastavitve', 'Polozaj zgoraj', -1); // -1 postavi na sredinoekrana
+    {$ENDIF}
   finally
     IniFile.Free
   end;
