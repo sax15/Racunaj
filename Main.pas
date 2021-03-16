@@ -1063,6 +1063,7 @@ begin
   // naloži about.html v brskalnik
   path:=GetExePath() + 'about.html';
   WebBrowser.LoadFromStrings(TFile.ReadAllText(path), '');
+  //WebBrowser.Navigate(path);
 end;
 
 

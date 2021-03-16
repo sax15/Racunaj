@@ -29,7 +29,6 @@ uses
 {$IFDEF IOS}
 {$R RacunajIOS.res}
 {$ENDIF}
-
 begin
   Application.Initialize;
   Application.CreateForm(TfrmSplashScreen, frmSplashScreen);
