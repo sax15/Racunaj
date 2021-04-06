@@ -87,8 +87,6 @@ type
     lbiAnimacija: TListBoxItem;
     labAnimacija: TLabel;
     swcPredvajajAnimacijo: TSwitch;
-    tbiDebug: TTabItem;
-    mDebug: TMemo;
     GridPanelLayout1: TGridPanelLayout;
     chbSestevanje: TCheckBox;
     chbOdstevanje: TCheckBox;
@@ -196,6 +194,7 @@ type
     napaka, odlicno, razmisljam: TStringList;
     zvok_napaka, zvok_odlicno, zvok_razmisljam: TStringList;
     pravilni_izracun: String;
+    vsi_racuni: String;        // seznam vseh računov veni igri
 
     function PreveriRezultat():Boolean;
     procedure PonastaviRezultate();
@@ -212,7 +211,6 @@ type
     procedure NadaljujZIgro();
     procedure NapolniSeznamDatotek(zvrst, mapa: String;var seznam: TStringList);
     procedure PrikaziUstrezneNastavitve();
-    procedure IzpisiList(i: TList<Integer>);
     procedure CreateDatabaseAndTable();
     procedure NapolniIgralce();
     procedure ShraniIgralca(ime: String);
@@ -289,6 +287,8 @@ begin
 end;
 
 procedure TfrmMain.btnPreveriClick(Sender: TObject);
+var
+  neznani_clen: String;
 begin
   // preveri rezultate
   layRacunaj.Enabled:=False;
@@ -299,6 +299,12 @@ begin
      rezultati[oper, 0]:=rezultati[oper,0] + 1;   // Pravilni = 0
      PredvajajAnimacijo(odlicno);
      PredvajajZvok(zvok_odlicno);
+    case nnClen of     // Zapiši v vsi_racuni, da je odgovor napačen in kakšen je bil odgovor // 0=prvi člen, 1=drugi člen, 2=tretji člen
+      0: neznani_clen:=edtPrvoSt.Text;
+      1: neznani_clen:=edtDrugoSt.Text;
+      2: neznani_clen:=edtRezultat.Text;
+    end;
+    vsi_racuni:=vsi_racuni + '[P x=' + neznani_clen + '], ';
   end else                    // odgovor je napačen
   begin
     labCas.Text:=':-( Pravilno je ' + pravilni_izracun + ' )';
@@ -306,6 +312,12 @@ begin
     rezultati[oper, 1]:=rezultati[oper, 1] + 1; // Napačni = 1
     PredvajajAnimacijo(napaka);
     PredvajajZvok(zvok_napaka);
+    case nnClen of     // Zapiši v vsi_racuni, da je odgovor napačen in kakšen je bil odgovor // 0=prvi člen, 1=drugi člen, 2=tretji člen
+      0: neznani_clen:=edtPrvoSt.Text;
+      1: neznani_clen:=edtDrugoSt.Text;
+      2: neznani_clen:=edtRezultat.Text;
+    end;
+    vsi_racuni:=vsi_racuni + '[N x=' + neznani_clen + '], ';
   end;
   IzpisiTrenutniRezultat();
   tmrPavza.Enabled:=True;
@@ -379,7 +391,7 @@ end;
 
 procedure TfrmMain.KoncajIgro();
 begin
-  btnDodajIzberiIgralca.Enabled:=True;
+    btnDodajIzberiIgralca.Enabled:=True;
     FGifPlayer.stop;    // ustavi animacijo
     MediaPlayer.stop;   // ustavi zvok
     tmrSkupniCas.Enabled:=False;;
@@ -565,6 +577,7 @@ begin
   napacno:=0;
   neodgovorjeno:=0;
   st_izracunanih_racunov:=0;
+  vsi_racuni:='';   // počisti seznam vseh računov
   // resetiraj števce rezultatov
   for i:=0 to 3 do
     for j:=0 to 2 do
@@ -657,7 +670,6 @@ begin
           Result:=False;
       end;
     end;
-
   Except
     labCas.Text:='TO NI ŠTEVILO';
     Result:=False;
@@ -786,6 +798,7 @@ begin
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL! (' + pravilni_izracun + ')';
     layRacunaj.Enabled:=False;
     tmrPavza.Enabled:=True;
+    vsi_racuni:=vsi_racuni + '[~], ';  // V vsi_racuni dodaj kot rezultat ~, ker je čas potekel
     // povečaj št.izračunanih računov in končaj igro če smo prišli do konca
     Inc(st_izracunanih_racunov);
     if (omejitev_racunanja=2) then
@@ -879,18 +892,12 @@ begin
         StrToListIntFaktorji(edtDeljenjeDeljitel.Text, deljenje_od, faktorji);   // fator/ji
         if (faktorji.Items[0]=0) then
           faktorji.Delete(0);         // izbriši 0, napaka deljenja z 0
-mDebug.Lines.Clear;
-mDebug.Lines.Add('Vsi faktorji');
-IzpisiList(faktorji);
+
         st2:=faktorji.items[Random(faktorji.Count)];   // izberi naključni faktor med vsemi faktorji
-        { TODO : Popravi, dabo razporeditev naključnih številj drugačna. Večja verjetnost mora biti za 1/3 faktorjev.
-Drugače je velikokrat rezultat samo 1! }
-mDebug.Lines.Add('----------Izbran faktor----------------');
-mDebug.Lines.Add(IntToStr(st2));
-mDebug.Lines.Add('-------------Vsi delitelji---------------');
+        { TODO : Popravi, da bo razporeditev naključnih številj drugačna. Večja verjetnost mora biti za 1/3 faktorjev.
+          Drugače je velikokrat rezultat samo 1! }
         DeliteljiSt2(deljenje_od, st2, delitelji);
-IzpisiList(delitelji);
-//TabControl.TabIndex:=3;
+
         i:=Random(delitelji.Count);
         st1:=delitelji.Items[i];
       end;
@@ -945,6 +952,7 @@ IzpisiList(delitelji);
           edtRezultat.Text:=IntToStr(rez);
           NastaviVnosnaPolja(edtRezultat, True);
           NastaviVnosnaPolja(edtPrvoSt, False);
+          vsi_racuni:=vsi_racuni + 'x' + labOperator.Text + edtDrugoSt.Text + '=' + edtRezultat.Text + ' => ';   // zapiši vpršanje v vsi_racuni
         end;
         1:    // neznani drugi člen
         begin
@@ -953,14 +961,16 @@ IzpisiList(delitelji);
           edtRezultat.Text:=IntToStr(rez);
           NastaviVnosnaPolja(edtRezultat, True);
           NastaviVnosnaPolja(edtDrugoSt, False);
+          vsi_racuni:=vsi_racuni + edtPrvoSt.Text + labOperator.Text + 'x=' + edtRezultat.Text + ' => ';   // zapiši vpršanje v vsi_racuni
         end;
-        2:    // neznani reziltat
+        2:    // neznani rezultat
         begin
           edtPrvoSt.Text:=IntToStr(st1);
           NastaviVnosnaPolja(edtPrvoSt, True);
           edtDrugoSt.Text:=IntToStr(st2);
           NastaviVnosnaPolja(edtDrugoSt, True);
           NastaviVnosnaPolja(edtRezultat, False);
+          vsi_racuni:=vsi_racuni + edtPrvoSt.Text + labOperator.Text + edtDrugoSt.Text + '=x => ';   // zapiši vpršanje v vsi_racuni
         end;
       end;
     end else
@@ -970,7 +980,9 @@ IzpisiList(delitelji);
       edtDrugoSt.Text:=IntToStr(st2);
       NastaviVnosnaPolja(edtDrugoSt, True);
       NastaviVnosnaPolja(edtRezultat, False);
+      vsi_racuni:=vsi_racuni + edtPrvoSt.Text + labOperator.Text + edtDrugoSt.Text + '=x => ';   // zapiši vpršanje v vsi_racuni
     end;
+
     PredvajajAnimacijo(razmisljam);
     PredvajajZvok(zvok_razmisljam);
     if swcVklopiCasRacunanja.IsChecked then
@@ -1022,7 +1034,7 @@ end;
 
 procedure TfrmMain.PrikaziUstrezneNastavitve();
 begin
-        { TODO 1 : LIst Deljenje se ne prikaže vedno, ko kliknemo na checkbox!!!!! }
+        { TODO 1 : List Deljenje se ne prikaže vedno, ko kliknemo na checkbox!!!!! }
   btnStart.Enabled:=False;
   lbhSeštevanje.Visible:=False;
   lbiSestevajDo.Visible:=False;
@@ -1111,7 +1123,8 @@ begin
                         'mnozenje_neodgovorjeni integer DEFAULT 0, ' +
                         'deljenje_pravilni integer DEFAULT 0, ' +
                         'deljenje_napacni integer DEFAULT 0, ' +
-                        'deljenje_neodgovorjeni integer DEFAULT 0)');
+                        'deljenje_neodgovorjeni integer DEFAULT 0, ' +
+                        'vsi_racuni TEXT)');
 
 end;
 
@@ -1134,11 +1147,11 @@ begin
       'sestevanje_neodgovorjeni, odstevanje_pravilni, odstevanje_napacni, ' +
       'odstevanje_neodgovorjeni, mnozenje_pravilni, mnozenje_napacni, ' +
       'mnozenje_neodgovorjeni, deljenje_pravilni, deljenje_napacni, ' +
-      'deljenje_neodgovorjeni) VALUES (:igralec_id, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
+      'deljenje_neodgovorjeni, vsi_racuni) VALUES (:igralec_id, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
       ':sestevanje_neodgovorjeni, :odstevanje_pravilni, :odstevanje_napacni, ' +
       ':odstevanje_neodgovorjeni, :mnozenje_pravilni, :mnozenje_napacni, ' +
       ':mnozenje_neodgovorjeni, :deljenje_pravilni, :deljenje_napacni, ' +
-      ':deljenje_neodgovorjeni)';
+      ':deljenje_neodgovorjeni, :vsi_racuni)';
   FDQIgre.SQL.Clear;
   FDQIgre.SQL.Add(sql);
   FDQIgre.Params.ParamByName('igralec_id').Value:=trenutni_igralec.ID;
@@ -1159,6 +1172,7 @@ begin
   FDQIgre.Params.ParamByName('deljenje_pravilni').Value:=rezultati[3,0];
   FDQIgre.Params.ParamByName('deljenje_napacni').Value:=rezultati[3,1];
   FDQIgre.Params.ParamByName('deljenje_neodgovorjeni').Value:=rezultati[3,2];
+  FDQIgre.Params.ParamByName('vsi_racuni').Value:=vsi_racuni;
   FDQIgre.ExecSQL();
   IzpisiRezultate();
 end;
@@ -1486,17 +1500,5 @@ begin
   SaveIni();
   {$ENDIF}
 end;
-
-
-
- { TODO : DEBUGG - odstrani }
-procedure TfrmMain.IzpisiList(i: TList<Integer>);
-var
-  j: integer;
-begin
-  for j:=0 to i.Count-1 do
-    mDebug.Lines.Add(IntToStr(i.Items[j]));
-end;
-{ TODO : DEBUGG - odstrani }
 
 end.

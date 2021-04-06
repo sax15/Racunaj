@@ -18,7 +18,7 @@ Visible=True
 Coordinates=10,78,66,33
 
 []
-Coordinates=881,540,55,33
+Coordinates=694,463,55,51
 Visible=False
 
 [layGumbi]
@@ -138,9 +138,6 @@ Coordinates=1072,276,102,33
 [labRacunjaDo]
 Coordinates=694,155,83,51
 
-[mDebug]
-Coordinates=694,463,55,51
-
 [edtSestevajDo]
 Coordinates=881,463,85,51
 
@@ -149,9 +146,6 @@ Coordinates=268,519,83,51
 
 [lbiPoljubniNeznanClen]
 Coordinates=1072,441,125,33
-
-[tbiDebug]
-Coordinates=1072,496,58,33
 
 [lbiDeljenjeDelitelj]
 Coordinates=1072,551,99,33
