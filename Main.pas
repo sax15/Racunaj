@@ -186,7 +186,7 @@ type
     { Private declarations }
     cas: Integer;
     skupni_cas_racunanja: Integer;    // skupni čas vsega računanja
-    st_izracunanin_racunov: Integer;  // ŠT.ŽE IZRAČUNANIH RAČUNOV
+    st_izracunanih_racunov: Integer;  // ŠT.ŽE IZRAČUNANIH RAČUNOV
     nnClen: Integer;  // neznani ćlen, 0=prvi člen, 1=drugi člen, 2=tretji člen
     oper: Integer;    // operator 0=+; 1=-
     pravilno, napacno, neodgovorjeno: Integer;
@@ -310,13 +310,13 @@ begin
   IzpisiTrenutniRezultat();
   tmrPavza.Enabled:=True;
   // povečaj št.izračunanih računov in končaj igro če smo prišli do konca
-  Inc(st_izracunanin_racunov);
+  Inc(st_izracunanih_racunov);
   if (omejitev_racunanja=2) then
   begin
     layOmejitevRacunanja.Visible:=True;
-    labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanin_racunov) + ' od ' +
+    labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanih_racunov) + ' od ' +
                                 IntToStr(omejitev_st_racunanja) + ' računov.';
-    if (omejitev_racunanja=2) AND (st_izracunanin_racunov>=omejitev_st_racunanja) then
+    if (omejitev_racunanja=2) AND (st_izracunanih_racunov>=omejitev_st_racunanja) then
       KoncajIgro();
   end;
 end;
@@ -366,7 +366,7 @@ begin
   2:
     begin
       layOmejitevRacunanja.Visible:=True;
-      labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanin_racunov) + ' od ' + IntToStr(omejitev_st_racunanja) + ' računov.';
+      labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanih_racunov) + ' od ' + IntToStr(omejitev_st_racunanja) + ' računov.';
     end;
   end;
 
@@ -457,7 +457,6 @@ begin
   NapolniPreobleke();
   layVnosnaFormaIgralca.Visible:=False; // skri layout Vnosno Formo za igralca
   cas_zacetka:=0;
-  PonastaviRezultate();
   layRacunaj.Enabled:=False;
   TabControl.TabIndex:=0;     // prikaži zavihek za igro
   ReadIni();
@@ -483,7 +482,7 @@ begin
   // nastavitve omjejitve čas računanja vseh računov ali števila računov
   cobOmejitveRacunanja.ItemIndex:=omejitev_racunanja; //0=ni omejitve, 1=čas, 2=št. računov
   skupni_cas_racunanja:=0;
-  st_izracunanin_racunov:=0;
+  st_izracunanih_racunov:=0;
 
   edtCasOmejitev.Text:=IntToSTr(omejitev_cas_racunanja);
   edtStRacunovOmejitev.Text:=IntToSTr(omejitev_st_racunanja);
@@ -496,6 +495,7 @@ begin
   swcVklopiCasRacunanja.IsChecked:=vklopi_cas_racunanja;
   lbiCasRacunanja.Enabled:=swcVklopiCasRacunanja.IsChecked;
   btnStart.Enabled:=False;
+
   if (GetBit(operacije, 0)=True) then
   begin
     chbSestevanje.IsChecked:=True;
@@ -516,6 +516,8 @@ begin
     chbDeljenje.IsChecked:=True;
     btnStart.Enabled:=True;
   end;
+
+  PrikaziUstrezneNastavitve;
 
   {$IFDEF MSWINDOWS}
   NastaviPolozajForme();
@@ -562,6 +564,7 @@ begin
   pravilno:=0;
   napacno:=0;
   neodgovorjeno:=0;
+  st_izracunanih_racunov:=0;
   // resetiraj števce rezultatov
   for i:=0 to 3 do
     for j:=0 to 2 do
@@ -783,6 +786,16 @@ begin
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL! (' + pravilni_izracun + ')';
     layRacunaj.Enabled:=False;
     tmrPavza.Enabled:=True;
+    // povečaj št.izračunanih računov in končaj igro če smo prišli do konca
+    Inc(st_izracunanih_racunov);
+    if (omejitev_racunanja=2) then
+    begin
+      layOmejitevRacunanja.Visible:=True;
+      labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanih_racunov) + ' od ' +
+                                  IntToStr(omejitev_st_racunanja) + ' računov.';
+      if (omejitev_racunanja=2) AND (st_izracunanih_racunov>=omejitev_st_racunanja) then
+        KoncajIgro();
+    end;
     IzpisiTrenutniRezultat();
   end;
 end;
@@ -971,6 +984,7 @@ end;
 procedure TfrmMain.IzpisiTrenutniRezultat();
 begin
   labRezultat.Text:='PRAVILNO: ' + IntToStr(pravilno) + ', NAPAČNO: ' + IntToStr(napacno) + ', ' + 'NEODGOVORJENO: ' + IntToStr(neodgovorjeno);
+  labOmejitevRacunanja.Text:='Izračunanih ' + IntToSTr(st_izracunanih_racunov) + ' od ' + IntToStr(omejitev_st_racunanja) + ' računov.';
 end;
 
 procedure TfrmMain.tmrPavzaTimer(Sender: TObject);
@@ -1008,6 +1022,7 @@ end;
 
 procedure TfrmMain.PrikaziUstrezneNastavitve();
 begin
+        { TODO 1 : LIst Deljenje se ne prikaže vedno, ko kliknemo na checkbox!!!!! }
   btnStart.Enabled:=False;
   lbhSeštevanje.Visible:=False;
   lbiSestevajDo.Visible:=False;
