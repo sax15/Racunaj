@@ -1,10 +1,10 @@
 ﻿program Racunaj;
 
 {$IFDEF MSWINDOWS}
-{$R RacunajWin.dres}
+{$R *.dres}
 {$ENDIF}
 {$IFDEF ANDROID}
-{$R RacunajAndroid.dres}
+{$R *.dres}
 {$ENDIF}
 {$IFDEF IOS}
 {$R RacunajIOS.dres}

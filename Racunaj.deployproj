@@ -5,7 +5,7 @@
     </ProjectExtensions>
     <PropertyGroup>
         <DeviceId Condition="'$(Platform)'=='Android'">9WV4C18A26006305</DeviceId>
-        <DeviceId Condition="'$(Platform)'=='Android64'"/>
+        <DeviceId Condition="'$(Platform)'=='Android64'">9WV4C18A26006305</DeviceId>
         <DeviceId Condition="'$(Platform)'=='iOSDevice32'"/>
         <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
         <DeviceId Condition="'$(Platform)'=='iOSSimulator'">iPhone5</DeviceId>
@@ -14,18 +14,18 @@
     <ItemGroup Condition="'$(Platform)'=='Win64'"/>
     <ItemGroup Condition="'$(Platform)'=='iOSDevice32'"/>
     <ItemGroup Condition="'$(Platform)'=='Win32'">
-        <DeployFile Include="Styles\Windows\Win10ModernDark.Style" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="Styles\Windows\Win10ModernSlateGray.style" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\</RemoteDir>
-            <RemoteName>Win10ModernDark.Style</RemoteName>
+            <RemoteName>Win10ModernSlateGray.style</RemoteName>
             <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Styles\Windows\Win10ModernSlateGray.style" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="Styles\Windows\Win10ModernDark.Style" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\</RemoteDir>
-            <RemoteName>Win10ModernSlateGray.style</RemoteName>
+            <RemoteName>Win10ModernDark.Style</RemoteName>
             <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -78,15 +78,6 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Styles\Android\AndroidLDarkBlue.fsf" Condition="'$(Config)'=='Release'">
-            <RemoteDir>Racunaj\</RemoteDir>
-            <RemoteName>AndroidLDarkBlue.fsf</RemoteName>
-            <DeployClass>ProjectFile</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Styles\Android\AndroidLight.fsf" Condition="'$(Config)'=='Release'">
             <RemoteDir>Racunaj\</RemoteDir>
             <RemoteName>AndroidLight.fsf</RemoteName>
@@ -99,6 +90,15 @@
         <DeployFile Include="Styles\Windows\Win10ModernGreen.style" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\</RemoteDir>
             <RemoteName>Win10ModernGreen.style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Styles\Android\AndroidLDarkBlue.fsf" Condition="'$(Config)'=='Release'">
+            <RemoteDir>Racunaj\</RemoteDir>
+            <RemoteName>AndroidLDarkBlue.fsf</RemoteName>
             <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -173,18 +173,18 @@
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='Android'">
-        <DeployFile Include="Win32\Debug\Animacije\odlicno\Hands_clap_2.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
-            <RemoteName>Hands_clap_2.gif</RemoteName>
+        <DeployFile Include="Animacije\napaka\Man_frustrated.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
+            <RemoteName>Man_frustrated.gif</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\razmisljam\Sick_person.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
-            <RemoteName>Sick_person.gif</RemoteName>
+        <DeployFile Include="Animacije\odlicno\Hands_clap_2.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
+            <RemoteName>Hands_clap_2.gif</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -200,6 +200,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Animacije\napaka\Angry_man_2.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
+            <RemoteName>Angry_man_2.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\res\drawable-small\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
@@ -209,9 +218,18 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\odlicno\kissing_clown.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
-            <RemoteName>kissing_clown.gif</RemoteName>
+        <DeployFile Include="Animacije\napaka\Hot_head.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
+            <RemoteName>Hot_head.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Animacije\razmisljam\Excited_and_scared.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
+            <RemoteName>Excited_and_scared.gif</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -223,6 +241,15 @@
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon36</DeployClass>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Zvoki\odlicno\applause.mp3" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Zvok\odlicno\</RemoteDir>
+            <RemoteName>applause.mp3</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -245,11 +272,47 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Animacije\odlicno\kissing_clown.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
+            <RemoteName>kissing_clown.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Animacije\razmisljam\pages_turn.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
+            <RemoteName>pages_turn.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Animacije\odlicno\Excited_man_3.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
+            <RemoteName>Excited_man_3.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_96x96.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon96</DeployClass>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Racunaj.todo" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Racunaj.todo</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -353,20 +416,20 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Zvoki\razmisljam\cakam.mp3" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Zvok\razmisljam\</RemoteDir>
+            <RemoteName>cakam.mp3</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>Racunaj\res\drawable-xhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon48</DeployClass>
             <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\napaka\Angry_man_2.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
-            <RemoteName>Angry_man_2.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -426,29 +489,11 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\napaka\Electrocuted.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
-            <RemoteName>Electrocuted.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>Racunaj\res\drawable-ldpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon36</DeployClass>
             <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\napaka\Hot_head.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
-            <RemoteName>Hot_head.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -462,15 +507,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\odlicno\Very_excited.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
-            <RemoteName>Very_excited.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>Racunaj\res\drawable-xlarge\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
@@ -480,20 +516,20 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Styles\Windows\Win10ModernBlue.Style" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
+            <RemoteName>Win10ModernBlue.Style</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\res\drawable-large\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage640</DeployClass>
             <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Zvok\razmisljam\cakam.mp3" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Zvok\razmisljam\</RemoteDir>
-            <RemoteName>cakam.mp3</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -516,36 +552,9 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Images\Icons\96 96.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon96</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Images\Icons\72 72.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon72</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Styles\Windows\Transparent.Style" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\assets\internal\</RemoteDir>
             <RemoteName>Transparent.Style</RemoteName>
-            <DeployClass>ProjectFile</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Styles\Windows\Win10ModernBlue.Style" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\</RemoteDir>
-            <RemoteName>Win10ModernBlue.Style</RemoteName>
             <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -570,6 +579,42 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Images\Icons\96 96.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\res\drawable-xhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon96</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Images\Icons\72 72.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon72</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Animacije\napaka\Electrocuted.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
+            <RemoteName>Electrocuted.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Zvoki\napaka\napacno.mp3" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Zvok\napaka\</RemoteDir>
+            <RemoteName>napacno.mp3</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\classes\</RemoteDir>
             <RemoteName>classes.dex</RemoteName>
@@ -584,15 +629,6 @@
             <RemoteName>gdbserver</RemoteName>
             <DeployClass>AndroidGDBServer</DeployClass>
             <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\napaka\Man_frustrated.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
-            <RemoteName>Man_frustrated.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -615,7 +651,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\napaka\Man_screams.gif" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="Animacije\napaka\Man_screams.gif" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\assets\internal\Animacije\napaka\</RemoteDir>
             <RemoteName>Man_screams.gif</RemoteName>
             <DeployClass>File</DeployClass>
@@ -624,18 +660,9 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\odlicno\Excited_man_3.gif" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="Animacije\odlicno\Excited_man_2.gif" Condition="'$(Config)'=='Debug'">
             <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
-            <RemoteName>Excited_man_3.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\razmisljam\Tourist_confused.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
-            <RemoteName>Tourist_confused.gif</RemoteName>
+            <RemoteName>Excited_man_2.gif</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -647,6 +674,15 @@
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon144</DeployClass>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Animacije\razmisljam\Walking_to_school.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
+            <RemoteName>Walking_to_school.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -665,15 +701,6 @@
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage470</DeployClass>
             <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Zvok\odlicno\applause.mp3" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Zvok\odlicno\</RemoteDir>
-            <RemoteName>applause.mp3</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -706,29 +733,11 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\razmisljam\pages_turn.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
-            <RemoteName>pages_turn.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\odlicno\Excited_man_2.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
-            <RemoteName>Excited_man_2.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\razmisljam\Excited_and_scared.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
-            <RemoteName>Excited_and_scared.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>Racunaj\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -742,18 +751,18 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>Racunaj\res\drawable-large\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage640</DeployClass>
-            <Operation>1</Operation>
+        <DeployFile Include="Animacije\razmisljam\Tourist_confused.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
+            <RemoteName>Tourist_confused.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Zvok\napaka\napacno.mp3" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Zvok\napaka\</RemoteDir>
-            <RemoteName>napacno.mp3</RemoteName>
+        <DeployFile Include="Animacije\razmisljam\Sick_person.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
+            <RemoteName>Sick_person.gif</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -769,20 +778,20 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\Animacije\razmisljam\Walking_to_school.gif" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>Racunaj\assets\internal\Animacije\razmisljam\</RemoteDir>
-            <RemoteName>Walking_to_school.gif</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>Racunaj\</RemoteDir>
             <RemoteName>AndroidManifest.xml</RemoteName>
             <DeployClass>ProjectAndroidManifest</DeployClass>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Animacije\odlicno\Very_excited.gif" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>Racunaj\assets\internal\Animacije\odlicno\</RemoteDir>
+            <RemoteName>Very_excited.gif</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>

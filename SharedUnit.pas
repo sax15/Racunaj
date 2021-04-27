@@ -28,9 +28,14 @@ var
   predvajaj_animacijo: Boolean; // vklopi izklopi animacijo
   predvajaj_zvok: Boolean;  // vklopi izklopi zvok
   vklopi_cas_racunanja: Boolean;
-  cas_racunanja_enega_st: Integer;
+  cas_racunanja_enega_rac: Integer;
   nakljucni_nn_clen: Boolean;
   operacije: Integer;
+  {$IF Defined(IOS) or Defined(Android)}
+  //prepoznava govora
+  prepoznava_govora: Boolean;
+  {$ENDIF}
+
   {$IFDEF MSWINDOWS}
   // Windows - položaj in velikost okna
   forma_sirina, forma_visina, forma_levo, forma_zgoraj: Integer;
@@ -94,13 +99,16 @@ begin
     IniFile.WriteInteger('Nastavitve', 'Omejitev racunanja', omejitev_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Omejitev cas racunanja', omejitev_cas_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Omejitev stevila racunov', omejitev_st_racunanja);
-    IniFile.WriteInteger('Nastavitve', 'Cas racunanja enega stevila', cas_racunanja_enega_st);
+    IniFile.WriteInteger('Nastavitve', 'Cas racunanja enega racuna', cas_racunanja_enega_rac);
     IniFile.WriteBool('Nastavitve', 'Nakljucni nezna clen', nakljucni_nn_clen);
     IniFile.WriteBool('Nastavitve', 'Predvajaj animacijo', predvajaj_animacijo);
     IniFile.WriteBool('Nastavitve', 'Predvajaj zvok', predvajaj_zvok);
     IniFile.WriteBool('Nastavitve', 'Vklopi cas racunanja', vklopi_cas_racunanja);
     IniFile.WriteInteger('Nastavitve', 'Operacije', operacije);
-
+    {$IF Defined(IOS) or Defined(Android)}
+    //prepoznava govora
+    IniFile.WriteBool('Nastavitve', 'Prepoznaj govora', prepoznava_govora);
+    {$ENDIF}
     {$IFDEF MSWINDOWS}
     // Windows - položaj in velikost okna
     IniFile.WriteInteger('Nastavitve', 'Velikost sirina', forma_sirina);
@@ -134,12 +142,16 @@ begin
     omejitev_cas_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev cas racunanja', 10));
     omejitev_st_racunanja:=(IniFile.ReadInteger('Nastavitve', 'Omejitev stevila racunov', 20));
 
-    cas_racunanja_enega_st:=IniFile.ReadInteger('Nastavitve', 'Cas racunanja enega stevila', 10);
+    cas_racunanja_enega_rac:=IniFile.ReadInteger('Nastavitve', 'Cas racunanja enega racuna', 10);
     nakljucni_nn_clen:=IniFile.ReadBool('Nastavitve', 'Nakljucni nezna clen', False);
     predvajaj_animacijo:=IniFile.ReadBool('Nastavitve', 'Predvajaj animacijo', True);
     predvajaj_zvok:=IniFile.ReadBool('Nastavitve', 'Predvajaj zvok', True);
     vklopi_cas_racunanja:=IniFile.ReadBool('Nastavitve', 'Vklopi cas racunanja', True);
     operacije:=IniFile.ReadInteger('Nastavitve', 'Operacije', 15);
+    {$IF Defined(IOS) or Defined(Android)}
+    //prepoznava govora
+    prepoznava_govora:=IniFile.ReadBool('Nastavitve', 'Prepoznaj govora', False);
+    {$ENDIF}
     {$IFDEF MSWINDOWS}
     // Windows - položaj in velikost okna
     forma_sirina:=IniFile.ReadInteger('Nastavitve', 'Velikost sirina', 500);

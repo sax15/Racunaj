@@ -208,9 +208,6 @@ Visible=True
 [layAnimacija]
 Coordinates=399,689,77,33
 
-[lbiZvok]
-Coordinates=241,689,50,33
-
 [labCasRacunanja]
 Coordinates=881,155,100,51
 
@@ -359,4 +356,7 @@ Coordinates=302,780,163,339
 
 [bilIgre]
 Coordinates=341,358,45,33
+
+[lbiZvok]
+Coordinates=241,689,50,33
 

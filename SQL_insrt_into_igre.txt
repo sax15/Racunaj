@@ -1,9 +1,0 @@
-  sql:='INSERT INTO Igre (igralec_ID, datum, sestevanje_pravilni, sestevanje_napacni, ' +
-      'sestevanje_neodgovorjeni, sestevanje_povprecni_cas, odstevanje_pravilni, odstevanje_napacni, ' +
-      'odstevanje_neodgovorjeni, odstevanje_povprecni_cas, mnozenje_pravilni, mnozenje_napacni, ' +
-      'mnozenje_neodgovorjeni, mnozenje_povprecni_cas, deljenje_pravilni, deljenje_napacni, ' +
-      'deljenje_neodgovorjeni, deljenje_povprecni_cas) VALUES (:igralec_ID, :datum, :sestevanje_pravilni, :sestevanje_napacni, ' +
-      ':sestevanje_neodgovorjeni, :sestevanje_povprecni_cas, :odstevanje_pravilni, :odstevanje_napacni, ' +
-      ':odstevanje_neodgovorjeni, :odstevanje_povprecni_cas, :mnozenje_pravilni, :mnozenje_napacni, ' +
-      ':mnozenje_neodgovorjeni, :mnozenje_povprecni_cas, :deljenje_pravilni, :deljenje_napacni, ' +
-      ':deljenje_neodgovorjeni, :deljenje_povprecni_cas)';
