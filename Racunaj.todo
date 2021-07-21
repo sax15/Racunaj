@@ -1,2 +1,4 @@
-﻿{TODO : Če je čas odštevanja do konca enega računa (ali če smože izračunali), potem ne pavzira igre in prepoznava še vedno deluje!!!!}
-{TODO : Nastavi  konec snemanja takrat, ko preneha govoriti, oziroma naj bo čas tako dolg, kot je čas računanja enega računa. Uporabi custom clas pri prepoznavi govora (https://stackoverflow.com/questions/39893742/google-speech-api-transcribing-spoken-numbers-incorrectly)}
+﻿{TODO : Preveri nastavitve zvoka in govora, on frmMain Startup!}
+{TODO : Če imaš vklopljeno prepoznavo govora, preveri ali je vklopljen tudi internet}
+{DONE : Če je čas odštevanja do konca enega računa (ali če smože izračunali), potem ne pavzira igre in prepoznava še vedno deluje!!!!}
+{DONE : Nastavi  konec snemanja takrat, ko preneha govoriti, oziroma naj bo čas tako dolg, kot je čas računanja enega računa. Uporabi custom clas pri prepoznavi govora (https://stackoverflow.com/questions/39893742/google-speech-api-transcribing-spoken-numbers-incorrectly)}

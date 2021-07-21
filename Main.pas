@@ -22,7 +22,7 @@ uses
   {$IF Defined(IOS) or Defined(Android)}
   DW.SpeechRecognition, DW.Types,   //prepoznava govora
   {$ENDIF}
-  Fmx.Bind.Grid, Data.Bind.Grid;
+  Fmx.Bind.Grid, Data.Bind.Grid, FireDAC.Phys.SQLiteWrapper.Stat;
 
 
 type
@@ -156,6 +156,9 @@ type
     swcPrepoznavaGovora: TSwitch;
     labPrepoznavaZvoka: TLabel;
     lbhPrepoznavaGovora: TListBoxGroupHeader;
+    gplSpeeachRecognize: TGridPanelLayout;
+    FlowLayoutBreak1: TFlowLayoutBreak;
+    imgSpeeachRecord: TImage;
     procedure TabControlChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnIzhodClick(Sender: TObject);
@@ -186,6 +189,8 @@ type
     procedure cbeIgralciTyping(Sender: TObject);
     procedure cobPreoblekeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure swcPrepoznavaGovoraClick(Sender: TObject);
+    procedure imgSpeeachRecordClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -202,14 +207,15 @@ type
     zvok_napaka, zvok_odlicno, zvok_razmisljam: TStringList;
     pravilni_izracun: String;
     vsi_racuni: String;        // seznam vseh računov veni igri
-    {$IF Defined(IOS) or Defined(Android)}
     //prepoznava govora
+    {$IF Defined(IOS) or Defined(Android)}
     FSpeech: TSpeechRecognition;
     procedure SpeechAuthorizationHandler(Sender: TObject; const AStatus: TAuthorizationStatus);
     procedure SpeechRecordingHandler(Sender: TObject; const IsRecording: Boolean);
     procedure SpeechTextHandler(Sender: TObject; const AText: string);
-    procedure SnemanjeGovora(vklopi: Boolean);
     {$ENDIF}
+    //prepoznava govora
+    procedure SnemanjeGovora(vklopi: Boolean);
     function PreveriRezultat():Boolean;
     procedure PonastaviRezultate();
     procedure IzpisiTrenutniRezultat();
@@ -304,6 +310,8 @@ var
 begin
   //prepoznava govora
   SnemanjeGovora(False);
+  // prepoznava govora
+  imgSpeeachRecord.Enabled:=False;       // omogoči gumb za vključitev snemanja
   // preveri rezultate
   layRacunaj.Enabled:=False;
   if PreveriRezultat() then   // če je odgovor je pravilen
@@ -409,6 +417,9 @@ begin
     MediaPlayer.stop;   // ustavi zvok
     //prepoznava govora
     SnemanjeGovora(False);   // izklopi prepoznavo govora
+    // prepoznava govora
+    imgSpeeachRecord.Enabled:=False;       // omogoči gumb za vključitev snemanja
+
     tmrSkupniCas.Enabled:=False;;
     imgAnimacija.Visible:=False;
     btnStart.ImageIndex:=1;
@@ -490,7 +501,36 @@ begin
   edtCasOmejitev.Text:=IntToSTr(omejitev_cas_racunanja);
   edtStRacunovOmejitev.Text:=IntToSTr(omejitev_st_racunanja);
   cobOmejitveRacunanjaChange(Self);
+  //prepoznava govora
+    // skrij nastavitve za prepoznavo govora na Windows platformi
+  lbiPrepoznavaGovora.Visible:=False;
+  lbhPrepoznavaGovora.Visible:=False;
+  gplSpeeachRecognize.Visible:=False;
 
+  {$IF Defined(IOS) or Defined(Android)}
+  //prepoznava govora
+  lbiPrepoznavaGovora.Visible:=True;
+  lbhPrepoznavaGovora.Visible:=True;
+  swcPrepoznavaGovora.IsChecked:=prepoznava_govora;
+  if swcPrepoznavaGovora.IsChecked then
+  begin
+    FSpeech:=TSpeechRecognition.Create;
+    FSpeech.StopInterval:=0;     // 0=da sami kontroliramo stop, vendar na androidu ne dela več kot 5s
+    FSpeech.OnAuthorizationStatus:=SpeechAuthorizationHandler;
+    FSpeech.OnRecording:=SpeechRecordingHandler;
+    FSpeech.OnText:=SpeechTextHandler;
+    // prikaži nastavitve za prepoznavo govora na Android in iOS platformi
+    lbiPrepoznavaGovora.Visible:=True;
+    lbhPrepoznavaGovora.Visible:=True;
+    // izključi zvok
+    predvajaj_zvok:=NOT swcPrepoznavaGovora.IsChecked;
+    lbiZvok.Visible:=NOT swcPrepoznavaGovora.IsChecked;
+    // prikaži gumb za prepoznavo
+    gplSpeeachRecognize.Visible:=True;
+    // skrij virtualno tipkovnico
+    VKAutoShowMode := TVKAutoShowMode.Never;
+  end;
+  {$ENDIF}
   edtCasRacunanja.Text:=IntToStr(cas_racunanja_enega_rac);
   swcPoljubniNeznanClen.IsChecked:=nakljucni_nn_clen;
   swcPredvajajAnimacijo.IsChecked:=predvajaj_animacijo;
@@ -498,21 +538,6 @@ begin
   swcVklopiCasRacunanja.IsChecked:=vklopi_cas_racunanja;
   lbiCasRacunanja.Enabled:=swcVklopiCasRacunanja.IsChecked;
   btnStart.Enabled:=False;
-  // skrij nastavitve za prepoznavogovora na Windows platformi
-  lbiPrepoznavaGovora.Visible:=False;
-  lbhPrepoznavaGovora.Visible:=False;
-  {$IF Defined(IOS) or Defined(Android)}
-  //prepoznava govora
-  swcPrepoznavaGovora.IsChecked:=prepoznava_govora;
-  FSpeech:=TSpeechRecognition.Create;
-  FSpeech.StopInterval:=0;     // 0=da sami kontroliramo stop, vendar na androidu ne dela več kot 5s
-  FSpeech.OnAuthorizationStatus:=SpeechAuthorizationHandler;
-  FSpeech.OnRecording:=SpeechRecordingHandler;
-  FSpeech.OnText:=SpeechTextHandler;
-  // prikaži nastavitve za prepoznavo govora na Android in iOS platformi
-  lbiPrepoznavaGovora.Visible:=True;
-  lbhPrepoznavaGovora.Visible:=True;
-  {$ENDIF}
 
   if (GetBit(operacije, 0)=True) then
   begin
@@ -741,10 +766,8 @@ begin
     cobOmejitveRacunanjaChange(Self);
     omejitev_cas_racunanja:=StrToInt(edtCasOmejitev.Text);
     omejitev_st_racunanja:=StrToInt(edtStRacunovOmejitev.Text);
-    {$IF Defined(IOS) or Defined(Android)}
     //prepoznava govora
     prepoznava_govora:=swcPrepoznavaGovora.IsChecked;
-    {$ENDIF}
     operacije:=0;
     if chbSestevanje.IsChecked then
       SetBit(operacije, 0);
@@ -773,6 +796,8 @@ begin
   end else
     imgAnimacija.Visible:=True;
 end;
+
+
 procedure TfrmMain.swcVklopiCasRacunanjaClick(Sender: TObject);
 begin
   lbiCasRacunanja.Enabled:=swcVklopiCasRacunanja.IsChecked;
@@ -788,6 +813,8 @@ begin
   // Če je bil izbran katerikoli drugi zavihek in je računanje v teku pavziraj računanje
   if (TabControl.TabIndex<>0) AND (btnStart.ImageIndex=2) then
   begin
+    // prikaži virtualno tipkovnico, če je slučajno skrita
+    VKAutoShowMode := TVKAutoShowMode.Always;
     // ustavi animacijo, če se ta predvaja
     if (FGifPlayer<>nil) then
     begin
@@ -798,6 +825,7 @@ begin
     zvok:=MediaPlayer.State;    // nastavi trenutno stanje TMediaPlayer
     if (zvok=TMediaState.Playing) then  // če trenutno igra zvok, ga zaustavi
       MediaPlayer.Stop;
+    // prepoznava govora
     {$IF Defined(IOS) or Defined(Android)}
     govor:=FSpeech.IsRecording; // nastavi trenutni starus prepoznave govora
     {$ENDIF}
@@ -833,6 +861,7 @@ begin
             // če je prej igra zvok, ga zaženi
             if (zvok=TMediaState.Playing) then
               MediaPlayer.Play;
+            // prepoznava govora
             {$IF Defined(IOS) or Defined(Android)}
               if govor then           // če je bil prej vklopljen govor
                 FSpeech.StartRecording;
@@ -840,6 +869,12 @@ begin
           end;
         end;
       end);
+  end else
+  begin
+    if swcPrepoznavaGovora.IsChecked then
+      VKAutoShowMode := TVKAutoShowMode.Never      // skrij virtualno tipkovnico, če je slučajno skrita
+    else
+      VKAutoShowMode := TVKAutoShowMode.Always;   // prikaži virtualno tipkovnico, če je slučajno skrita
   end;
 end;
 
@@ -857,6 +892,9 @@ begin
     FGifPlayer.stop;    // ustavi animacijo
     //prepoznava govora
     SnemanjeGovora(False);
+    // prepoznava govora
+    imgSpeeachRecord.Enabled:=False;       // omogoči gumb za vključitev snemanja
+
     Inc(neodgovorjeno);
     rezultati[oper, 2]:=rezultati[oper, 2] + 1;        // Neodgovorjeni = 2
     labCas.Text:='ŽAL SE JE TVOJ ČAS IZTEKEL! (' + pravilni_izracun + ')';
@@ -1050,8 +1088,9 @@ begin
     PredvajajZvok(zvok_razmisljam);
     if swcVklopiCasRacunanja.IsChecked then
       tmrCasRacunanja.Enabled:=True;
-    //prepoznava govora
-    SnemanjeGovora(True);
+
+    // prepoznava govora
+    imgSpeeachRecord.Enabled:=True;       // omogoči gumb za vključitev snemanja
   finally
     delitelji.Free;
     faktorji.Free;
@@ -1146,6 +1185,7 @@ begin
   // odpri spletno stran aspira.si v privzetem brskalniku
   tUrlOpen.OpenURL('www.aspira.si');
 end;
+
 
 
 procedure TfrmMain.tbiOprogramuClick(Sender: TObject);
@@ -1303,6 +1343,7 @@ begin
   FDQIgre.Open();
   NarisiGrafe();
 end;
+
 
 procedure TfrmMain.grdRezultatiCellClick(const Column: TColumn;
   const Row: Integer);
@@ -1571,6 +1612,19 @@ begin
 end;
 
 //prepoznava govora
+procedure TfrmMain.imgSpeeachRecordClick(Sender: TObject);
+begin
+  SnemanjeGovora(true);
+end;
+
+
+procedure TfrmMain.swcPrepoznavaGovoraClick(Sender: TObject);
+begin
+  // skrij ali prikaži nastavitve za zvok
+  gplSpeeachRecognize.visible:=swcPrepoznavaGovora.IsChecked;
+  lbiZvok.Visible:=NOT swcPrepoznavaGovora.IsChecked;
+end;
+
 procedure TfrmMain.SnemanjeGovora(vklopi: Boolean);
 begin
   {$IF Defined(IOS) or Defined(Android)}
@@ -1587,6 +1641,7 @@ begin
   end;
   {$ENDIF}
 end;
+
 {$IF Defined(IOS) or Defined(Android)}
 //prepoznava govora
 
@@ -1614,18 +1669,25 @@ end;
 procedure TfrmMain.SpeechTextHandler(Sender: TObject; const AText: string);
 var
   vr: Integer;
+  rez: String;
 begin
   if TabControl.TabIndex=0 then
   begin
-    if TryStrToInt(AText, vr) then   // preveri ali je besedilo število
+    rez:=AText;
+    // popravi napake pri prepoznavi govora
+    if rez='pet' then
+      rez:='5';
+    if (rez='nič') OR (rez='guma') then
+      rez:='0';
+    if TryStrToInt(rez, vr) then   // preveri ali je besedilo število
     begin
-      if (edtPrvoSt.IsFocused) then
-        edtPrvoSt.Text:=AText;
-      if(edtDrugoSt.IsFocused) then
-        edtDrugoSt.Text:=AText;
-      if(edtRezultat.IsFocused) then
-        edtRezultat.Text:=AText;
-    btnPreveri.OnClick(Self);
+      if (edtPrvoSt.Text='') then
+        edtPrvoSt.Text:=rez;
+      if(edtDrugoSt.Text='') then
+        edtDrugoSt.Text:=rez;
+      if(edtRezultat.Text='') then
+        edtRezultat.Text:=rez;
+      btnPreveri.OnClick(Self);
     end;
   end;
 end;

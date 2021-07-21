@@ -1,4 +1,3 @@
-.\assets\internal\Animacije\napaka\Man_frustrated.gif
 .\assets\internal\Animacije\odlicno\Hands_clap_2.gif
 .\assets\internal\Animacije\napaka\Angry_man_2.gif
 .\assets\internal\Animacije\napaka\Hot_head.gif
@@ -22,4 +21,5 @@
 .\assets\internal\Win10ModernDark.Style
 .\assets\internal\Animacije\razmisljam\Tourist_confused.gif
 .\assets\internal\Animacije\razmisljam\Sick_person.gif
+.\assets\internal\Animacije\napaka\Man_frustrated.gif
 .\assets\internal\Animacije\odlicno\Very_excited.gif
